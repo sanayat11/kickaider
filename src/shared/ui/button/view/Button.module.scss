@@ -47,41 +47,48 @@
     border-color: var(--accent-primary-hover);
     box-shadow: 0 0 14px rgba(181, 123, 255, 0.48);
   }
-
   &:active {
     background: var(--accent-primary-active);
     box-shadow: 0 0 6px rgba(181, 123, 255, 0.24);
   }
+  &:focus-visible{
+    background: var(--accent-primary);
+    border: 3px, solid ,(--accent-primary-focus);
+  }
+  &:disabled{
+    background: var(--accent-primary-disable);
+    pointer-events: none;
+    cursor:none;
+  }
 }
 .secondary {
   background: transparent;
-  border-color: var(--accent-primary);
+  border: 1.5px,solid, var(--accent-primary);
   color: var(--accent-primary);
   box-shadow: 0 0 6px rgba(181, 123, 255, 0.18);
 
   &:hover {
-    background: rgba(181, 123, 255, 0.12);
-    color: var(--text-primary);
+    background: #EDEFFE;
+    color: var(--accent-primary);
     box-shadow: 0 0 10px rgba(181, 123, 255, 0.32);
   }
 
   &:active {
-    background: rgba(181, 123, 255, 0.2);
+    background: #C8CEFC;
+    border-color:#4E61F6;
   }
 }
 
 .tertiary {
-  background: var(--surface-light);
-  color: var(--text-primary);
-  border-color: var(--border);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  background: transparent;
+  color: var(--accent-primary);
 
   &:hover {
-    background: var(--bg-hover);
+    background: #EDEFFE;
   }
 
   &:active {
-    background: var(--bg-active);
+    background: #C8CEFC;
   }
 }
 

@@ -1,3 +1,4 @@
+import Footer from '@/shared/components/Footer/view/Footer';
 import { Outlet } from 'react-router-dom';
 
 export const Layout = () => {
@@ -7,7 +8,7 @@ export const Layout = () => {
       <main>
         <Outlet />
       </main>
-      <footer>Footer</footer>
+      <Footer></Footer>
     </div>
   );
 };

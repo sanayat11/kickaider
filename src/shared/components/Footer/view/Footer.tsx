@@ -1,5 +1,7 @@
 import React from "react";
 import styles from "./Footer.module.scss";
+import logo from "@/shared/assets/images/logo.svg";
+import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 
 const Footer: React.FC = () => {
   return (
@@ -7,7 +9,7 @@ const Footer: React.FC = () => {
       <div className={styles.wrapper}>
         <div className={styles.top}>
           <div className={styles.logo}>
-            <div className={styles.logoCircle} />
+          <img src={logo} alt="Logo" className={styles.logoIcon} />
             <span className={styles.logoText}>KickAider</span>
           </div>
 
@@ -21,10 +23,18 @@ const Footer: React.FC = () => {
           </nav>
 
           <div className={styles.socials}>
-            <a href="#" className={styles.social}>f</a>
-            <a href="#" className={styles.social}>t</a>
-            <a href="#" className={styles.social}>ig</a>
-            <a href="#" className={styles.social}>in</a>
+            <a href="#" className={styles.social}>
+                <FaFacebookF />
+            </a>
+            <a href="#" className={styles.social}>
+                <FaTwitter />
+            </a>
+            <a href="#" className={styles.social}>
+                <FaInstagram />
+            </a>
+            <a href="#" className={styles.social}>
+                <FaLinkedinIn />
+            </a>
           </div>
         </div>
 

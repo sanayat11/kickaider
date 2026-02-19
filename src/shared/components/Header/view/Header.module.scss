@@ -1,36 +1,45 @@
-.footer {
+.header {
     background-color: #f4f5f9;
-    padding: 40px 0 20px;
+    padding: 16px 0;
   }
   
   .wrapper {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 24px;
+  
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
   
-  .top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+  /* ===== Logo ===== */
   
   .logo {
     display: flex;
     align-items: center;
     gap: 12px;
+    cursor: pointer;
+  }
+  
+  .logoIcon {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
   }
   
   .logoText {
-    font-size: 26px;
+    font-size: 28px;
     font-weight: 600;
     color: #3b4cca;
   }
   
+  /* ===== Navigation ===== */
+  
   .nav {
     display: flex;
     align-items: center;
-    gap: 32px;
+    gap: 40px;
   
     a {
       text-decoration: none;
@@ -57,40 +66,19 @@
     font-size: 12px;
   }
   
-  /* Socials */
-  .socials {
-    display: flex;
-    gap: 12px;
-  }
+  /* ===== Button ===== */
   
-  .social {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    background-color: #e8eaf3;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    font-weight: 600;
-    color: #555;
+  .button {
+    background: linear-gradient(135deg, #5c6cff, #4e5bd9);
+    color: #fff;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 12px;
+    font-size: 16px;
+    cursor: pointer;
     transition: 0.2s ease;
   
     &:hover {
-      background-color: #dcdff1;
+      opacity: 0.9;
     }
-  }
-  
-  /* Divider */
-  .line {
-    margin: 32px 0 20px;
-    height: 1px;
-    background-color: #d9dbe9;
-  }
-  
-  /* Bottom */
-  .bottom {
-    text-align: center;
-    font-size: 14px;
-    color: #5a5a89;
   }

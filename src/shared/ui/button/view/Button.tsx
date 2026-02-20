@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import styles from './Button.module.scss';
 import type { CustomButtonProps } from '@/shared/ui/button/types/Button';
 import { Typography } from '@/shared/ui/typoghraphy/view/Typography';
-import { FaChevronRight } from 'react-icons/fa';
+import { FaArrowRight } from "react-icons/fa6";
 
 export const Button: FC<CustomButtonProps> = ({
   type = 'button',
@@ -45,7 +45,7 @@ export const Button: FC<CustomButtonProps> = ({
           </Typography>
           {iconButton && (
             <div className={styles.iconWrapper}>
-              <FaChevronRight className={styles.icon} color="#112969" />
+              <FaArrowRight className={styles.icon} color="white" />
             </div>
           )}
         </a>
@@ -58,7 +58,7 @@ export const Button: FC<CustomButtonProps> = ({
         </Typography>
         {iconButton && (
           <div className={styles.iconWrapper}>
-            <FaChevronRight className={styles.icon} color="#112969" />
+            <FaArrowRight className={styles.icon} color="white" />
           </div>
         )}
       </Link>
@@ -77,7 +77,7 @@ export const Button: FC<CustomButtonProps> = ({
       </Typography>
       {iconButton && (
         <div className={styles.iconWrapper}>
-          <FaChevronRight className={styles.icon} color="#112969" />
+          <FaArrowRight className={styles.icon} color="white" />
         </div>
       )}
     </button>

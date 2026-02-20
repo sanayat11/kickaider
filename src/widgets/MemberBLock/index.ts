@@ -1,0 +1,1 @@
+export { MemberBlock } from "./view/MemberBlock"

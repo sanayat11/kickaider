@@ -1,0 +1,82 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  background-color: #fff;
+  padding: 16px 0;
+  }
+  
+  .wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+  }
+  
+  .logoIcon {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+  }
+  
+  .logoText {
+    font-size: 28px;
+    font-weight: 600;
+    color: #3b4cca;
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+  
+    a {
+      text-decoration: none;
+      font-size: 16px;
+      color: #2d2f55;
+      transition: 0.2s ease;
+  
+      &:hover {
+        color: #3b4cca;
+      }
+    }
+  }
+  
+  .lang {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    color: #2d2f55;
+  }
+  
+  .arrow {
+    font-size: 12px;
+  }
+  
+  .button {
+    background: linear-gradient(135deg, #5c6cff, #4e5bd9);
+    color: #fff;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 12px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s ease;
+  
+    &:hover {
+      opacity: 0.9;
+    }
+  }

@@ -1,0 +1,62 @@
+.teamBlock {
+    display: flex;
+    align-items: flex-start;
+    padding-inline: 10%;
+    margin-top: 100px;
+    gap: 24px;
+    background-color: var(--bg-color);
+}
+
+.imageWrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image {
+    min-width: 543px;
+    min-height: 632px;
+    height: auto;
+    border-radius: 20px;
+    object-fit: cover;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    max-width: 624px;
+    gap: 24px;
+}
+
+.title {
+    color: var(--primary-900);
+    font-size: 40px;
+    line-height: 1.2;
+    max-width: 624px;
+}
+
+.description {
+    color: var(--text-gray);
+    line-height: 1.6;
+    font-size: 16px;
+}
+
+@media (max-width: 1024px) {
+    .teamBlock {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .content {
+        align-items: center;
+    }
+}

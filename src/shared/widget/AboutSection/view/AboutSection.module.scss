@@ -1,0 +1,67 @@
+.about {
+    padding: 120px 0;
+    background: #f4f5f9;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    text-align: center;
+  }
+  
+  .title {
+    font-size: 48px;
+    font-weight: 700;
+    color: #212967;
+    margin-bottom: 24px;
+  }
+  
+  .subtitle {
+    max-width: 760px;
+    margin: 0 auto 80px;
+    font-size: 18px;
+    line-height: 1.6;
+    color: #8c90a6;
+  }
+  
+  /* ===== Images Layout ===== */
+  
+  .imagesWrapper {
+    position: relative;
+    height: 520px;
+  }
+  
+  /* Левая картинка */
+  .imageLeft {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+  
+    width: 48%;
+    height: 420px;
+  
+    border-radius: 24px;
+  
+    /* Заглушка */
+    background-image: url("/src/shared/assets/images/ImageContainer.png");
+    background-size: cover;
+    background-position: center;
+  }
+  
+  /* Правая картинка (накладывается) */
+  .imageRight {
+    position: absolute;
+    right: 0;
+    top: 0;
+  
+    width: 60%;
+    height: 460px;
+  
+    border-radius: 24px;
+  
+    /* Заглушка */
+    background-image: url("/src/shared/assets/images/Placeholder.png");
+    background-size: cover;
+    background-position: center;
+  }

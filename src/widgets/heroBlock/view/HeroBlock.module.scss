@@ -1,0 +1,63 @@
+.heroBlock {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-inline: 10%;
+  width: 100%;
+  min-height: 810px;
+  overflow: hidden;
+}
+
+/* background layer */
+.imageWrapper {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.bgImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* content */
+.content {
+  position: relative;
+  z-index: 1;
+  max-width: 580px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.textContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.title {
+  line-height: 1.2;
+}
+
+.description {
+  opacity: 0.8;
+  line-height: 1.5;
+}
+
+.buttons {
+  display: flex;
+  gap: 16px;
+}
+
+.button {
+  min-width:308px;
+  min-height: 56px;
+}

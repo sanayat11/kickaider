@@ -1,7 +1,10 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import styles from "./Header.module.scss";
-import logo from "@/shared/assets/images/logo.svg"; 
+import logo from "@/shared/assets/images/logo.svg";
+import { LanguageSelector } from "@/features/languageSelector";
 const Header: React.FC = () => {
+  const { t } = useTranslation();
   return (
     <header className={styles.header}>
       <div className={styles.wrapper}>
@@ -13,16 +16,17 @@ const Header: React.FC = () => {
 
         {/* Navigation */}
         <nav className={styles.nav}>
-          <a href="#">О компании</a>
-          <a href="#">Возможности</a>
-          <a href="#">FAQ</a>
+          <a href="#">{t("header.aboutCompany")}</a>
+          <a href="#">{t("header.features")}</a>
+          <a href="#">{t("header.faq")}</a>
+
 
           <div className={styles.lang}>
-            Ru <span className={styles.arrow}>▾</span>
+            <LanguageSelector />
           </div>
         </nav>
 
-        <button className={styles.button}>Войти</button>
+        <button className={styles.button}>{t("header.login")}</button>
       </div>
     </header>
   );

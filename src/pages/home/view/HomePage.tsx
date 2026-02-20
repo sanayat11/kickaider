@@ -13,7 +13,6 @@ export const HomePage: FC = () => {
       <TeamBlock />
       <SliderBlock />
       <FaqBlock />
-      <h1>HOME</h1>
     </>
   );
 };

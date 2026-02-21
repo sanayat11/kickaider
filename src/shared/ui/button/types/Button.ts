@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
 export interface CustomButtonProps {
-  type?: 'button' | 'link';
+  type?: 'button' | 'link' | 'submit';
   variant?: 'primary' | 'secondary' | 'tertiary' | 'text';
   onClick?: () => void;
   children: ReactNode;
@@ -11,7 +11,7 @@ export interface CustomButtonProps {
   actionType?: 'button' | 'submit' | 'reset';
   rounded?: boolean;
   iconButton?: boolean;
-  size?: 'small' | 'large';
+  size?: 'small' | 'large' | 'fullWidth';
   target?: string;
   rel?: string;
 }

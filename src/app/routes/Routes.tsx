@@ -4,6 +4,7 @@ import { Layout } from '@/app/layout/Layout';
 import { HomePage } from '@/pages/home/view/HomePage';
 import { DashboardPage } from '@/pages/dashboard';
 import { NotFoundPage } from '@/pages/notFoundPage/view/NotFoundPage';
+import { AuthPage } from '@/pages/auth';
 
 export const Router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ export const Router = createBrowserRouter([
         element: <DashboardPage />,
       },
     ],
+  },
+  {
+    path: paths.AUTH,
+    element: <AuthPage/>,
   },
   {
     path: '*',

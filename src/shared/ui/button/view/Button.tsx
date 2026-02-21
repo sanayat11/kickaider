@@ -24,7 +24,7 @@ export const Button: FC<CustomButtonProps> = ({
 }) => {
   const isLink = type === 'link';
   const isExternal = to?.startsWith('http');
-
+  
   const combinedClassName = classNames(
     styles.button,
     styles[variant],

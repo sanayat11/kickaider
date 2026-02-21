@@ -9,13 +9,10 @@ export const Header: React.FC = () => {
   return (
     <header className={styles.header}>
       <div className={styles.wrapper}>
-        {/* Logo */}
         <div className={styles.logo}>
           <img src={logo} alt="KickAider Logo" className={styles.logoIcon} />
           <span className={styles.logoText}>KickAider</span>
         </div>
-
-        {/* Navigation */}
         <nav className={styles.nav}>
           <a href="#">{t("header.aboutCompany")}</a>
           <a href="#">{t("header.features")}</a>

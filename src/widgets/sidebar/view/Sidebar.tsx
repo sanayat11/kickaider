@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { paths } from '@/shared/constants/constants';
 import classNames from 'classnames';
 import {
     IoSettingsOutline,
@@ -74,8 +76,10 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
 
 export const Sidebar: React.FC = () => {
     const [collapsed, setCollapsed] = useState(false);
-    const [activeId, setActiveId] = useState('settings-1');
-    const [openMenus, setOpenMenus] = useState<string[]>(['settings']);
+    const [openMenus, setOpenMenus] = useState<string[]>(['settings', 'reports']);
+
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const toggleCollapse = () => setCollapsed(!collapsed);
 
@@ -87,11 +91,11 @@ export const Sidebar: React.FC = () => {
         );
     };
 
-    const handleItemClick = (id: string, hasSubmenu?: boolean) => {
+    const handleItemClick = (id: string, hasSubmenu?: boolean, path?: string) => {
         if (hasSubmenu) {
             toggleMenu(id);
-        } else {
-            setActiveId(id);
+        } else if (path) {
+            navigate(path);
         }
     };
 
@@ -118,17 +122,8 @@ export const Sidebar: React.FC = () => {
                         icon={IoSettingsOutline}
                         label="Настройки"
                         collapsed={collapsed}
-                        active={activeId === 'settings-1'}
-                        onClick={() => handleItemClick('settings-1')}
-                    />
-                    <SidebarItem
-                        id="settings-2"
-                        icon={IoSettingsOutline}
-                        label="Настройки"
-                        collapsed={collapsed}
-                        badge={99}
-                        active={activeId === 'settings-2'}
-                        onClick={() => handleItemClick('settings-2')}
+                        active={location.pathname === paths.DASHBOARD_SETTINGS}
+                        onClick={() => handleItemClick('settings-1', false, paths.DASHBOARD_SETTINGS)}
                     />
                 </SidebarItem>
 
@@ -146,17 +141,8 @@ export const Sidebar: React.FC = () => {
                         icon={IoDocumentTextOutline}
                         label="Отчеты"
                         collapsed={collapsed}
-                        active={activeId === 'reports-1'}
-                        onClick={() => handleItemClick('reports-1')}
-                    />
-                    <SidebarItem
-                        id="reports-2"
-                        icon={IoDocumentTextOutline}
-                        label="Отчеты"
-                        collapsed={collapsed}
-                        badge={99}
-                        active={activeId === 'reports-2'}
-                        onClick={() => handleItemClick('reports-2')}
+                        active={location.pathname === paths.DASHBOARD_REPORTS}
+                        onClick={() => handleItemClick('reports-1', false, paths.DASHBOARD_REPORTS)}
                     />
                 </SidebarItem>
             </nav>

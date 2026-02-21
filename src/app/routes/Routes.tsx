@@ -1,8 +1,8 @@
 import { paths } from '@/shared/constants/constants';
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { Layout } from '@/app/layout/Layout';
 import { HomePage } from '@/pages/home/view/HomePage';
-import { DashboardPage } from '@/pages/dashboard';
+import { DashboardPage, DashboardReportsPage, DashboardSettingsPage } from '@/pages/dashboard';
 import { NotFoundPage } from '@/pages/notFoundPage/view/NotFoundPage';
 import { AuthPage } from '@/pages/auth';
 
@@ -14,9 +14,23 @@ export const Router = createBrowserRouter([
         path: paths.HOME,
         element: <HomePage />,
       },
+    ],
+  },
+  {
+    path: paths.DASHBOARD,
+    element: <DashboardPage />,
+    children: [
       {
-        path: paths.DASHBOARD,
-        element: <DashboardPage />,
+        index: true,
+        element: <Navigate to={paths.DASHBOARD_REPORTS} replace />,
+      },
+      {
+        path: paths.DASHBOARD_REPORTS,
+        element: <DashboardReportsPage />,
+      },
+      {
+        path: paths.DASHBOARD_SETTINGS,
+        element: <DashboardSettingsPage />,
       },
     ],
   },

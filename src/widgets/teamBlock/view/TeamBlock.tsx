@@ -7,7 +7,7 @@ import teamImage from '@/shared/assets/images/Image Placeholder.png';
 export const TeamBlock: FC = () => {
     const { t } = useTranslation();
     return (
-        <section className={styles.teamBlock}>
+        <section id="team" className={styles.teamBlock}>
             <div className={styles.imageWrapper}>
                 <img src={teamImage} alt="Team working" className={styles.image} />
             </div>

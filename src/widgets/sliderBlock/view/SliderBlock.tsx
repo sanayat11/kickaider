@@ -37,7 +37,7 @@ export const SliderBlock: FC = () => {
     };
 
     return (
-        <section className={styles.sliderBlock}>
+        <section id="slider" className={styles.sliderBlock}>
             <div className={styles.sliderWrapper} ref={trackRef} style={{ overflowX: 'auto', scrollBehavior: 'smooth', scrollSnapType: 'x mandatory', scrollbarWidth: 'none' }}>
                 <div className={styles.track} style={{ width: 'max-content' }}>
 

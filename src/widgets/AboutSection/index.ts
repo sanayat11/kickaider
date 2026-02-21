@@ -1,0 +1,1 @@
+export { AboutSection } from "./view/AboutSection"

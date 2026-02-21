@@ -3,7 +3,8 @@ import { useTranslation } from "react-i18next";
 import styles from "./Header.module.scss";
 import logo from "@/shared/assets/images/logo.svg";
 import { LanguageSelector } from "@/features/languageSelector";
-const Header: React.FC = () => {
+
+export const Header: React.FC = () => {
   const { t } = useTranslation();
   return (
     <header className={styles.header}>
@@ -31,5 +32,3 @@ const Header: React.FC = () => {
     </header>
   );
 };
-
-export default Header;

@@ -12,8 +12,8 @@
     },
     "aboutCompany": {
         "title": "About company",
-        "text": "KickAider is an employee time tracking system. The agent is installed on a computer once and runs in the background, collecting activity data: which apps and websites are open, mouse movement, and keyboard activity. Managers see everything in a convenient web dashboard — anytime, from any device.",
-        "description": "We created KickAider for teams that value transparency: no real-time surveillance, only objective data about working time."
+        "text": "KickAider is an employee time monitoring system. The agent is installed once on a computer and runs in the background collecting activity data: which apps and websites are open, mouse movement, and keyboard activity. Managers see everything in a convenient web dashboard — anytime, from any device.",
+        "description": "We created KickAider for teams that value transparency: no real-time surveillance, only objective working time data."
     },
     "features": {
         "title": "Increase team productivity",
@@ -39,56 +39,51 @@
     },
     "carousel": {
         "title": "Everything under control — in real time",
-        "text": "Employee online statuses, alerts about lateness or long idle time, and timesheets with charts — KickAider gives a complete picture without extra effort."
+        "text": "Employee online statuses, alerts about lateness or long idle time, and timesheets with schedules — KickAider provides a complete picture without extra effort."
     },
     "clients": {
-        "title": "Trusted by companies",
-        "text": "KickAider is used by companies that value honest time tracking — without complex setup or IT departments."
+        "title": "Trusted by managers",
+        "text": "KickAider is used by companies that value transparent time analytics — without complex setup or IT departments."
     },
     "faq": {
         "title": "Frequently asked questions",
         "description": "Answers to the most common questions about KickAider.",
         "questions": [
             {
-                "question": "How does KickAider track employee activity?",
-                "answer": "The KickAider agent is installed on an employee’s computer and runs in the background collecting activity data: open apps, visited websites, mouse movement, and keyboard activity. Data is sent to a secure manager dashboard."
+                "question": "How is the agent installed on an employee computer?",
+                "answer": "The agent is installed once on the employee’s Windows computer. After installation, it runs in the background and automatically sends data to the company server."
             },
             {
-                "question": "Do I need to install anything on a computer?",
-                "answer": "Yes, a small KickAider agent must be installed on each employee’s computer. Installation takes a few minutes and requires no special skills. After installation, the agent runs silently in the background."
+                "question": "Do employees know they are being monitored?",
+                "answer": "This can be configured. The agent can run in a visible mode (employees know about the system) or hidden mode — depending on manager preference."
             },
             {
-                "question": "Can I see employee activity in real time?",
-                "answer": "No, KickAider is not designed for real-time surveillance. The system collects data during the day and generates reports available anytime. This helps maintain trust within teams."
-            },
-            {
-                "question": "What data does KickAider collect?",
-                "answer": "The system records which apps and websites are used, usage duration, mouse and keyboard activity, arrival and leave time, breaks, and idle periods. Optional automatic screenshots can be enabled."
-            },
-            {
-                "question": "Can I exclude certain apps or websites?",
-                "answer": "Yes, you can specify apps and websites that should not be included in reports. This allows flexible configuration based on your team’s workflow."
-            },
-            {
-                "question": "How often is data updated?",
-                "answer": "Data is updated every 10 minutes. Managers can view up-to-date statistics anytime — no manual sync required."
-            },
-            {
-                "question": "Can KickAider be used for remote teams?",
-                "answer": "Yes, KickAider works perfectly for remote teams. It tracks work time regardless of location as long as the agent is installed."
-            },
-            {
-                "question": "How does KickAider improve productivity?",
-                "answer": "KickAider shows how work time is actually spent. Managers see where time is lost, which tasks take longer, and how processes can be optimized to improve efficiency."
+                "question": "Is data stored on KickAider servers?",
+                "answer": "No. KickAider is deployed on your company infrastructure. All data is stored on your side — we do not have access to it."
             },
             {
                 "question": "Which operating systems are supported?",
-                "answer": "The KickAider agent works on Windows, macOS, and Linux. The web dashboard is accessible from any device with internet access."
-            },
-            {
-                "question": "How does KickAider ensure data privacy?",
-                "answer": "All data is transmitted via secure channels and stored on protected servers. Only authorized users with proper permissions can access it. We comply with data protection regulations."
+                "answer": "The agent works on Windows. The manager web dashboard is accessible from any browser on any device."
             }
         ]
+    },
+    "aboutSection": {
+        "title": "About company",
+        "subtitle": "KickAider is an employee time monitoring system installed once that automatically collects objective activity data. Managers receive transparent analytics in a convenient web dashboard — without real-time surveillance."
+    },
+    "boost": {
+        "title": "Boost your <br /> productivity",
+        "text1": "See how work time is actually used. KickAider automatically collects employee activity data.",
+        "text2": "The system turns data into clear reports, identifies time loss, and helps managers make decisions to improve team efficiency."
+    },
+    "members": {
+        "title": "Trusted by managers",
+        "subtitle": "KickAider is used by companies that value transparent time analytics, simple implementation, and objective data without complex setup."
+    },
+    "subHeader": {
+        "team": "team",
+        "boost": "productivity",
+        "slider": "slider",
+        "members": "clients"
     }
 }

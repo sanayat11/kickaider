@@ -20,11 +20,11 @@
     align-items: center;
     gap: 12px;
   }
-  
+   
   .logoText {
     font-size: 26px;
     font-weight: 600;
-    color: #3b4cca;
+    color: #ffffff;
   }
   
   .nav {
@@ -39,7 +39,7 @@
       transition: 0.2s ease;
   
       &:hover {
-        color: #3b4cca;
+        color: #c1c4d7;
       }
     }
   }
@@ -49,8 +49,8 @@
     align-items: center;
     gap: 6px;
     cursor: pointer;
-    font-size: 16px;
-    color: #2d2f55;
+    font-size: 18px;
+    color: #ffffff;
   }
   
   .arrow {
@@ -73,7 +73,7 @@
     justify-content: center;
     text-decoration: none;
     font-weight: 600;
-    color: #555;
+    color: #4E61F6;
     transition: 0.2s ease;
   
     &:hover {
@@ -92,5 +92,5 @@
   .bottom {
     text-align: center;
     font-size: 14px;
-    color: #5a5a89;
+    color: #ffffff;
   }

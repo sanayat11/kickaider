@@ -33,14 +33,14 @@
 }
 
 .item {
-    border: 1px solid #9795B5; 
+    border: 1px solid #9795B5;
     border-radius: 20px;
     overflow: hidden;
     transition: all 0.3s ease;
     background-color: white;
 
     &.open {
-        border-color: var(--primary-900); 
+        border-color: var(--primary-900);
     }
 }
 
@@ -54,7 +54,7 @@
 
     font-size: 24px;
     font-weight: 700;
-    color: var(--primary-900); 
+    color: var(--primary-900);
     transition: color 0.3s ease;
 }
 
@@ -70,13 +70,26 @@
     }
 }
 
+.answerWrapper {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.3s ease;
+
+    &.open {
+        grid-template-rows: 1fr;
+    }
+}
+
+.answerContent {
+    overflow: hidden;
+}
+
 .answer {
     padding: 0 40px 32px;
     color: var(--text-gray);
     line-height: 1.6;
     font-size: 16px;
     max-width: 800px;
-
 }
 
 @media (max-width: 768px) {

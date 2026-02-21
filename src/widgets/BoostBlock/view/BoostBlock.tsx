@@ -1,4 +1,4 @@
-import React from "react";
+import { useTranslation, Trans } from "react-i18next";
 import styles from "./BoostBlock.module.scss";
 import imgLeft from "@/shared/assets/images/imgBoost.png";
 import imgMain from "@/shared/assets/images/imgBoost2.png";
@@ -6,22 +6,21 @@ import imgBottomRight from "@/shared/assets/images/imgBoost3.png";
 import imgTopRight from "@/shared/assets/images/imgBoost4.png";
 
 export const BoostBlock: React.FC = () => {
+  const { t } = useTranslation();
   return (
     <section id="boost" className={styles.boost}>
       <div className={styles.container}>
         <div className={styles.content}>
           <h2 className={styles.title}>
-            Boost your <br /> productivity
+            <Trans i18nKey="boost.title" />
           </h2>
 
           <p className={styles.text}>
-            Lorem ipsum dolor sit amet consectetur adipiscing eli
-            mattis sit phasellus mollis sit aliquam sit nullam.
+            {t("boost.text1")}
           </p>
 
           <p className={styles.text}>
-            Lorem ipsum dolor sit amet consectetur adipiscing eli
-            mattis sit phasellus mollis sit aliquam sit nullam.
+            {t("boost.text2")}
           </p>
         </div>
 

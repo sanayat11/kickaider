@@ -1,51 +1,34 @@
 import type { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import styles from './FeaturesBlock.module.scss';
 import { Typography } from '@/shared/ui/typoghraphy/view/Typography';
 
-const features = [
-    {
-        number: '01',
-        title: 'Desktop app',
-        description: 'Lorem ipsum dolor sit amet consecte tur adipiscing elit semper dalaracc lacus vel facilisis volutpat est velitolm.'
-    },
-    {
-        number: '02',
-        title: 'Multiple users',
-        description: 'Lorem ipsum dolor sit amet consecte tur adipiscing elit semper dalaracc lacus vel facilisis volutpat est velitolm.'
-    },
-    {
-        number: '03',
-        title: 'Granular permissions',
-        description: 'Lorem ipsum dolor sit amet consecte tur adipiscing elit semper dalaracc lacus vel facilisis volutpat est velitolm.'
-    },
-    {
-        number: '04',
-        title: 'Monthly reports',
-        description: 'Lorem ipsum dolor sit amet consecte tur adipiscing elit semper dalaracc lacus vel facilisis volutpat est velitolm.'
-    }
-];
+const featuresKeys = ['basicReports', 'activityHistory', 'ratingAndDetails', 'insightsAndRecommendations'];
+
+
 
 export const FeaturesBlock: FC = () => {
+    const { t } = useTranslation();
     return (
         <section className={styles.featuresBlock}>
             <div className={styles.header}>
                 <Typography variant="h2" color="white" weight="bold" className={styles.title}>
-                    Browse our set of features
+                    {t('features.title')}
                 </Typography>
                 <Typography variant="h5" color="white" weight="regular" className={styles.description}>
-                    Lorem ipsum dolor sit amet consectetur adipiscing elit semper dalar elementum tempus hac tellus libero accumsan.
+                    {t('features.description')}
                 </Typography>
             </div>
 
             <div className={styles.grid}>
-                {features.map((feature) => (
-                    <div key={feature.number} className={styles.card}>
-                        <span className={styles.cardNumber}>{feature.number}</span>
+                {featuresKeys.map((key, index) => (
+                    <div key={key} className={styles.card}>
+                        <span className={styles.cardNumber}>{String(index + 1).padStart(2, '0')}</span>
                         <Typography variant="h4" weight="bold" className={styles.cardTitle}>
-                            {feature.title}
+                            {t(`features.cards.${key}.title`)}
                         </Typography>
                         <Typography variant="h5" className={styles.cardDescription}>
-                            {feature.description}
+                            {t(`features.cards.${key}.description`)}
                         </Typography>
                     </div>
                 ))}

@@ -1,5 +1,6 @@
 import type { FC } from 'react';
 import { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import styles from './SliderBlock.module.scss';
 import { Typography } from '@/shared/ui/typoghraphy/view/Typography';
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
@@ -18,13 +19,14 @@ const slides = [
 ];
 
 export const SliderBlock: FC = () => {
+    const { t } = useTranslation();
     const trackRef = useRef<HTMLDivElement>(null);
 
 
     const handleScroll = (direction: 'left' | 'right') => {
         if (trackRef.current) {
             const container = trackRef.current;
-            const scrollAmount = container.clientWidth / (window.innerWidth < 600 ? 1 : window.innerWidth < 1024 ? 2 : 3); 
+            const scrollAmount = container.clientWidth / (window.innerWidth < 600 ? 1 : window.innerWidth < 1024 ? 2 : 3);
             const targetScroll = container.scrollLeft + (direction === 'left' ? -scrollAmount : scrollAmount);
 
             container.scrollTo({
@@ -38,7 +40,7 @@ export const SliderBlock: FC = () => {
         <section id="slider" className={styles.sliderBlock}>
             <div className={styles.sliderWrapper} ref={trackRef} style={{ overflowX: 'auto', scrollBehavior: 'smooth', scrollSnapType: 'x mandatory', scrollbarWidth: 'none' }}>
                 <div className={styles.track} style={{ width: 'max-content' }}>
-                   
+
                     {slides.map((slide) => (
                         <div key={slide.id} className={styles.slide} style={{ scrollSnapAlign: 'start' }}>
                             <img src={slide.image} alt={slide.alt} />
@@ -50,10 +52,10 @@ export const SliderBlock: FC = () => {
             <div className={styles.bottomContent}>
                 <div className={styles.textContent}>
                     <Typography variant="h2" weight="bold" className={styles.title}>
-                        Lorem ipsum dolor amet
+                        {t('carousel.title')}
                     </Typography>
                     <Typography variant="h5" weight="regular" className={styles.description}>
-                        Lorem ipsum dolor sit amet consectetur adipiscing elit volutpat gravida malesuada quam commodo id integer nam.
+                        {t('carousel.text')}
                     </Typography>
                 </div>
 

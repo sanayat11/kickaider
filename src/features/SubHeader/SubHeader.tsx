@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import styles from "./SubHeader.module.scss";
 
 const sections = [
-  { id: "team", label: "team" },
-  { id: "boost", label: "boost" },
-  { id: "slider", label: "slider" },
-  { id: "members", label: "members" },
+  { id: "team", label: "subHeader.team" },
+  { id: "boost", label: "subHeader.boost" },
+  { id: "slider", label: "subHeader.slider" },
+  { id: "members", label: "subHeader.members" },
 ];
 
 export const SubHeader = () => {
+  const { t } = useTranslation();
   const [activeIndex, setActiveIndex] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
 
@@ -28,7 +30,7 @@ export const SubHeader = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (isScrolling) return; 
+      if (isScrolling) return;
 
       sections.forEach((section, index) => {
         const el = document.getElementById(section.id);
@@ -63,7 +65,7 @@ export const SubHeader = () => {
             key={section.id}
             onClick={() => scrollToSection(section.id, index)}
           >
-            {section.label}
+            {t(section.label)}
           </button>
         ))}
       </div>

@@ -1,9 +1,11 @@
 import type { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import styles from './TeamBlock.module.scss';
 import { Typography } from '@/shared/ui/typoghraphy/view/Typography';
-import teamImage from '@/shared/assets/images/Image Placeholder.png'; 
+import teamImage from '@/shared/assets/images/Image Placeholder.png';
 
 export const TeamBlock: FC = () => {
+    const { t } = useTranslation();
     return (
         <section id="team" className={styles.teamBlock}>
             <div className={styles.imageWrapper}>
@@ -12,11 +14,11 @@ export const TeamBlock: FC = () => {
 
             <div className={styles.content}>
                 <Typography variant="h2" weight="bold" className={styles.title}>
-                    A dedicated team to grow your company
+                    {t('aboutCompany.title')}
                 </Typography>
                 <div className={styles.descriptionWrapper}>
                     <Typography variant="h5" className={styles.description}>
-                        Lorem ipsum dolor sit amet consectetur adipiscing eli mattis sit phasellus mollis sit aliquam sit nullam neque ultrices.Lorem ipsum dolor sit amet consectetur adipiscing eli mattis sit phasellus mollis sit aliquam sit nullam neque ultrices.Lorem ipsum dolor sit amet consectetur adipiscing eli mattis sit phasellus mollis sit aliquam sit nullam neque ultrices.Lorem ipsum dolor sit amet consectetur adipiscing eli mattis sit phasellus mollis sit aliquam sit nullam neque ultrices.
+                        {t('aboutCompany.text')}
                     </Typography>
                 </div>
             </div>

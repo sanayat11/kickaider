@@ -1,18 +1,15 @@
-import React from "react";
+import { useTranslation } from "react-i18next";
 import styles from "./AboutSection.module.scss";
 
 export const AboutSection: React.FC = () => {
+  const { t } = useTranslation();
   return (
     <section className={styles.about}>
       <div className={styles.container}>
-        <h2 className={styles.title}>About company</h2>
+        <h2 className={styles.title}>{t("aboutSection.title")}</h2>
 
         <p className={styles.subtitle}>
-          «When applied to building block a website or similar work product,
-          a Visual Guide can be an intermediate step toward the end goal of a
-          complete website. By creating a visual guide along the way, the
-          designer or developer can get input from the other people involved
-          in the website such as the customer»
+          {t("aboutSection.subtitle")}
         </p>
 
         <div className={styles.imagesWrapper}>

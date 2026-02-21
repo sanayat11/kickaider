@@ -1,50 +1,70 @@
 .team {
-    padding: 140px 0;
-    background: #fff;
-  }
-  
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 24px;
-    text-align: center;
-  }
-  
-  .title {
-    font-size: 48px;
-    font-weight: 700;
-    color: #212967;
-    margin-bottom: 20px;
-  }
-  
-  .subtitle {
-    max-width: 720px;
-    margin: 0 auto 80px;
-    font-size: 18px;
-    line-height: 1.6;
-    color: #5D5A88;
-  }
-  
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-  }
-  
-  .card {
-    border-radius: 16px;
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  .card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  
-  .card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.12);
-  }
+  padding: 140px 0;
+  background: #fff;
+}
+
+.container {
+  max-width: 1280px;
+  /* чтобы вместить 3×410 + gap */
+  margin: 0 auto;
+  padding: 0 24px;
+  text-align: center;
+}
+
+.title {
+  font-size: 48px;
+  font-weight: 700;
+  color: #212967;
+  margin-bottom: 20px;
+}
+
+.subtitle {
+  max-width: 720px;
+  margin: 0 auto 80px;
+  font-size: 18px;
+  line-height: 1.6;
+  color: #5D5A88;
+}
+
+.grid {
+  display: grid;
+  justify-content: center;
+  grid-template-columns: 410px 410px 410px;
+  gap: 16px;
+
+  transition: grid-template-columns 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.grid:has(.card:nth-child(1):hover) {
+  grid-template-columns: 600px 300px 300px;
+}
+
+.grid:has(.card:nth-child(2):hover) {
+  grid-template-columns: 300px 600px 300px;
+}
+
+.grid:has(.card:nth-child(3):hover) {
+  grid-template-columns: 300px 300px 600px;
+}
+
+.card {
+  height: 543px;
+  border-radius: 18px;
+  overflow: hidden;
+
+  transition:
+    box-shadow 0.45s ease,
+    transform 0.45s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.12);
+}
+
+.card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}

@@ -5,6 +5,81 @@
         "faq": "FAQ",
         "login": "Login"
     },
+    "dashboard": {
+        "title": "Basic Reports",
+        "subtitle": "General analytical overview by company or employee",
+        "tabs": {
+            "time": "Time",
+            "efficiency": "Efficiency",
+            "dynamics": "Dynamics"
+        },
+        "filters": {
+            "period": "Period",
+            "employee": "Employee",
+            "contentType": "Content Type",
+            "onlyWorkTime": "Only work time",
+            "periods": {
+                "day": "Day",
+                "week": "Week",
+                "month": "Month",
+                "quarter": "Quarter",
+                "custom": "Custom"
+            },
+            "types": {
+                "all": "Total",
+                "web": "Web pages",
+                "apps": "Programs",
+                "total": "Total"
+            }
+        },
+        "cards": {
+            "total": "Total",
+            "activity": "Activity",
+            "idle": "Idle",
+            "productive": "Productive",
+            "neutral": "Neutral",
+            "unproductive": "Unproductive"
+        },
+        "topApps": {
+            "title": "Top 5 Apps",
+            "sortByTime": "By time",
+            "sortByAlphabet": "By alphabet"
+        },
+        "efficiency": {
+            "departments": "Department Histograms",
+            "detailedReport": "Detailed Report",
+            "legend": {
+                "productive": "Productive",
+                "neutral": "Neutral",
+                "unproductive": "Unproductive",
+                "uncategorized": "Uncategorized",
+                "idle": "Idle"
+            }
+        },
+        "dynamics": {
+            "groupBy": "Grouping",
+            "day": "Day",
+            "week": "Week",
+            "uncategorized": "Uncategorized",
+            "totalActivity": "Total activity"
+        },
+        "common": {
+            "exportXls": "Export XLS",
+            "loading": "Loading...",
+            "noData": "No data",
+            "exportedMock": "Exported (mock)",
+            "breadcrumbs": {
+                "dashboard": "Dashboard",
+                "basicReports": "Basic Reports"
+            },
+            "categories": {
+                "development": "DEVELOPMENT",
+                "communication": "COMMUNICATION",
+                "browsing": "BROWSING",
+                "other": "OTHER"
+            }
+        }
+    },
     "hero": {
         "title": "Control work time. Increase team productivity.",
         "description": "KickAider automatically tracks employee activity, detects late arrivals and idle time — without manual reports or extra questions.",

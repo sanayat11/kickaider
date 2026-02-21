@@ -5,6 +5,81 @@
         "faq": "FAQ",
         "login": "Войти"
     },
+    "dashboard": {
+        "title": "Базовые отчёты",
+        "subtitle": "Общий аналитический обзор по компании или сотруднику",
+        "tabs": {
+            "time": "Время",
+            "efficiency": "Эффективность",
+            "dynamics": "Динамика"
+        },
+        "filters": {
+            "period": "Период",
+            "employee": "Сотрудник",
+            "contentType": "Тип контента",
+            "onlyWorkTime": "Только рабочее время",
+            "periods": {
+                "day": "День",
+                "week": "Неделя",
+                "month": "Месяц",
+                "quarter": "Квартал",
+                "custom": "Свой"
+            },
+            "types": {
+                "all": "Всего",
+                "web": "Веб-страницы",
+                "apps": "Программы",
+                "total": "Всего"
+            }
+        },
+        "cards": {
+            "total": "Всего",
+            "activity": "Активность",
+            "idle": "Простой",
+            "productive": "Продуктивно",
+            "neutral": "Нейтрально",
+            "unproductive": "Непродуктивно"
+        },
+        "topApps": {
+            "title": "Топ-5 приложений",
+            "sortByTime": "По времени",
+            "sortByAlphabet": "По алфавиту"
+        },
+        "efficiency": {
+            "departments": "Гистограммы по отделам",
+            "detailedReport": "Подробный отчёт",
+            "legend": {
+                "productive": "Продуктивно",
+                "neutral": "Нейтрально",
+                "unproductive": "Непродуктивно",
+                "uncategorized": "Без категории",
+                "idle": "Простой"
+            }
+        },
+        "dynamics": {
+            "groupBy": "Группировка",
+            "day": "День",
+            "week": "Неделя",
+            "uncategorized": "Без категории",
+            "totalActivity": "Общая активность"
+        },
+        "common": {
+            "exportXls": "Экспорт XLS",
+            "loading": "Загрузка...",
+            "noData": "Нет данных",
+            "exportedMock": "Экспортировано (mock)",
+            "breadcrumbs": {
+                "dashboard": "Дашборд",
+                "basicReports": "Базовые отчёты"
+            },
+            "categories": {
+                "development": "РАЗРАБОТКА",
+                "communication": "ОБЩЕНИЕ",
+                "browsing": "СЕРФИНГ",
+                "other": "ПРОЧЕЕ"
+            }
+        }
+    },
     "hero": {
         "title": "Контролируй рабочее время. Повышай эффективность команды.",
         "description": "KickAider автоматически отслеживает активность сотрудников, фиксирует опоздания и простои — без лишних вопросов и ручных отчётов.",

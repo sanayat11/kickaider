@@ -9,9 +9,12 @@ import {
     IoChevronDownOutline,
     IoMenuOutline,
     IoCloseOutline,
+    IoCalendarOutline,
+    IoBusinessOutline,
+    IoBarChartOutline,
     IoTimeOutline,
-    IoCalendarOutline
 } from 'react-icons/io5';
+import logoUrl from '@/shared/assets/images/logo.svg';
 import styles from './Sidebar.module.scss';
 
 interface SidebarItemProps {
@@ -112,6 +115,12 @@ export const Sidebar: React.FC = () => {
     return (
         <aside className={classNames(styles.sidebar, { [styles.collapsed]: collapsed })}>
             <div className={styles.header}>
+                {!collapsed && (
+                    <div className={styles.brand}>
+                        <img src={logoUrl} alt="KickAider Logo" className={styles.logo} />
+                        <span className={styles.brandName}>KickAider</span>
+                    </div>
+                )}
                 <button className={styles.toggleBtn} onClick={toggleCollapse}>
                     {collapsed ? <IoMenuOutline /> : <IoCloseOutline />}
                 </button>
@@ -134,6 +143,22 @@ export const Sidebar: React.FC = () => {
                         collapsed={collapsed}
                         active={location.pathname === paths.DASHBOARD_SETTINGS}
                         onClick={() => handleItemClick('settings-1', false, paths.DASHBOARD_SETTINGS)}
+                    />
+                    <SidebarItem
+                        id="settings-schedules"
+                        icon={IoCalendarOutline}
+                        label="Рабочие графики"
+                        collapsed={collapsed}
+                        active={location.pathname === paths.DASHBOARD_WORK_SCHEDULES}
+                        onClick={() => handleItemClick('settings-schedules', false, paths.DASHBOARD_WORK_SCHEDULES)}
+                    />
+                    <SidebarItem
+                        id="settings-org-structure"
+                        icon={IoBusinessOutline}
+                        label="Структура организации"
+                        collapsed={collapsed}
+                        active={location.pathname === paths.DASHBOARD_ORG_STRUCTURE}
+                        onClick={() => handleItemClick('settings-org-structure', false, paths.DASHBOARD_ORG_STRUCTURE)}
                     />
                     <SidebarItem
                         id="settings-categorization"
@@ -177,6 +202,22 @@ export const Sidebar: React.FC = () => {
                         collapsed={collapsed}
                         active={location.pathname === paths.DASHBOARD_REPORTS}
                         onClick={() => handleItemClick('reports-1', false, paths.DASHBOARD_REPORTS)}
+                    />
+                    <SidebarItem
+                        id="reports-day-details"
+                        icon={IoCalendarOutline}
+                        label="Детали дня"
+                        collapsed={collapsed}
+                        active={location.pathname === paths.DASHBOARD_DAY_DETAILS}
+                        onClick={() => handleItemClick('reports-day-details', false, paths.DASHBOARD_DAY_DETAILS)}
+                    />
+                    <SidebarItem
+                        id="reports-employee-rating"
+                        icon={IoBarChartOutline}
+                        label="Рейтинг сотрудников"
+                        collapsed={collapsed}
+                        active={location.pathname === paths.DASHBOARD_EMPLOYEE_RATING}
+                        onClick={() => handleItemClick('reports-employee-rating', false, paths.DASHBOARD_EMPLOYEE_RATING)}
                     />
                     <SidebarItem
                         id="reports-work-time"

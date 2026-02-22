@@ -12,14 +12,39 @@
 
     &.collapsed {
         width: 80px;
+
+        .header {
+            justify-content: center;
+        }
     }
 }
 
 .header {
     padding: 24px;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    height: 80px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+.brandName {
+    font-size: 20px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 0.5px;
 }
 
 .toggleBtn {

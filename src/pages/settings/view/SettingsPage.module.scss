@@ -232,7 +232,7 @@ $shadow-btn: 0 4px 12px rgba(78, 97, 246, 0.30);
     box-shadow: $shadow-btn;
 
     &:hover:not(:disabled) {
-        background: darken(#4e61f6, 6%);
+        background: #3b4fd8;
         transform: translateY(-1px);
         box-shadow: 0 8px 20px rgba(78, 97, 246, 0.38);
     }

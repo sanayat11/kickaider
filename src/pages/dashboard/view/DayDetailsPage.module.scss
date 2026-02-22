@@ -1,0 +1,256 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    flex: 1;
+    color: #1a1f4d;
+    background-color: #f8faff; /* Light theme background from screenshot */
+}
+
+.filtersBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 16px 24px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #edf1f7;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    margin-bottom: 24px;
+
+    .filterGroup {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .labelGroup {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        span {
+            font-size: 14px;
+            color: #8a91b4;
+            font-weight: 600;
+        }
+    }
+
+    .select {
+        background-color: #f8faff;
+        color: #1a1f4d;
+        border: 1px solid #edf1f7;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 600;
+        outline: none;
+        width: 250px;
+        appearance: none;
+        cursor: pointer;
+
+        &:focus {
+            border-color: #4e5bd9;
+        }
+    }
+
+    .dateNav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #f8faff;
+        border: 1px solid #edf1f7;
+        padding: 6px 12px;
+        border-radius: 8px;
+        width: 250px;
+
+        .dateInputWrapper {
+            display: flex;
+            align-items: center;
+        }
+
+        .dateInput {
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            font-weight: 700;
+            color: #1a1f4d;
+            font-family: inherit;
+            outline: none;
+            cursor: pointer;
+
+            /* Hide default clear indicator if present */
+            &::-webkit-clear-button {
+                display: none;
+            }
+        }
+
+        .dateActions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            button {
+                background: none;
+                border: none;
+                color: #8a91b4;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                padding: 4px;
+                border-radius: 4px;
+
+                &:hover {
+                    color: #4e5bd9;
+                    background-color: #edf1f7;
+                }
+            }
+        }
+
+        .arrows {
+            display: flex;
+            align-items: center;
+        }
+    }
+
+    .checkboxLabel {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        color: #4a517d;
+        font-weight: 600;
+        cursor: pointer;
+        user-select: none;
+
+        input {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            background-color: #f8faff;
+            border: 2px solid #edf1f7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+
+            &:checked {
+                background-color: #34c759;
+                border-color: #34c759;
+            }
+
+            &:checked::after {
+                content: '✓';
+                position: absolute;
+                color: white;
+                font-size: 12px;
+                font-weight: bold;
+            }
+        }
+    }
+
+    .actionGroup {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-end;
+    }
+
+    .generateBtn {
+        background-color: #34c759;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s;
+
+        &:hover {
+            background-color: #2eb04f;
+        }
+    }
+
+    .exportBtn {
+        background-color: #f8faff;
+        color: #8a91b4;
+        border: 1px solid #edf1f7;
+        border-radius: 8px;
+        padding: 6px 16px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+
+        &:hover {
+            color: #1a1f4d;
+            border-color: #dce1f0;
+            background-color: #edf1f7;
+        }
+    }
+}
+
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 0 40px 40px 40px;
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.emptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 60px;
+    flex: 1;
+    width: 100%;
+
+    h2 {
+        font-size: 24px;
+        font-weight: 800;
+        margin-bottom: 24px;
+        color: #1a1f4d;
+    }
+
+    .infoBox {
+        background-color: #fff;
+        border: 1px solid #edf1f7;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        padding: 12px 24px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        .infoIcon {
+            background-color: #4e5bd9;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        p {
+            color: #4a517d;
+            font-size: 15px;
+            margin: 0;
+            font-weight: 600;
+        }
+    }
+}
+
+.generatedContent {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { IoChevronBackOutline, IoChevronForwardOutline, IoCalendarOutline } from 'react-icons/io5';
+import { useTranslation } from 'react-i18next';
+import { IoChevronBackOutline, IoChevronForwardOutline } from 'react-icons/io5';
 import styles from './DayDetailsPage.module.scss';
 import { DayDetailsChart } from './components/DayDetailsChart/DayDetailsChart';
 import type { DayActivityData } from './components/DayDetailsChart/DayDetailsChart';
@@ -79,7 +80,7 @@ const mockDataWeek: DayActivityData[] = [
         date: 'Неделя 1',
         stats: { ...mockData2.stats, timeAtWork: '38:29:00' }
     },
-     {
+    {
         ...mockData1,
         employeeName: 'Смирнова Анна',
         department: 'HR',
@@ -104,6 +105,7 @@ const mockDataMonth: DayActivityData[] = [
 ];
 
 export const DayDetailsPage: React.FC = () => {
+    const { t } = useTranslation();
     const [isGenerated, setIsGenerated] = useState(false);
     const [period, setPeriod] = useState('Day');
     const [selectedEmployee, setSelectedEmployee] = useState('All');
@@ -129,9 +131,9 @@ export const DayDetailsPage: React.FC = () => {
         let activeData: DayActivityData[] = [];
         if (period === 'Day') {
             activeData = [
-                mockData1, 
-                mockData2, 
-                { ...mockData1, employeeName: 'Иванов Иван', department: 'IT' }, 
+                mockData1,
+                mockData2,
+                { ...mockData1, employeeName: 'Иванов Иван', department: 'IT' },
                 { ...mockData2, employeeName: 'Смирнова Анна', department: 'HR' }
             ];
         }
@@ -155,19 +157,19 @@ export const DayDetailsPage: React.FC = () => {
             <div className={styles.filtersBar}>
                 <div className={styles.filterGroup}>
                     <div className={styles.labelGroup}>
-                        <span>Период:</span>
+                        <span>{t('dashboard.filters.period')}:</span>
                         <select className={styles.select} value={period} onChange={(e) => setPeriod(e.target.value)}>
-                            <option value="Day">День</option>
-                            <option value="Week">Неделя</option>
-                            <option value="Month">Месяц</option>
+                            <option value="Day">{t('dashboard.filters.periods.day')}</option>
+                            <option value="Week">{t('dashboard.filters.periods.week')}</option>
+                            <option value="Month">{t('dashboard.filters.periods.month')}</option>
                         </select>
                     </div>
 
                     <div className={styles.dateNav}>
                         <div className={styles.dateInputWrapper}>
-                            <input 
-                                type="date" 
-                                value={currentDate} 
+                            <input
+                                type="date"
+                                value={currentDate}
                                 onChange={(e) => setCurrentDate(e.target.value)}
                                 className={styles.dateInput}
                             />
@@ -183,9 +185,9 @@ export const DayDetailsPage: React.FC = () => {
 
                 <div className={styles.filterGroup}>
                     <div className={styles.labelGroup}>
-                        <span>Сотрудник:</span>
+                        <span>{t('dashboard.filters.employee')}:</span>
                         <select className={styles.select} value={selectedEmployee} onChange={(e) => setSelectedEmployee(e.target.value)}>
-                            <option value="All">Все сотрудники</option>
+                            <option value="All">{t('dashboard.departments.all')}</option>
                             <option value="Sakewa">Сауле Абдыкадырова Sakewa</option>
                             <option value="Ivanov">Иванов Иван</option>
                             <option value="Smirnova">Смирнова Анна</option>
@@ -194,16 +196,16 @@ export const DayDetailsPage: React.FC = () => {
                     <label className={styles.checkboxLabel}>
                         <input type="checkbox" defaultChecked />
                         <span className={styles.checkmark}></span>
-                        Только рабочее время
+                        {t('dashboard.filters.onlyWorkTime')}
                     </label>
                 </div>
 
                 <div className={styles.actionGroup}>
                     <button className={styles.generateBtn} onClick={handleGenerate}>
-                        Сформировать
+                        {t('dayDetails.generate')}
                     </button>
                     <button className={styles.exportBtn}>
-                        → XLS
+                        {t('dayDetails.exportXls')}
                     </button>
                 </div>
             </div>
@@ -211,10 +213,10 @@ export const DayDetailsPage: React.FC = () => {
             <main className={styles.main}>
                 {!isGenerated ? (
                     <div className={styles.emptyState}>
-                        <h2>Детали дня</h2>
+                        <h2>{t('dayDetails.title')}</h2>
                         <div className={styles.infoBox}>
                             <span className={styles.infoIcon}>i</span>
-                            <p>Выберите параметры отчета и нажмите на кнопку «Сформировать»</p>
+                            <p>{t('dayDetails.emptyStateInfo')}</p>
                         </div>
                     </div>
                 ) : (

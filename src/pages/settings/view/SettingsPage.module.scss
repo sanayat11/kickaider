@@ -301,7 +301,8 @@ $shadow-btn: 0 4px 12px rgba(78, 97, 246, 0.30);
     background: #fdfdff;
     border: 1px solid $border;
     border-radius: $radius-lg;
-    overflow: hidden;
+    overflow-x: auto;
+    min-width: 0;
 }
 
 .tableScroll {

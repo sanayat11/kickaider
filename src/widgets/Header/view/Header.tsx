@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 import styles from "./Header.module.scss";
 import logo from "@/shared/assets/images/logo.svg";
 import { LanguageSelector } from "@/features/languageSelector";
+import { Button } from "@/shared/ui/button/view/Button";
+import { paths } from "@/shared/constants/constants";
 
 export const Header: React.FC = () => {
   const { t } = useTranslation();
@@ -24,7 +26,7 @@ export const Header: React.FC = () => {
           </div>
         </nav>
 
-        <button className={styles.button}>{t("header.login")}</button>
+        <Button type="link" to={paths.AUTH} className={styles.button}>{t("header.login")}</Button>
       </div>
     </header>
   );

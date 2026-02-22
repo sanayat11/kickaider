@@ -13,9 +13,24 @@
         "faq": "FAQ",
         "login": "Login"
     },
+    "dayDetails": {
+        "title": "Day Details",
+        "generate": "Generate",
+        "exportXls": "→ XLS",
+        "emptyStateInfo": "Select report parameters and click the «Generate» button"
+    },
     "dashboard": {
         "title": "Basic Reports",
         "subtitle": "General analytical overview of the company or employee",
+        "departments": {
+            "all": "All employees",
+            "backOffice": "Back Office",
+            "personalAssistants": "Personal Assistants",
+            "qualityControl": "QA",
+            "sales": "Sales",
+            "parsers": "Parsers",
+            "managers": "Managers"
+        },
         "tabs": {
             "time": "Time",
             "efficiency": "Efficiency",
@@ -56,6 +71,11 @@
         "efficiency": {
             "departments": "Histograms by Departments",
             "detailedReport": "Detailed Report",
+            "table": {
+                "dept": "Dept",
+                "prod": "Prod %",
+                "idle": "Idle %"
+            },
             "legend": {
                 "productive": "Productive",
                 "neutral": "Neutral",
@@ -76,6 +96,9 @@
             "loading": "Loading...",
             "noData": "No data",
             "exportedMock": "Exported (mock)",
+            "minutesShort": "min",
+            "hoursShort": "h",
+            "show": "Show",
             "breadcrumbs": {
                 "dashboard": "Dashboard",
                 "basicReports": "Basic Reports"
@@ -196,6 +219,20 @@
                 "avgDayDuration": "Avg Day Duration",
                 "workDays": "Work Days"
             },
+            "hints": {
+                "vsLastWeek": "{{val}} vs last week",
+                "withinNorm": "Within norm",
+                "avg": "Avg {{val}}",
+                "unexcused": "Unexcused",
+                "fullMonth": "Full month"
+            },
+            "status": {
+                "normal": "Normal",
+                "vacation": "Vacation",
+                "sick": "Sick",
+                "absent": "Absent",
+                "trip": "Trip"
+            },
             "table": {
                 "employee": "Employee",
                 "department": "Department",
@@ -210,6 +247,27 @@
                 "hostname": "Hostname",
                 "columns": "Columns"
             }
+        },
+        "rating": {
+            "title": "Ranked Employee List",
+            "filters": {
+                "criterion": "Criterion"
+            },
+            "criterions": {
+                "productive": "Productive Time",
+                "unproductive": "Unproductive Time",
+                "neutral": "Neutral Time",
+                "idle": "Idle Time"
+            },
+            "searchPlaceholder": "Search employee...",
+            "table": {
+                "fullName": "Full Name",
+                "time": "Time"
+            },
+            "openDetails": "Open Details",
+            "noDataFilter": "No data matching the selected filters.",
+            "showEntries": "Show entries",
+            "of": "of"
         }
     },
     "activity": {
@@ -221,7 +279,10 @@
                 "departments": "Departments",
                 "timeMode": "Time Mode",
                 "scale": "Scale",
-                "searchApp": "Search by application"
+                "searchApp": "Search by application",
+                "allDay": "All Day",
+                "workTime": "Work Time",
+                "custom": "Custom"
             },
             "legend": {
                 "productive": "Productive",
@@ -272,9 +333,11 @@
         "loading": "Loading...",
         "noData": "No data",
         "error": "Data loading error",
+        "retry": "Retry",
         "confirmResetAll": "Reset all manual rules?",
         "save": "Save",
         "cancel": "Cancel",
+        "next": "Next",
         "delete": "Delete",
         "confirmDelete": "Are you sure you want to delete this item?",
         "success": "Saved successfully",
@@ -294,9 +357,108 @@
         "workTime": "Work Time",
         "activityHistory": "Activity History",
         "categorization": "Categorization",
-        "calendar": "Production Calendar"
+        "calendar": "Production Calendar",
+        "workSchedules": "Work Schedules",
+        "orgStructure": "Organization Structure",
+        "dayDetails": "Day Details",
+        "employeeRating": "Employee Rating"
     },
     "settings": {
+        "schedules": {
+            "title": "Work Schedules",
+            "subtitle": "Setup work time, lunch breaks, and days off.",
+            "tabs": {
+                "company": "Company",
+                "departments": "Departments",
+                "employees": "Employees"
+            },
+            "form": {
+                "startTime": "Start Time",
+                "endTime": "End Time",
+                "lunchDuration": "Lunch Duration",
+                "workDays": "Work Days",
+                "save": "Save Schedule",
+                "lunchOptions": {
+                    "none": "No lunch",
+                    "30min": "30 minutes",
+                    "45min": "45 minutes",
+                    "1h": "1 hour",
+                    "1h30m": "1.5 hours"
+                }
+            },
+            "company": {
+                "title": "Company Work Schedule (Default)",
+                "description": "This schedule applies to all departments and employees unless they have a customized schedule."
+            },
+            "departments": {
+                "inherit": "Inherits from company",
+                "custom": "Custom schedule",
+                "useCompany": "Use company schedule"
+            },
+            "employees": {
+                "search": "Search employee...",
+                "allDepts": "All Departments",
+                "inherit": "Inherits from department",
+                "custom": "Custom schedule",
+                "useDept": "Use department schedule",
+                "noResults": "No results found"
+            }
+        },
+        "organization": {
+            "title": "Organization Structure",
+            "subtitle": "Manage company hierarchy, departments, and employees.",
+            "tabs": {
+                "employees": "Departments and Employees",
+                "devices": "Unassigned Devices"
+            },
+            "employees": {
+                "search": "Search departments or employees...",
+                "addDept": "Add Department",
+                "ppl": "ppl.",
+                "editDept": "Edit Department",
+                "deleteDept": "Delete Department",
+                "emptyDept": "There are no employees in this department yet.",
+                "table": {
+                    "fullName": "Full Name",
+                    "position": "Position",
+                    "actions": "Actions"
+                },
+                "noResults": "No results found."
+            },
+            "devices": {
+                "title": "Awaiting Assignment",
+                "subtitle": "These devices connected to the server but are not assigned to any employee.",
+                "allAssigned": "All devices are assigned.",
+                "table": {
+                    "hostname": "Hostname",
+                    "lastSeen": "Last Seen"
+                },
+                "assignBtn": "Assign Employee"
+            },
+            "modals": {
+                "dept": {
+                    "create": "Create Department",
+                    "edit": "Edit Department",
+                    "name": "Department Name",
+                    "placeholder": "Example: IT Department"
+                },
+                "emp": {
+                    "edit": "Edit Employee",
+                    "name": "Full Name",
+                    "namePlaceholder": "John Doe",
+                    "position": "Position",
+                    "positionPlaceholder": "Manager",
+                    "dept": "Department",
+                    "createDeptFirst": "Please create a department first"
+                },
+                "bind": {
+                    "title": "Assign Device",
+                    "desc1": "You are assigning the device ",
+                    "desc2": ". Enter the details of the new employee using this computer.",
+                    "assignBtn": "Assign"
+                }
+            }
+        },
         "categorization": {
             "title": "App Categorization",
             "subtitle": "Manage productivity for websites and programs",

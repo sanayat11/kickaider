@@ -6,9 +6,10 @@
     flex-direction: column;
     gap: 32px;
     animation: fadeIn 0.4s ease-out;
-    max-width: 1600px;
+    max-width: 1400px;
     margin: 0 auto;
     width: 100%;
+    min-width: 0;
 }
 
 @keyframes fadeIn {
@@ -57,7 +58,9 @@
     border-radius: 12px;
     border: 1px solid #edf1f7;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-    width: fit-content;
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .massAssignCard {
@@ -159,6 +162,8 @@
 .legend {
     display: flex;
     align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
     gap: 16px;
     padding-top: 4px;
 
@@ -294,8 +299,10 @@
     background: #fff;
     border-radius: 16px;
     border: 1px solid #edf1f7;
-    overflow: hidden;
+    overflow-x: auto;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+    min-width: 0;
+    width: 100%;
 }
 
 .calendarGrid {

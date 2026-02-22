@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import styles from './OrgStructurePage.module.scss';
 import { IoChevronDownOutline, IoSearchOutline, IoTrashOutline, IoPencilOutline, IoAddOutline, IoCloseOutline, IoDesktopOutline, IoPeopleOutline } from 'react-icons/io5';
@@ -47,8 +48,9 @@ const initialUnassigned: UnassignedDevice[] = [
 ];
 
 export const OrgStructurePage: React.FC = () => {
+    const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<'employees' | 'devices'>('employees');
-    
+
     const [departments, setDepartments] = useState<Department[]>(initialDepartments);
     const [unassignedDevices, setUnassignedDevices] = useState<UnassignedDevice[]>(initialUnassigned);
 
@@ -88,23 +90,23 @@ export const OrgStructurePage: React.FC = () => {
 
     const filteredDepartments = useMemo(() => {
         if (!searchQuery.trim()) return departments;
-        
+
         const lowerQuery = searchQuery.toLowerCase();
-        
+
         return departments.map(dept => {
             if (dept.name.toLowerCase().includes(lowerQuery)) {
                 return dept; // Keep whole department, maybe expand it?
             }
-            
-            const matchingEmployees = dept.employees.filter(emp => 
-                emp.name.toLowerCase().includes(lowerQuery) || 
+
+            const matchingEmployees = dept.employees.filter(emp =>
+                emp.name.toLowerCase().includes(lowerQuery) ||
                 emp.position.toLowerCase().includes(lowerQuery)
             );
-            
+
             if (matchingEmployees.length > 0) {
                 return { ...dept, employees: matchingEmployees };
             }
-            
+
             return null;
         }).filter(Boolean) as Department[];
     }, [departments, searchQuery]);
@@ -175,7 +177,7 @@ export const OrgStructurePage: React.FC = () => {
             }
             return d;
         }));
-        
+
         setEmpModalOpen(false);
     };
 
@@ -207,10 +209,10 @@ export const OrgStructurePage: React.FC = () => {
 
         // Add to department
         setDepartments(departments.map(d => d.id === empFormDeptId ? { ...d, employees: [...d.employees, newEmp] } : d));
-        
+
         // Remove from unassigned
         setUnassignedDevices(unassignedDevices.filter(d => d.id !== bindingDeviceId));
-        
+
         setBindModalOpen(false);
     };
 
@@ -221,16 +223,16 @@ export const OrgStructurePage: React.FC = () => {
             <div className={styles.actionBar}>
                 <div className={styles.searchBox}>
                     <IoSearchOutline className={styles.searchIcon} />
-                    <input 
-                        type="text" 
-                        placeholder="Поиск отделов или сотрудников..." 
+                    <input
+                        type="text"
+                        placeholder={t('settings.organization.employees.search')}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
                 </div>
                 <button className={styles.primaryBtn} onClick={openCreateDeptModal}>
                     <IoAddOutline size={18} />
-                    Добавить отдел
+                    {t('settings.organization.employees.addDept')}
                 </button>
             </div>
 
@@ -241,13 +243,13 @@ export const OrgStructurePage: React.FC = () => {
                             <div className={styles.deptInfo} onClick={() => toggleDept(dept.id)}>
                                 <IoChevronDownOutline className={styles.arrowIcon} />
                                 <h3>{dept.name}</h3>
-                                <span className={styles.badge}>{dept.employees.length} чел.</span>
+                                <span className={styles.badge}>{dept.employees.length} {t('settings.organization.employees.ppl')}</span>
                             </div>
                             <div className={styles.deptActions}>
-                                <button className={styles.iconBtn} onClick={() => openEditDeptModal(dept)} title="Редактировать отдел">
+                                <button className={styles.iconBtn} onClick={() => openEditDeptModal(dept)} title={t('settings.organization.employees.editDept')}>
                                     <IoPencilOutline size={16} />
                                 </button>
-                                <button className={classNames(styles.iconBtn, styles.dangerBtn)} onClick={() => handleDeleteDept(dept.id)} title="Удалить отдел">
+                                <button className={classNames(styles.iconBtn, styles.dangerBtn)} onClick={() => handleDeleteDept(dept.id)} title={t('settings.organization.employees.deleteDept')}>
                                     <IoTrashOutline size={16} />
                                 </button>
                             </div>
@@ -256,14 +258,14 @@ export const OrgStructurePage: React.FC = () => {
                         {(expandedDepts[dept.id] || searchQuery.trim().length > 0) && (
                             <div className={styles.deptBody}>
                                 {dept.employees.length === 0 ? (
-                                    <div className={styles.emptyStateContainer}>В этом отделе пока нет сотрудников.</div>
+                                    <div className={styles.emptyStateContainer}>{t('settings.organization.employees.emptyDept')}</div>
                                 ) : (
                                     <table className={styles.empTable}>
                                         <thead>
                                             <tr>
-                                                <th>ФИО</th>
-                                                <th>Должность</th>
-                                                <th className={styles.actionsCol}>Действия</th>
+                                                <th>{t('settings.organization.employees.table.fullName')}</th>
+                                                <th>{t('settings.organization.employees.table.position')}</th>
+                                                <th className={styles.actionsCol}>{t('settings.organization.employees.table.actions')}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -295,7 +297,7 @@ export const OrgStructurePage: React.FC = () => {
                 ))}
 
                 {filteredDepartments.length === 0 && (
-                     <div className={styles.emptyResults}>Ничего не найдено.</div>
+                    <div className={styles.emptyResults}>{t('settings.organization.employees.noResults')}</div>
                 )}
             </div>
         </div>
@@ -304,20 +306,20 @@ export const OrgStructurePage: React.FC = () => {
     const renderDevicesTab = () => (
         <div className={styles.tabContent}>
             <div className={styles.cardHeader}>
-                <h3>Ожидают привязки</h3>
-                <p>Эти устройства подключились к серверу, но не привязаны ни к одному сотруднику.</p>
+                <h3>{t('settings.organization.devices.title')}</h3>
+                <p>{t('settings.organization.devices.subtitle')}</p>
             </div>
 
             <div className={styles.deviceList}>
                 {unassignedDevices.length === 0 ? (
-                    <div className={styles.emptyResults}>Все устройства привязаны.</div>
+                    <div className={styles.emptyResults}>{t('settings.organization.devices.allAssigned')}</div>
                 ) : (
                     <table className={styles.empTable}>
                         <thead>
                             <tr>
-                                <th>Hostname</th>
-                                <th>Последняя активность</th>
-                                <th className={styles.actionsCol}>Действия</th>
+                                <th>{t('settings.organization.devices.table.hostname')}</th>
+                                <th>{t('settings.organization.devices.table.lastSeen')}</th>
+                                <th className={styles.actionsCol}>{t('settings.organization.employees.table.actions')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -332,7 +334,7 @@ export const OrgStructurePage: React.FC = () => {
                                     <td className={styles.positionText}>{device.lastSeen}</td>
                                     <td className={styles.actionsCol}>
                                         <button className={styles.primaryBtnSm} onClick={() => openBindModal(device)}>
-                                            Привязать сотрудника
+                                            {t('settings.organization.devices.assignBtn')}
                                         </button>
                                     </td>
                                 </tr>
@@ -347,26 +349,26 @@ export const OrgStructurePage: React.FC = () => {
     return (
         <div className={styles.container}>
             <div className={styles.headerArea}>
-                <h2>Структура организации</h2>
-                <p>Управление иерархией компании, отделами и сотрудниками.</p>
+                <h2>{t('settings.organization.title')}</h2>
+                <p>{t('settings.organization.subtitle')}</p>
             </div>
 
             <main className={styles.main}>
                 <div className={styles.card}>
                     <div className={styles.tabsHeader}>
-                        <button 
+                        <button
                             className={classNames(styles.tabBtn, { [styles.active]: activeTab === 'employees' })}
                             onClick={() => setActiveTab('employees')}
                         >
                             <IoPeopleOutline size={18} />
-                            Отделы и сотрудники
+                            {t('settings.organization.tabs.employees')}
                         </button>
-                        <button 
+                        <button
                             className={classNames(styles.tabBtn, { [styles.active]: activeTab === 'devices' })}
                             onClick={() => setActiveTab('devices')}
                         >
                             <IoDesktopOutline size={18} />
-                            Неопознанные устройства
+                            {t('settings.organization.tabs.devices')}
                             {unassignedDevices.length > 0 && <span className={styles.tabBadge}>{unassignedDevices.length}</span>}
                         </button>
                     </div>
@@ -379,33 +381,33 @@ export const OrgStructurePage: React.FC = () => {
             </main>
 
             {/* --- Modals --- */}
-            
+
             {/* Department Modal */}
             {isDeptModalOpen && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modalContent}>
                         <div className={styles.modalHeader}>
-                            <h3>{deptModalMode === 'create' ? 'Создать отдел' : 'Редактировать отдел'}</h3>
+                            <h3>{deptModalMode === 'create' ? t('settings.organization.modals.dept.create') : t('settings.organization.modals.dept.edit')}</h3>
                             <button className={styles.closeBtn} onClick={() => setDeptModalOpen(false)}>
                                 <IoCloseOutline size={24} />
                             </button>
                         </div>
                         <div className={styles.modalBody}>
                             <div className={styles.inputGroup}>
-                                <label>Название отдела</label>
-                                <input 
-                                    type="text" 
-                                    value={deptFormName} 
+                                <label>{t('settings.organization.modals.dept.name')}</label>
+                                <input
+                                    type="text"
+                                    value={deptFormName}
                                     onChange={(e) => setDeptFormName(e.target.value)}
-                                    placeholder="Например: IT Отдел"
+                                    placeholder={t('settings.organization.modals.dept.placeholder')}
                                     autoFocus
                                 />
                             </div>
                         </div>
                         <div className={styles.modalFooter}>
-                            <button className={styles.ghostBtn} onClick={() => setDeptModalOpen(false)}>Отмена</button>
+                            <button className={styles.ghostBtn} onClick={() => setDeptModalOpen(false)}>{t('common.cancel')}</button>
                             <button className={styles.primaryBtn} onClick={handleSaveDept} disabled={!deptFormName.trim()}>
-                                Сохранить
+                                {t('common.save')}
                             </button>
                         </div>
                     </div>
@@ -417,7 +419,7 @@ export const OrgStructurePage: React.FC = () => {
                 <div className={styles.modalOverlay}>
                     <div className={styles.modalContent}>
                         <div className={styles.modalHeader}>
-                            <h3>Редактировать сотрудника</h3>
+                            <h3>{t('settings.organization.modals.emp.edit')}</h3>
                             <button className={styles.closeBtn} onClick={() => setEmpModalOpen(false)}>
                                 <IoCloseOutline size={24} />
                             </button>
@@ -425,24 +427,24 @@ export const OrgStructurePage: React.FC = () => {
                         <div className={styles.modalBody}>
                             <div className={styles.inputGroup}>
                                 <label>ФИО Сотрудника</label>
-                                <input 
-                                    type="text" 
-                                    value={empFormName} 
+                                <input
+                                    type="text"
+                                    value={empFormName}
                                     onChange={(e) => setEmpFormName(e.target.value)}
                                 />
                             </div>
                             <div className={styles.inputGroup}>
                                 <label>Должность</label>
-                                <input 
-                                    type="text" 
-                                    value={empFormPosition} 
+                                <input
+                                    type="text"
+                                    value={empFormPosition}
                                     onChange={(e) => setEmpFormPosition(e.target.value)}
                                 />
                             </div>
                             <div className={styles.inputGroup}>
                                 <label>Отдел</label>
-                                <select 
-                                    value={empFormDeptId} 
+                                <select
+                                    value={empFormDeptId}
                                     onChange={(e) => setEmpFormDeptId(e.target.value)}
                                 >
                                     {departments.map(d => (
@@ -452,9 +454,9 @@ export const OrgStructurePage: React.FC = () => {
                             </div>
                         </div>
                         <div className={styles.modalFooter}>
-                            <button className={styles.ghostBtn} onClick={() => setEmpModalOpen(false)}>Отмена</button>
+                            <button className={styles.ghostBtn} onClick={() => setEmpModalOpen(false)}>{t('common.cancel')}</button>
                             <button className={styles.primaryBtn} onClick={handleSaveEmp} disabled={!empFormName.trim()}>
-                                Сохранить
+                                {t('common.save')}
                             </button>
                         </div>
                     </div>
@@ -473,45 +475,44 @@ export const OrgStructurePage: React.FC = () => {
                         </div>
                         <div className={styles.modalBody}>
                             <p className={styles.modalDesc}>
-                                Вы привязываете устройство <strong>{unassignedDevices.find(d => d.id === bindingDeviceId)?.hostname}</strong>. 
-                                Введите данные нового сотрудника, который работает за этим компьютером.
+                                {t('settings.organization.modals.bind.desc1')}<strong>{unassignedDevices.find(d => d.id === bindingDeviceId)?.hostname}</strong>{t('settings.organization.modals.bind.desc2')}
                             </p>
                             <div className={styles.inputGroup}>
-                                <label>ФИО Сотрудника</label>
-                                <input 
-                                    type="text" 
-                                    value={empFormName} 
+                                <label>{t('settings.organization.modals.emp.name')}</label>
+                                <input
+                                    type="text"
+                                    value={empFormName}
                                     onChange={(e) => setEmpFormName(e.target.value)}
-                                    placeholder="Иванов Иван Иванович"
+                                    placeholder={t('settings.organization.modals.emp.namePlaceholder')}
                                     autoFocus
                                 />
                             </div>
                             <div className={styles.inputGroup}>
-                                <label>Должность</label>
-                                <input 
-                                    type="text" 
-                                    value={empFormPosition} 
+                                <label>{t('settings.organization.modals.emp.position')}</label>
+                                <input
+                                    type="text"
+                                    value={empFormPosition}
                                     onChange={(e) => setEmpFormPosition(e.target.value)}
-                                    placeholder="Менеджер"
+                                    placeholder={t('settings.organization.modals.emp.positionPlaceholder')}
                                 />
                             </div>
                             <div className={styles.inputGroup}>
-                                <label>Отдел</label>
-                                <select 
-                                    value={empFormDeptId} 
+                                <label>{t('settings.organization.modals.emp.dept')}</label>
+                                <select
+                                    value={empFormDeptId}
                                     onChange={(e) => setEmpFormDeptId(e.target.value)}
                                 >
                                     {departments.map(d => (
                                         <option key={d.id} value={d.id}>{d.name}</option>
                                     ))}
-                                    {departments.length === 0 && <option value="" disabled>Сначала создайте отдел</option>}
+                                    {departments.length === 0 && <option value="" disabled>{t('settings.organization.modals.emp.createDeptFirst')}</option>}
                                 </select>
                             </div>
                         </div>
                         <div className={styles.modalFooter}>
-                            <button className={styles.ghostBtn} onClick={() => setBindModalOpen(false)}>Отмена</button>
+                            <button className={styles.ghostBtn} onClick={() => setBindModalOpen(false)}>{t('common.cancel')}</button>
                             <button className={styles.primaryBtn} onClick={handleBindDevice} disabled={!empFormName.trim() || !empFormDeptId}>
-                                Привязать
+                                {t('settings.organization.modals.bind.assignBtn')}
                             </button>
                         </div>
                     </div>

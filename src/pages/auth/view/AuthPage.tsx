@@ -3,6 +3,7 @@ import image from "@/shared/assets/images/imgAuth.png"
 import logo from "@shared/assets/images/logo.svg"
 import { LoginForm } from "@/features/auth/loginForm/view/LoginForm"
 import { Button } from "@/shared/ui/button/view/Button"
+import { paths } from "@/shared/constants/constants"
 
 export const AuthPage = () => {
   return (
@@ -17,14 +18,10 @@ export const AuthPage = () => {
 
             <div className={styles.title}>
               <h1>Войти в аккаунт</h1>
-              <p>
-                Смотрите фильмы и мультфильмы в оригинальной озвучке.
-                Продолжайте просмотр с любого устройства.
-              </p>
             </div>
 
             <LoginForm />
-            <Button className={styles.button} size="fullWidth">
+            <Button type="link" to={paths.DASHBOARD} className={styles.button} size="fullWidth">
               Войти
             </Button>
           </div>

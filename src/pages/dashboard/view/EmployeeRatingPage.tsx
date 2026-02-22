@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { IoChevronBackOutline, IoChevronForwardOutline, IoSearchOutline } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 import { paths } from '@/shared/constants/constants';
@@ -23,19 +24,6 @@ const BASE_EMPLOYEES = [
     { id: '12', name: 'Юлия Волкова', initials: 'ЮВ', hostname: 'LAPTOP-EDC789', department: 'Marketing', bProd: 355, bUnp: 25, bNeu: 45, bIdle: 100 },
 ];
 
-const formatMinutes = (m: number) => {
-    const hours = Math.floor(m / 60);
-    const mins = m % 60;
-    return `${hours.toString().padStart(2, '0')}ч ${mins.toString().padStart(2, '0')}м`;
-};
-
-const criterionLabels: Record<Criterion, string> = {
-    productive: 'Продуктивное время',
-    unproductive: 'Непродуктивное время',
-    neutral: 'Нейтральное время',
-    idle: 'Время бездействия'
-};
-
 const criterionColors: Record<Criterion, string> = {
     productive: '#2ebd59',
     unproductive: '#ef4444',
@@ -44,15 +32,29 @@ const criterionColors: Record<Criterion, string> = {
 };
 
 export const EmployeeRatingPage: React.FC = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [hoveredRow, setHoveredRow] = useState<string | null>(null);
+
+    const formatMinutes = (m: number) => {
+        const hours = Math.floor(m / 60);
+        const mins = m % 60;
+        return `${hours.toString().padStart(2, '0')}${t('dashboard.common.hoursShort')} ${mins.toString().padStart(2, '0')}${t('dashboard.common.minutesShort')}`;
+    };
+
+    const criterionLabels: Record<Criterion, string> = {
+        productive: t('reports.rating.criterions.productive'),
+        unproductive: t('reports.rating.criterions.unproductive'),
+        neutral: t('reports.rating.criterions.neutral'),
+        idle: t('reports.rating.criterions.idle')
+    };
     const [currentDate, setCurrentDate] = useState('2026-02-22');
-    
+
     // Filters state
-    const [department, setDepartment] = useState('Все отделы');
+    const [department, setDepartment] = useState('all');
     const [criterion, setCriterion] = useState<Criterion>('productive');
     const [searchQuery, setSearchQuery] = useState('');
-    
+
     // Pagination state
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
@@ -101,14 +103,14 @@ export const EmployeeRatingPage: React.FC = () => {
             };
         });
 
-        if (department !== 'Все отделы') {
+        if (department !== 'all') {
             filtered = filtered.filter(e => e.department === department);
         }
 
         if (searchQuery.trim()) {
             const query = searchQuery.toLowerCase();
-            filtered = filtered.filter(e => 
-                e.name.toLowerCase().includes(query) || 
+            filtered = filtered.filter(e =>
+                e.name.toLowerCase().includes(query) ||
                 e.hostname.toLowerCase().includes(query)
             );
         }
@@ -148,12 +150,12 @@ export const EmployeeRatingPage: React.FC = () => {
                 {/* Top Row of Filters */}
                 <div className={styles.filterRow}>
                     <div className={styles.filterGroup}>
-                        <span className={styles.label}>Период:</span>
+                        <span className={styles.label}>{t('dashboard.filters.period')}:</span>
                         <div className={styles.dateNav}>
                             <div className={styles.dateInputWrapper}>
-                                <input 
-                                    type="date" 
-                                    value={currentDate} 
+                                <input
+                                    type="date"
+                                    value={currentDate}
                                     onChange={(e) => { setCurrentDate(e.target.value); setCurrentPage(1); }}
                                     className={styles.dateInput}
                                 />
@@ -168,13 +170,13 @@ export const EmployeeRatingPage: React.FC = () => {
                     </div>
 
                     <div className={styles.filterGroup}>
-                        <span className={styles.label}>Отдел:</span>
-                        <select 
-                            className={styles.select} 
-                            value={department} 
+                        <span className={styles.label}>{t('reports.workTime.table.department')}:</span>
+                        <select
+                            className={styles.select}
+                            value={department}
                             onChange={(e) => { setDepartment(e.target.value); setCurrentPage(1); }}
                         >
-                            <option value="Все отделы">Все отделы</option>
+                            <option value="all">{t('dashboard.departments.all')}</option>
                             <option value="IT">IT</option>
                             <option value="Marketing">Marketing</option>
                             <option value="Sales">Sales</option>
@@ -184,36 +186,36 @@ export const EmployeeRatingPage: React.FC = () => {
                     </div>
 
                     <div className={styles.filterGroup}>
-                        <span className={styles.label}>Критерий:</span>
-                        <select 
+                        <span className={styles.label}>{t('reports.rating.filters.criterion')}:</span>
+                        <select
                             className={styles.select}
                             value={criterion}
                             onChange={(e) => { setCriterion(e.target.value as Criterion); setCurrentPage(1); }}
                         >
-                            <option value="productive">Продуктивно</option>
-                            <option value="unproductive">Непродуктивно</option>
-                            <option value="neutral">Нейтрально</option>
-                            <option value="idle">Бездействие</option>
+                            <option value="productive">{t('dashboard.cards.productive')}</option>
+                            <option value="unproductive">{t('dashboard.cards.unproductive')}</option>
+                            <option value="neutral">{t('dashboard.cards.neutral')}</option>
+                            <option value="idle">{t('activity.timeline.legend.idle')}</option>
                         </select>
                     </div>
 
                     <label className={styles.checkboxLabel}>
                         <input type="checkbox" defaultChecked />
                         <span className={styles.checkmark}></span>
-                        Только рабочее время
+                        {t('dashboard.filters.onlyWorkTime')}
                     </label>
 
-                    <button className={styles.exportBtn}>→ XLS</button>
+                    <button className={styles.exportBtn}>{t('dayDetails.exportXls')}</button>
                 </div>
-                
+
                 {/* Bottom Row / Search */}
                 <div className={styles.filterRow} style={{ marginTop: '16px' }}>
-                     <div className={styles.searchBox}>
+                    <div className={styles.searchBox}>
                         <IoSearchOutline className={styles.searchIcon} />
-                        <input 
-                            type="text" 
-                            placeholder="Поиск сотрудника..." 
-                            className={styles.searchInput} 
+                        <input
+                            type="text"
+                            placeholder={t('reports.rating.searchPlaceholder')}
+                            className={styles.searchInput}
                             value={searchQuery}
                             onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
                         />
@@ -223,23 +225,23 @@ export const EmployeeRatingPage: React.FC = () => {
 
             <main className={styles.main}>
                 <div className={styles.card}>
-                    <h2 className={styles.cardTitle}>Ранжированный список сотрудников</h2>
-                    
+                    <h2 className={styles.cardTitle}>{t('reports.rating.title')}</h2>
+
                     <div className={styles.tableWrapper}>
                         <table className={styles.ratingTable}>
                             <thead>
                                 <tr>
                                     <th className={styles.rankCol}>#</th>
-                                    <th className={styles.employeeCol}>ФИО</th>
+                                    <th className={styles.employeeCol}>{t('reports.rating.table.fullName')}</th>
                                     <th className={styles.hostCol}>Hostname</th>
                                     <th className={styles.barCol}>{criterionLabels[criterion]}</th>
-                                    <th className={styles.timeCol}>Время</th>
+                                    <th className={styles.timeCol}>{t('reports.rating.table.time')}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {currentItems.map((employee) => (
-                                    <tr 
-                                        key={employee.id} 
+                                    <tr
+                                        key={employee.id}
                                         onMouseEnter={() => setHoveredRow(employee.id)}
                                         onMouseLeave={() => setHoveredRow(null)}
                                         className={classNames(styles.tableRow, { [styles.hovered]: hoveredRow === employee.id })}
@@ -254,12 +256,12 @@ export const EmployeeRatingPage: React.FC = () => {
                                         <td className={styles.hostCol}>{employee.hostname}</td>
                                         <td className={styles.barCol}>
                                             <div className={styles.progressTrack}>
-                                                <div 
-                                                    className={styles.progressFill} 
-                                                    style={{ 
-                                                        width: `${employee.percent}%`, 
-                                                        backgroundColor: criterionColors[criterion] 
-                                                    }} 
+                                                <div
+                                                    className={styles.progressFill}
+                                                    style={{
+                                                        width: `${employee.percent}%`,
+                                                        backgroundColor: criterionColors[criterion]
+                                                    }}
                                                 />
                                             </div>
                                         </td>
@@ -277,7 +279,7 @@ export const EmployeeRatingPage: React.FC = () => {
                                                         </div>
                                                     </div>
                                                     <button className={styles.detailsBtn} onClick={handleOpenDetails}>
-                                                        Открыть подробности
+                                                        {t('reports.rating.openDetails')}
                                                     </button>
                                                 </div>
                                             </td>
@@ -287,7 +289,7 @@ export const EmployeeRatingPage: React.FC = () => {
                                 {currentItems.length === 0 && (
                                     <tr>
                                         <td colSpan={5} style={{ textAlign: 'center', padding: '40px', color: '#8a91b4' }}>
-                                            Нет данных, удовлетворяющих заданным фильтрам.
+                                            {t('reports.rating.noDataFilter')}
                                         </td>
                                     </tr>
                                 )}
@@ -298,8 +300,8 @@ export const EmployeeRatingPage: React.FC = () => {
                     {/* Pagination */}
                     <div className={styles.pagination}>
                         <div className={styles.pageInfo}>
-                            Показывать записей:
-                            <select 
+                            {t('reports.rating.showEntries')}:
+                            <select
                                 className={styles.perPageSelect}
                                 value={itemsPerPage}
                                 onChange={(e) => { setItemsPerPage(Number(e.target.value)); setCurrentPage(1); }}
@@ -310,8 +312,8 @@ export const EmployeeRatingPage: React.FC = () => {
                             </select>
                         </div>
                         <div className={styles.pageControls}>
-                            <button 
-                                className={styles.pageBtn} 
+                            <button
+                                className={styles.pageBtn}
                                 onClick={() => handlePageChange('prev')}
                                 disabled={currentPage === 1}
                                 style={{ opacity: currentPage === 1 ? 0.5 : 1, cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}
@@ -319,9 +321,9 @@ export const EmployeeRatingPage: React.FC = () => {
                                 <IoChevronBackOutline />
                             </button>
                             <span className={styles.pageCurrent}>{currentPage}</span>
-                            <span className={styles.pageTotal}>из {totalPages}</span>
-                            <button 
-                                className={styles.pageBtn} 
+                            <span className={styles.pageTotal}>{t('reports.rating.of')} {totalPages}</span>
+                            <button
+                                className={styles.pageBtn}
                                 onClick={() => handlePageChange('next')}
                                 disabled={currentPage === totalPages}
                                 style={{ opacity: currentPage === totalPages ? 0.5 : 1, cursor: currentPage === totalPages ? 'not-allowed' : 'pointer' }}

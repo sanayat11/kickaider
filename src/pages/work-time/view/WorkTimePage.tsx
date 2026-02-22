@@ -118,15 +118,15 @@ export const WorkTimePage: React.FC = () => {
     };
 
     const kpiData = [
-        { label: t('reports.workTime.cards.lateness'), value: '12', hint: '+2 vs last week' },
-        { label: t('reports.workTime.cards.earlyLeaves'), value: '5', hint: 'Within norm' },
-        { label: t('reports.workTime.cards.timeAtWork'), value: '164:20', hint: 'Avg 8:05' },
-        { label: t('reports.workTime.cards.absences'), value: '2', hint: 'Unexcused' },
+        { label: t('reports.workTime.cards.lateness'), value: '12', hint: t('reports.workTime.hints.vsLastWeek', { val: '+2' }) },
+        { label: t('reports.workTime.cards.earlyLeaves'), value: '5', hint: t('reports.workTime.hints.withinNorm') },
+        { label: t('reports.workTime.cards.timeAtWork'), value: '164:20', hint: t('reports.workTime.hints.avg', { val: '8:05' }) },
+        { label: t('reports.workTime.cards.absences'), value: '2', hint: t('reports.workTime.hints.unexcused') },
         { label: t('reports.workTime.cards.trips'), value: '3', hint: '' },
         { label: t('reports.workTime.cards.vacations'), value: '4', hint: '' },
         { label: t('reports.workTime.cards.sickLeaves'), value: '1', hint: '' },
         { label: t('reports.workTime.cards.avgDayDuration'), value: '8:12', hint: '' },
-        { label: t('reports.workTime.cards.workDays'), value: '22', hint: 'Full month' },
+        { label: t('reports.workTime.cards.workDays'), value: '22', hint: t('reports.workTime.hints.fullMonth') },
     ];
 
     return (
@@ -273,14 +273,14 @@ export const WorkTimePage: React.FC = () => {
                                         {visibleColumns.has('firstActivity') && <td>{row.firstActivity}</td>}
                                         {visibleColumns.has('lastActivity') && <td>{row.lastActivity}</td>}
                                         {visibleColumns.has('timeAtWork') && <td>{row.timeAtWork}</td>}
-                                        {visibleColumns.has('lateness') && <td>{row.lateness > 0 ? `${row.lateness} min` : '-'}</td>}
-                                        {visibleColumns.has('earlyLeave') && <td>{row.earlyLeave > 0 ? `${row.earlyLeave} min` : '-'}</td>}
+                                        {visibleColumns.has('lateness') && <td>{row.lateness > 0 ? `${row.lateness} ${t('dashboard.common.minutesShort')}` : '-'}</td>}
+                                        {visibleColumns.has('earlyLeave') && <td>{row.earlyLeave > 0 ? `${row.earlyLeave} ${t('dashboard.common.minutesShort')}` : '-'}</td>}
                                         {visibleColumns.has('productiveTime') && <td>{row.productiveTime}</td>}
                                         {visibleColumns.has('idleTime') && <td>{row.idleTime}</td>}
                                         {visibleColumns.has('status') && (
                                             <td>
                                                 <span className={classNames(styles.statusTag, styles[row.status.toLowerCase()])}>
-                                                    {row.status}
+                                                    {t(`reports.workTime.status.${row.status.toLowerCase()}`)}
                                                 </span>
                                             </td>
                                         )}
@@ -299,7 +299,7 @@ export const WorkTimePage: React.FC = () => {
 
                 <div className={styles.pagination}>
                     <div className={styles.pageSize}>
-                        <span>Show:</span>
+                        <span>{t('dashboard.common.show')}:</span>
                         <select value={pageSize} onChange={e => setPageSize(Number(e.target.value))}>
                             <option value={10}>10</option>
                             <option value={25}>25</option>

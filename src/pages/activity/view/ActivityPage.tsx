@@ -177,7 +177,7 @@ export const ActivityPage: React.FC = () => {
                             {DEPARTMENTS.map(dept => (
                                 <Checkbox
                                     key={dept}
-                                    label={dept}
+                                    label={dept === 'Company' ? t('dashboard.departments.all') : dept}
                                     checked={selectedDepts.includes(dept)}
                                     onChange={() => toggleDept(dept)}
                                 />
@@ -191,9 +191,9 @@ export const ActivityPage: React.FC = () => {
                                 value={timeMode}
                                 onChange={setTimeMode}
                                 options={[
-                                    { label: 'Весь день', value: 'allDay' },
-                                    { label: 'Рабочее время', value: 'workTime' },
-                                    { label: 'Произвольное', value: 'custom' },
+                                    { label: t('activity.timeline.filters.allDay'), value: 'allDay' },
+                                    { label: t('activity.timeline.filters.workTime'), value: 'workTime' },
+                                    { label: t('activity.timeline.filters.custom'), value: 'custom' },
                                 ]}
                             />
                             {timeMode === 'custom' && (
@@ -207,10 +207,10 @@ export const ActivityPage: React.FC = () => {
                             value={scale}
                             onChange={setScale}
                             options={[
-                                { label: '1 hour', value: '1hour' },
-                                { label: '15 min', value: '15min' },
-                                { label: '5 min', value: '5min' },
-                                { label: '1 min', value: '1min' },
+                                { label: `1 ${t('dashboard.common.hoursShort')}`, value: '1hour' },
+                                { label: `15 ${t('dashboard.common.minutesShort')}`, value: '15min' },
+                                { label: `5 ${t('dashboard.common.minutesShort')}`, value: '5min' },
+                                { label: `1 ${t('dashboard.common.minutesShort')}`, value: '1min' },
                             ]}
                         />
                         <div className={styles.searchWrapper}>
@@ -242,7 +242,7 @@ export const ActivityPage: React.FC = () => {
                             <div className={styles.errorBanner}>
                                 <IoInformationCircleOutline size={20} />
                                 <span>{error}</span>
-                                <button className={styles.retryBtn} onClick={loadData}>Retry</button>
+                                <button className={styles.retryBtn} onClick={loadData}>{t('common.retry')}</button>
                             </div>
                         ) : employees.length === 0 ? (
                             <div className={styles.emptyState}>
@@ -253,7 +253,7 @@ export const ActivityPage: React.FC = () => {
                             <table className={styles.timelineTable}>
                                 <thead>
                                     <tr>
-                                        <th className={classNames(styles.frozenColumn, styles.timeHeader)}>Сотрудник</th>
+                                        <th className={classNames(styles.frozenColumn, styles.timeHeader)}>{t('reports.workTime.table.employee')}</th>
                                         {timeSlots.map(slot => (
                                             <th key={slot} className={styles.timeHeader}>{slot}</th>
                                         ))}
@@ -293,7 +293,7 @@ export const ActivityPage: React.FC = () => {
                                                         onMouseMove={handleCellMouseMove}
                                                         onMouseLeave={handleCellMouseLeave}
                                                     >
-                                                        {!block && <div className={styles.nodataText}>Нет данных</div>}
+                                                        {!block && <div className={styles.nodataText}>{t('activity.timeline.legend.nodata')}</div>}
                                                         {block && (
                                                             <div className={classNames(styles.block, styles[`state_${block.state}`])} />
                                                         )}

@@ -70,25 +70,25 @@ export const DashboardReportsPage: React.FC = () => {
     const renderDeptSidebar = () => (
         <aside className={styles.deptSidebar}>
             <div className={classNames(styles.deptItem, styles.active)}>
-                Все сотрудники
+                {t('dashboard.departments.all')}
             </div>
             <div className={styles.deptItem}>
-                Бэк офис <IoChevronDownOutline className={styles.arrow} />
+                {t('dashboard.departments.backOffice')} <IoChevronDownOutline className={styles.arrow} />
             </div>
             <div className={styles.deptItem}>
-                Личные помощники <IoChevronDownOutline className={styles.arrow} />
+                {t('dashboard.departments.personalAssistants')} <IoChevronDownOutline className={styles.arrow} />
             </div>
             <div className={styles.deptItem}>
-                ОКК <IoChevronDownOutline className={styles.arrow} />
+                {t('dashboard.departments.qualityControl')} <IoChevronDownOutline className={styles.arrow} />
             </div>
             <div className={styles.deptItem}>
-                Отдел продаж <IoChevronDownOutline className={styles.arrow} />
+                {t('dashboard.departments.sales')} <IoChevronDownOutline className={styles.arrow} />
             </div>
             <div className={styles.deptItem}>
-                Парсеры <IoChevronDownOutline className={styles.arrow} />
+                {t('dashboard.departments.parsers')} <IoChevronDownOutline className={styles.arrow} />
             </div>
             <div className={styles.deptItem}>
-                Руководители <IoChevronDownOutline className={styles.arrow} />
+                {t('dashboard.departments.managers')} <IoChevronDownOutline className={styles.arrow} />
             </div>
         </aside>
     );
@@ -173,9 +173,9 @@ export const DashboardReportsPage: React.FC = () => {
                                 <table className={styles.table}>
                                     <thead>
                                         <tr>
-                                            <th>Dept</th>
-                                            <th>Prod %</th>
-                                            <th>Idle %</th>
+                                            <th>{t('dashboard.efficiency.table.dept')}</th>
+                                            <th>{t('dashboard.efficiency.table.prod')}</th>
+                                            <th>{t('dashboard.efficiency.table.idle')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -231,11 +231,11 @@ export const DashboardReportsPage: React.FC = () => {
                     <div className={styles.chartGrid}>
                         <div className={styles.yAxisLabels}>
                             <span>0</span>
-                            <span>30 мин</span>
-                            <span>60 мин</span>
-                            <span>90 мин</span>
-                            <span>120 мин</span>
-                            <span>150 мин</span>
+                            <span>30 {t('dashboard.common.minutesShort')}</span>
+                            <span>60 {t('dashboard.common.minutesShort')}</span>
+                            <span>90 {t('dashboard.common.minutesShort')}</span>
+                            <span>120 {t('dashboard.common.minutesShort')}</span>
+                            <span>150 {t('dashboard.common.minutesShort')}</span>
                         </div>
                         {dashboardData?.dynamics[groupBy].map((d: any, i: number) => (
                             <div key={i} className={styles.chartBar}>

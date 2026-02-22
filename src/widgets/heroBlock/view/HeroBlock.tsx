@@ -4,7 +4,8 @@ import styles from './HeroBlock.module.scss';
 import heroImage from '@/shared/assets/images/Image Container.png';
 import { Button } from '@/shared/ui/button/view/Button';
 import { Typography } from '@/shared/ui/typoghraphy/view/Typography';
-
+import { paths } from '@/shared/constants/constants';
+    
 export const HeroBlock: FC = () => {
     const { t } = useTranslation();
     return (
@@ -25,7 +26,7 @@ export const HeroBlock: FC = () => {
                 </div>
 
                 <div className={styles.buttons}>
-                    <Button variant="primary" size="large" iconButton className={styles.button}>
+                    <Button variant="primary" size="large" type="link" to={paths.AUTH} iconButton className={styles.button}>
                         {t('hero.button')}
                     </Button>
                 </div>

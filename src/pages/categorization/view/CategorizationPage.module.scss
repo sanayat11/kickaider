@@ -3,6 +3,11 @@
     flex-direction: column;
     gap: 32px;
     animation: fadeIn 0.4s ease-out;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    min-width: 0;
+    padding: 0 40px 40px;
 }
 
 @keyframes fadeIn {
@@ -151,8 +156,9 @@
     background: #fff;
     border-radius: 28px;
     border: 1px solid #edf1f7;
-    overflow: hidden;
+    overflow-x: auto;
     box-shadow: 0 12px 48px rgba(78, 91, 217, 0.08);
+    min-width: 0;
 }
 
 .table {

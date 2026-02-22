@@ -136,18 +136,11 @@ export const Sidebar: React.FC = () => {
                     isOpen={openMenus.includes('settings')}
                     onClick={() => handleItemClick('settings', true)}
                 >
-                    <SidebarItem
-                        id="settings-1"
-                        icon={IoSettingsOutline}
-                        label={t('sidebar.settings')}
-                        collapsed={collapsed}
-                        active={location.pathname === paths.DASHBOARD_SETTINGS}
-                        onClick={() => handleItemClick('settings-1', false, paths.DASHBOARD_SETTINGS)}
-                    />
+
                     <SidebarItem
                         id="settings-schedules"
                         icon={IoCalendarOutline}
-                        label="Рабочие графики"
+                        label={t('sidebar.workSchedules')}
                         collapsed={collapsed}
                         active={location.pathname === paths.DASHBOARD_WORK_SCHEDULES}
                         onClick={() => handleItemClick('settings-schedules', false, paths.DASHBOARD_WORK_SCHEDULES)}
@@ -155,7 +148,7 @@ export const Sidebar: React.FC = () => {
                     <SidebarItem
                         id="settings-org-structure"
                         icon={IoBusinessOutline}
-                        label="Структура организации"
+                        label={t('sidebar.orgStructure')}
                         collapsed={collapsed}
                         active={location.pathname === paths.DASHBOARD_ORG_STRUCTURE}
                         onClick={() => handleItemClick('settings-org-structure', false, paths.DASHBOARD_ORG_STRUCTURE)}
@@ -206,7 +199,7 @@ export const Sidebar: React.FC = () => {
                     <SidebarItem
                         id="reports-day-details"
                         icon={IoCalendarOutline}
-                        label="Детали дня"
+                        label={t('sidebar.dayDetails')}
                         collapsed={collapsed}
                         active={location.pathname === paths.DASHBOARD_DAY_DETAILS}
                         onClick={() => handleItemClick('reports-day-details', false, paths.DASHBOARD_DAY_DETAILS)}
@@ -214,7 +207,7 @@ export const Sidebar: React.FC = () => {
                     <SidebarItem
                         id="reports-employee-rating"
                         icon={IoBarChartOutline}
-                        label="Рейтинг сотрудников"
+                        label={t('sidebar.employeeRating')}
                         collapsed={collapsed}
                         active={location.pathname === paths.DASHBOARD_EMPLOYEE_RATING}
                         onClick={() => handleItemClick('reports-employee-rating', false, paths.DASHBOARD_EMPLOYEE_RATING)}

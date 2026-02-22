@@ -137,13 +137,13 @@ export const ActivityDetailsPage: React.FC = () => {
                                 className={classNames({ [styles.active]: timeMode === 'allDay' })}
                                 onClick={() => setTimeMode('allDay')}
                             >
-                                Весь день
+                                {t('activity.timeline.filters.allDay')}
                             </button>
                             <button
                                 className={classNames({ [styles.active]: timeMode === 'workTime' })}
                                 onClick={() => setTimeMode('workTime')}
                             >
-                                Рабочее время
+                                {t('activity.timeline.filters.workTime')}
                             </button>
                         </div>
 

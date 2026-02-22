@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
+import { useTranslation } from 'react-i18next';
 import styles from './DayDetailsChart.module.scss';
 
 export type ActivityType = 'productive' | 'neutral' | 'unproductive' | 'uncategorized' | 'idle';
@@ -16,14 +17,14 @@ export interface DayActivityData {
     employeeName: string;
     date: string;
     department: string;
-    
+
     // Donut chart stats
     donutSegments: {
         type: ActivityType;
         percent: number;
         duration: string;
     }[];
-    
+
     // Timeline bars (can be multiple rows or overlapping, based on screenshot they seem like one timeline with small clusters)
     timelineSegments: TimeSegment[];
 
@@ -53,16 +54,11 @@ const colorMap: Record<ActivityType, string> = {
     idle: '#a96aeb',
 };
 
-const labelMap: Record<ActivityType, string> = {
-    productive: 'Продуктивно',
-    neutral: 'Нейтрально',
-    unproductive: 'Непродуктивно',
-    uncategorized: 'Без категории',
-    idle: 'Бездействие',
-};
-
 export const DayDetailsChart: React.FC<Props> = ({ data }) => {
+    const { t } = useTranslation();
     const [hoveredType, setHoveredType] = useState<ActivityType | null>(null);
+
+    const getLabel = (type: ActivityType) => t(`activity.timeline.legend.${type}`);
 
     // SVG Donut calculation helpers
     const radius = 60;
@@ -80,7 +76,7 @@ export const DayDetailsChart: React.FC<Props> = ({ data }) => {
                             {data.donutSegments.map((seg) => {
                                 const strokeDasharray = `${(seg.percent / 100) * circumference} ${circumference}`;
                                 const dashoffset = (circumference * 0.25) - ((donutOffset / 100) * circumference);
-                                
+
                                 const midP = donutOffset + seg.percent / 2;
                                 donutOffset += seg.percent;
 
@@ -113,9 +109,9 @@ export const DayDetailsChart: React.FC<Props> = ({ data }) => {
                                             style={{ transition: 'opacity 0.2s', strokeLinecap: 'butt' }}
                                         />
                                         {/* pointer line */}
-                                        <polyline 
-                                            points={`${x1},${y1} ${x2},${y2} ${x3},${y3}`} 
-                                            className={classNames(styles.donutPolyline, { [styles.dimmed]: isDimmed })} 
+                                        <polyline
+                                            points={`${x1},${y1} ${x2},${y2} ${x3},${y3}`}
+                                            className={classNames(styles.donutPolyline, { [styles.dimmed]: isDimmed })}
                                         />
                                         <text
                                             x={x3 + (isLeft ? -4 : 4)}
@@ -140,7 +136,7 @@ export const DayDetailsChart: React.FC<Props> = ({ data }) => {
                                 onMouseLeave={() => setHoveredType(null)}
                             >
                                 <span className={styles.legendColor} style={{ backgroundColor: colorMap[seg.type] }} />
-                                {labelMap[seg.type]}
+                                {getLabel(seg.type)}
                             </div>
                         ))}
                     </div>
@@ -149,7 +145,7 @@ export const DayDetailsChart: React.FC<Props> = ({ data }) => {
                 {/* TIMELINE CHART */}
                 <div className={styles.timelineColumn}>
                     <h3 className={styles.chartTitle}>{data.date}, {data.department}, {data.employeeName}</h3>
-                    
+
                     <div className={styles.timelineWrapper}>
                         {/* Hour markers */}
                         <div className={styles.hourMarkers}>
@@ -179,7 +175,7 @@ export const DayDetailsChart: React.FC<Props> = ({ data }) => {
                                         width: `${Math.max(0.5, seg.widthPercent)}%`, // Ensure minimum visible width
                                         backgroundColor: colorMap[seg.type]
                                     }}
-                                    title={`${labelMap[seg.type]}: ${seg.tooltipTime}`}
+                                    title={`${getLabel(seg.type)}: ${seg.tooltipTime}`}
                                     onMouseEnter={() => setHoveredType(seg.type)}
                                     onMouseLeave={() => setHoveredType(null)}
                                 />
@@ -190,15 +186,15 @@ export const DayDetailsChart: React.FC<Props> = ({ data }) => {
                     {/* DATA TABLE */}
                     <div className={styles.statsTable}>
                         <div className={styles.tableRowHeader}>
-                            <div>Бездействие</div>
-                            <div>Активность</div>
-                            <div>Продуктивно</div>
-                            <div>Непродуктивно</div>
-                            <div>Нейтрально</div>
-                            <div>Без категории</div>
-                            <div>Первая активность</div>
-                            <div>Последняя активность</div>
-                            <div>Время на работе</div>
+                            <div>{t('activity.timeline.legend.idle')}</div>
+                            <div>{t('dashboard.cards.activity')}</div>
+                            <div>{t('dashboard.cards.productive')}</div>
+                            <div>{t('dashboard.cards.unproductive')}</div>
+                            <div>{t('dashboard.cards.neutral')}</div>
+                            <div>{t('dashboard.efficiency.legend.uncategorized')}</div>
+                            <div>{t('reports.workTime.table.firstActivity')}</div>
+                            <div>{t('reports.workTime.table.lastActivity')}</div>
+                            <div>{t('reports.workTime.table.timeAtWork')}</div>
                         </div>
                         <div className={styles.tableRowData}>
                             <div>{data.stats.idle}</div>

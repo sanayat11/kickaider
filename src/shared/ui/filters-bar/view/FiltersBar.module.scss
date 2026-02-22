@@ -1,25 +1,28 @@
 .filtersBar {
-    padding: 16px 32px;
+    padding: 16px 24px;
     background: #fff;
     border: 1px solid #edf1f7;
-    border-radius: 24px;
+    border-radius: 16px;
     display: flex;
-    align-items: center;
-    gap: 24px;
-    box-shadow: 0 10px 40px rgba(78, 91, 217, 0.06);
+    align-items: flex-end;
+    gap: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
     flex-wrap: wrap;
     width: 100%;
 }
 
 .leftSection {
     display: flex;
-    align-items: center;
-    gap: 24px;
+    align-items: flex-end;
+    gap: 16px;
     flex: 1;
+    flex-wrap: wrap;
 }
 
 .rightSection {
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: 16px;
+    margin-bottom: 4px;
+    /* offset to align with select inputs vertically */
 }

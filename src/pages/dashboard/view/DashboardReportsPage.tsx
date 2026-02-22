@@ -139,34 +139,38 @@ export const DashboardReportsPage: React.FC = () => {
                 <div className={styles.mainContentArea}>
                     <div className={styles.section}>
                         <h2>{t('dashboard.efficiency.departments')}</h2>
-                        <div className={styles.histograms}>
-                            {dashboardData?.efficiencyDept.map((dept, i) => (
-                                <div key={i} className={styles.histoCol}>
-                                    <div className={styles.verticalStackedBar}>
-                                        <div className={styles.vSegment} style={{ height: `${dept.productive}%`, backgroundColor: 'var(--color-productive)' }} />
-                                        <div className={styles.vSegment} style={{ height: `${dept.neutral}%`, backgroundColor: 'var(--color-neutral)' }} />
-                                        <div className={styles.vSegment} style={{ height: `${dept.unproductive}%`, backgroundColor: 'var(--color-unproductive)' }} />
-                                        <div className={styles.vSegment} style={{ height: `${dept.uncategorized}%`, backgroundColor: 'var(--color-uncategorized)' }} />
-                                        <div className={styles.vSegment} style={{ height: `${dept.idle}%`, backgroundColor: 'var(--color-idle)' }} />
-                                    </div>
-                                    <span className={styles.histoLabel}>{dept.name}</span>
+                        <div className={styles.efficiencyMainContent}>
+                            <div className={styles.legendContainer}>
+                                <div className={styles.legend}>
+                                    <div className={styles.legendItem}><span style={{ backgroundColor: 'var(--color-productive)' }} />{t('dashboard.efficiency.legend.productive')}</div>
+                                    <div className={styles.legendItem}><span style={{ backgroundColor: 'var(--color-neutral)' }} />{t('dashboard.efficiency.legend.neutral')}</div>
+                                    <div className={styles.legendItem}><span style={{ backgroundColor: 'var(--color-unproductive)' }} />{t('dashboard.efficiency.legend.unproductive')}</div>
+                                    <div className={styles.legendItem}><span style={{ backgroundColor: 'var(--color-uncategorized)' }} />{t('dashboard.efficiency.legend.uncategorized')}</div>
+                                    <div className={styles.legendItem}><span style={{ backgroundColor: 'var(--color-idle)' }} />{t('dashboard.efficiency.legend.idle')}</div>
                                 </div>
-                            ))}
-                        </div>
-                        <div className={styles.legend}>
-                            <div className={styles.legendItem}><span style={{ backgroundColor: 'var(--color-productive)' }} />{t('dashboard.efficiency.legend.productive')}</div>
-                            <div className={styles.legendItem}><span style={{ backgroundColor: 'var(--color-neutral)' }} />{t('dashboard.efficiency.legend.neutral')}</div>
-                            <div className={styles.legendItem}><span style={{ backgroundColor: 'var(--color-unproductive)' }} />{t('dashboard.efficiency.legend.unproductive')}</div>
-                            <div className={styles.legendItem}><span style={{ backgroundColor: 'var(--color-uncategorized)' }} />{t('dashboard.efficiency.legend.uncategorized')}</div>
-                            <div className={styles.legendItem}><span style={{ backgroundColor: 'var(--color-idle)' }} />{t('dashboard.efficiency.legend.idle')}</div>
-                        </div>
+                                <button
+                                    className={styles.detailedBtn}
+                                    onClick={() => setIsDetailedOpen(!isDetailedOpen)}
+                                >
+                                    {t('dashboard.efficiency.detailedReport')}
+                                </button>
+                            </div>
 
-                        <button
-                            className={styles.detailedBtn}
-                            onClick={() => setIsDetailedOpen(!isDetailedOpen)}
-                        >
-                            {t('dashboard.efficiency.detailedReport')}
-                        </button>
+                            <div className={styles.histograms}>
+                                {dashboardData?.efficiencyDept.map((dept, i) => (
+                                    <div key={i} className={styles.histoCol}>
+                                        <div className={styles.verticalStackedBar}>
+                                            <div className={styles.vSegment} style={{ height: `${dept.productive}%`, backgroundColor: 'var(--color-productive)' }} />
+                                            <div className={styles.vSegment} style={{ height: `${dept.neutral}%`, backgroundColor: 'var(--color-neutral)' }} />
+                                            <div className={styles.vSegment} style={{ height: `${dept.unproductive}%`, backgroundColor: 'var(--color-unproductive)' }} />
+                                            <div className={styles.vSegment} style={{ height: `${dept.uncategorized}%`, backgroundColor: 'var(--color-uncategorized)' }} />
+                                            <div className={styles.vSegment} style={{ height: `${dept.idle}%`, backgroundColor: 'var(--color-idle)' }} />
+                                        </div>
+                                        <span className={styles.histoLabel}>{dept.name}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
 
                         {isDetailedOpen && (
                             <div className={styles.detailedSection}>
@@ -198,44 +202,46 @@ export const DashboardReportsPage: React.FC = () => {
 
     const renderDynamicsTab = () => (
         <div className={styles.tabContent}>
+            <div className={styles.dynamicsHeader}>
+                <div className={styles.chartTopControls}>
+                    <div
+                        className={classNames(styles.typeOption, { [styles.active]: chartType === 'web' })}
+                        onClick={() => setChartType('web')}
+                    >
+                        {t('dashboard.filters.types.web')}
+                    </div>
+                    <div
+                        className={classNames(styles.typeOption, { [styles.active]: chartType === 'apps' })}
+                        onClick={() => setChartType('apps')}
+                    >
+                        {t('dashboard.filters.types.apps')}
+                    </div>
+                    <div
+                        className={classNames(styles.typeOption, styles.accent, { [styles.active]: chartType === 'all' })}
+                        onClick={() => setChartType('all')}
+                    >
+                        {t('dashboard.filters.types.total')}
+                    </div>
+                </div>
+
+                <div className={styles.infoBanner}>
+                    <div className={styles.infoIcon}>i</div>
+                    Данные в отчете по динамике усреднены
+                </div>
+            </div>
+
             <div className={styles.tabSplit}>
                 {renderDeptSidebar()}
 
                 <div className={styles.mainContentArea}>
-                    <div className={styles.chartTopControls}>
-                        <div
-                            className={classNames(styles.typeOption, { [styles.active]: chartType === 'web' })}
-                            onClick={() => setChartType('web')}
-                        >
-                            {t('dashboard.filters.types.web')}
-                        </div>
-                        <div
-                            className={classNames(styles.typeOption, { [styles.active]: chartType === 'apps' })}
-                            onClick={() => setChartType('apps')}
-                        >
-                            {t('dashboard.filters.types.apps')}
-                        </div>
-                        <div
-                            className={classNames(styles.typeOption, styles.accent, { [styles.active]: chartType === 'all' })}
-                            onClick={() => setChartType('all')}
-                        >
-                            {t('dashboard.filters.types.total')}
-                        </div>
-                    </div>
-
-                    <div className={styles.infoBanner}>
-                        <div className={styles.spinner} />
-                        {t('dashboard.common.loading')}
-                    </div>
-
                     <div className={styles.chartGrid}>
                         <div className={styles.yAxisLabels}>
-                            <span>0</span>
-                            <span>30 {t('dashboard.common.minutesShort')}</span>
-                            <span>60 {t('dashboard.common.minutesShort')}</span>
-                            <span>90 {t('dashboard.common.minutesShort')}</span>
-                            <span>120 {t('dashboard.common.minutesShort')}</span>
-                            <span>150 {t('dashboard.common.minutesShort')}</span>
+                            <span>0 сек</span>
+                            <span>10 сек</span>
+                            <span>20 сек</span>
+                            <span>30 сек</span>
+                            <span>40 сек</span>
+                            <span>50 сек</span>
                         </div>
                         {dashboardData?.dynamics[groupBy].map((d: any, i: number) => (
                             <div key={i} className={styles.chartBar}>
@@ -252,18 +258,18 @@ export const DashboardReportsPage: React.FC = () => {
                         <table className={styles.table}>
                             <thead>
                                 <tr>
-                                    <th>{t('dashboard.dynamics.groupBy')}</th>
-                                    <th>{t('dashboard.cards.unproductive')}</th>
-                                    <th>{t('dashboard.dynamics.uncategorized')}</th>
-                                    <th>{t('dashboard.cards.neutral')}</th>
-                                    <th>{t('dashboard.cards.productive')}</th>
-                                    <th>{t('dashboard.dynamics.totalActivity')}</th>
+                                    <th>Период</th>
+                                    <th className={styles.unproductiveHdr}>Непродуктивно</th>
+                                    <th className={styles.uncategorizedHdr}>Без категории</th>
+                                    <th className={styles.neutralHdr}>Нейтрально</th>
+                                    <th className={styles.productiveHdr}>Продуктивно</th>
+                                    <th>Общая активность</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {dashboardData?.dynamics[groupBy].map((d: any, i: number) => (
                                     <tr key={i}>
-                                        <td>{d.label}</td>
+                                        <td className={styles.periodCol}>{d.label} - {d.label.replace('00', '59')}</td>
                                         <td className={styles.unproductive}>00:00:00</td>
                                         <td className={styles.uncategorized}>00:00:00</td>
                                         <td className={styles.neutral}>00:00:00</td>

@@ -54,7 +54,7 @@
 
 .legendContainer {
     background: #fff;
-    padding: 12px 24px;
+    padding: 16px 32px;
     border-radius: 12px;
     border: 1px solid #edf1f7;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
@@ -75,15 +75,15 @@
 .controlsRow {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-end;
     gap: 20px;
     flex-wrap: wrap;
 }
 
 .leftGroup {
     display: flex;
-    align-items: center;
-    gap: 24px;
+    align-items: flex-end;
+    gap: 32px;
 }
 
 .monthNav {
@@ -94,6 +94,7 @@
     background: #f8fafc;
     border-radius: 50px;
     border: 1px solid #f1f5f9;
+    height: 48px;
 
     .navBtn {
         width: 36px;
@@ -122,7 +123,7 @@
 
     .currentMonth {
         font-weight: 750;
-        font-size: 14px;
+        font-size: 15px;
         color: #1a1f4d;
         min-width: 140px;
         text-align: center;
@@ -134,14 +135,15 @@
     background: #f5f3ff;
     color: #4e5bd9;
     border: 1.5px solid #e0e7ff;
-    padding: 8px 16px;
+    padding: 0 24px;
+    height: 48px;
     border-radius: 10px;
     font-weight: 750;
-    font-size: 13px;
+    font-size: 14px;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     transition: all 0.25s;
 
     &:hover {
@@ -162,26 +164,27 @@
 .legend {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 24px;
     padding-top: 4px;
+    width: 100%;
 
     .legendItem {
         display: flex;
         align-items: center;
-        gap: 8px;
-        font-size: 11px;
+        gap: 10px;
+        font-size: 14px;
         font-weight: 750;
         color: #64748b;
-        padding: 4px 10px;
-        border-radius: 20px;
+        padding: 8px 16px;
+        border-radius: 30px;
         background: #f8fafc;
         border: 1px solid #f1f5f9;
 
         .dot {
-            width: 6px;
-            height: 6px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
 
             &.vacation {

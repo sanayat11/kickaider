@@ -544,24 +544,32 @@
     border-bottom: 2px solid #f0f2f7;
     display: flex;
     align-items: flex-end;
-    gap: 8px;
+    justify-content: space-around;
+    gap: 16px;
     padding: 0 20px;
     position: relative;
-    margin-top: 10px;
-    margin-bottom: 60px;
+    margin-top: 20px;
+    margin-left: 70px;
+    margin-bottom: 90px;
+    background-size: 100% 60px;
+    background-image: linear-gradient(to bottom, #f8faff 1px, transparent 1px);
 
     .yAxisLabels {
         position: absolute;
-        left: -60px;
+        left: -80px;
         height: 100%;
         display: flex;
         flex-direction: column-reverse;
         justify-content: space-between;
         font-size: 0.8rem;
         color: #8a91b4;
-        padding-bottom: 5px;
+        padding-bottom: 0px;
         text-align: right;
-        width: 50px;
+        width: 70px;
+
+        span {
+            transform: translateY(50%);
+        }
     }
 }
 
@@ -573,23 +581,47 @@
     height: 100%;
     justify-content: flex-start;
     position: relative;
+    cursor: pointer;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+        transform: translateY(-4px) scale(1.05);
+        z-index: 10;
+
+        .segment {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+    }
 
     .segment {
         width: 100%;
-        border-radius: 2px;
+        border-radius: 4px;
+        transition: all 0.2s;
+        border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     .label {
         position: absolute;
-        bottom: -32px;
+        bottom: -24px;
         font-size: 0.75rem;
         color: #8a91b4;
         font-weight: 700;
         white-space: nowrap;
         left: 50%;
-        transform: translateX(-50%) rotate(-45deg);
-        transform-origin: top right;
+        transform: translateX(-50%);
+        transition: color 0.2s;
     }
+
+    &:hover .label {
+        color: var(--color-accent);
+    }
+}
+
+.dynamicsHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 8px;
 }
 
 .tableSection {
@@ -617,21 +649,30 @@
         padding: 16px;
         border-bottom: 1px solid #f8faff;
         font-weight: 600;
+
+        &.periodCol {
+            color: #1e2456;
+            font-weight: 700;
+        }
     }
 
-    .unproductive {
+    .unproductive,
+    .unproductiveHdr {
         color: var(--color-unproductive);
     }
 
-    .uncategorized {
+    .uncategorized,
+    .uncategorizedHdr {
         color: #8a91b4;
     }
 
-    .neutral {
+    .neutral,
+    .neutralHdr {
         color: #f59e0b;
     }
 
-    .productive {
+    .productive,
+    .productiveHdr {
         color: var(--color-productive);
     }
 
@@ -641,16 +682,74 @@
     }
 }
 
+.efficiencyMainContent {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 32px;
+}
+
+.legendContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-right: 40px;
+    align-self: flex-end;
+}
+
+.legend {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    .legendItem {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.85rem;
+        color: #1a1f4d;
+        font-weight: 500;
+
+        span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: none;
+        }
+    }
+}
+
+.detailedBtn {
+    background: none;
+    border: none;
+    color: var(--color-accent);
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0;
+    margin-top: 4px;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    transition: all 0.2s;
+
+    &:hover {
+        text-decoration-color: var(--color-accent);
+    }
+}
+
 .histograms {
     display: flex;
     gap: 40px;
     height: 300px;
     align-items: flex-end;
-    margin-bottom: 32px;
+    flex: 1;
+    justify-content: flex-end;
 }
 
 .histoCol {
     flex: 1;
+    max-width: 60px;
     display: flex;
     flex-direction: column;
     align-items: center;

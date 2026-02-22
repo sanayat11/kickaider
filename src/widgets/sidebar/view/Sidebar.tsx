@@ -12,6 +12,7 @@ import {
     IoBusinessOutline,
     IoBarChartOutline
 } from 'react-icons/io5';
+import logoUrl from '@/shared/assets/images/logo.svg';
 import styles from './Sidebar.module.scss';
 
 interface SidebarItemProps {
@@ -105,6 +106,12 @@ export const Sidebar: React.FC = () => {
     return (
         <aside className={classNames(styles.sidebar, { [styles.collapsed]: collapsed })}>
             <div className={styles.header}>
+                {!collapsed && (
+                    <div className={styles.brand}>
+                        <img src={logoUrl} alt="KickAider Logo" className={styles.logo} />
+                        <span className={styles.brandName}>KickAider</span>
+                    </div>
+                )}
                 <button className={styles.toggleBtn} onClick={toggleCollapse}>
                     {collapsed ? <IoMenuOutline /> : <IoCloseOutline />}
                 </button>

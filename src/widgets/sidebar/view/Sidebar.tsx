@@ -7,7 +7,10 @@ import {
     IoDocumentTextOutline,
     IoChevronDownOutline,
     IoMenuOutline,
-    IoCloseOutline
+    IoCloseOutline,
+    IoCalendarOutline,
+    IoBusinessOutline,
+    IoBarChartOutline
 } from 'react-icons/io5';
 import styles from './Sidebar.module.scss';
 
@@ -125,6 +128,22 @@ export const Sidebar: React.FC = () => {
                         active={location.pathname === paths.DASHBOARD_SETTINGS}
                         onClick={() => handleItemClick('settings-1', false, paths.DASHBOARD_SETTINGS)}
                     />
+                    <SidebarItem
+                        id="settings-schedules"
+                        icon={IoCalendarOutline}
+                        label="Рабочие графики"
+                        collapsed={collapsed}
+                        active={location.pathname === paths.DASHBOARD_WORK_SCHEDULES}
+                        onClick={() => handleItemClick('settings-schedules', false, paths.DASHBOARD_WORK_SCHEDULES)}
+                    />
+                    <SidebarItem
+                        id="settings-org-structure"
+                        icon={IoBusinessOutline}
+                        label="Структура организации"
+                        collapsed={collapsed}
+                        active={location.pathname === paths.DASHBOARD_ORG_STRUCTURE}
+                        onClick={() => handleItemClick('settings-org-structure', false, paths.DASHBOARD_ORG_STRUCTURE)}
+                    />
                 </SidebarItem>
 
                 <SidebarItem
@@ -138,14 +157,30 @@ export const Sidebar: React.FC = () => {
                 >
                     <SidebarItem
                         id="reports-1"
-                        icon={IoDocumentTextOutline}
-                        label="Отчеты"
-                        collapsed={collapsed}
-                        active={location.pathname === paths.DASHBOARD_REPORTS}
-                        onClick={() => handleItemClick('reports-1', false, paths.DASHBOARD_REPORTS)}
-                    />
-                </SidebarItem>
-            </nav>
-        </aside>
-    );
-};
+                            icon={IoDocumentTextOutline}
+                            label="Отчеты"
+                            collapsed={collapsed}
+                            active={location.pathname === paths.DASHBOARD_REPORTS}
+                            onClick={() => handleItemClick('reports-1', false, paths.DASHBOARD_REPORTS)}
+                        />
+                        <SidebarItem
+                            id="reports-day-details"
+                            icon={IoCalendarOutline}
+                            label="Детали дня"
+                            collapsed={collapsed}
+                            active={location.pathname === paths.DASHBOARD_DAY_DETAILS}
+                            onClick={() => handleItemClick('reports-day-details', false, paths.DASHBOARD_DAY_DETAILS)}
+                        />
+                        <SidebarItem
+                            id="reports-employee-rating"
+                            icon={IoBarChartOutline}
+                            label="Рейтинг сотрудников"
+                            collapsed={collapsed}
+                            active={location.pathname === paths.DASHBOARD_EMPLOYEE_RATING}
+                            onClick={() => handleItemClick('reports-employee-rating', false, paths.DASHBOARD_EMPLOYEE_RATING)}
+                        />
+                    </SidebarItem>
+                </nav>
+            </aside>
+        );
+    };

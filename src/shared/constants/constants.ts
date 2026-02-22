@@ -3,5 +3,9 @@ export const paths = {
   DASHBOARD: '/dashboard',
   DASHBOARD_SETTINGS: '/dashboard/settings',
   DASHBOARD_REPORTS: '/dashboard/reports',
+  DASHBOARD_DAY_DETAILS: '/dashboard/day-details',
+  DASHBOARD_EMPLOYEE_RATING: '/dashboard/employee-rating',
+  DASHBOARD_WORK_SCHEDULES: '/dashboard/settings/work-schedules',
+  DASHBOARD_ORG_STRUCTURE: '/dashboard/settings/org-structure',
   AUTH: '/auth',
 };

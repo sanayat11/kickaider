@@ -1,4 +1,12 @@
 {
+    "nav": {
+        "reports": {
+            "activity": "История активности"
+        },
+        "settings": {
+            "general": "Общие настройки"
+        }
+    },
     "header": {
         "aboutCompany": "О компании",
         "features": "Возможности",
@@ -160,5 +168,211 @@
         "boost": "продуктивность",
         "slider": "слайдер",
         "members": "клиенты"
+    },
+    "reports": {
+        "workTime": {
+            "title": "Рабочее время",
+            "subtitle": "Контроль дисциплины и рабочего графика",
+            "filters": {
+                "period": "Период",
+                "employee": "Сотрудник",
+                "grouping": "Группировка",
+                "filter": "Фильтр",
+                "onlyWorkTime": "Только рабочее время",
+                "byEmployee": "По сотруднику",
+                "byDepartment": "По отделу",
+                "all": "Все",
+                "withLateness": "С опозданиями",
+                "withAbsences": "С прогулами"
+            },
+            "cards": {
+                "lateness": "Опоздания",
+                "earlyLeaves": "Ранние уходы",
+                "timeAtWork": "Время на работе",
+                "absences": "Прогулы",
+                "trips": "Командировки",
+                "vacations": "Отпуска",
+                "sickLeaves": "Больничные",
+                "avgDayDuration": "Средняя прод. дня",
+                "workDays": "Рабочие дни"
+            },
+            "table": {
+                "employee": "Сотрудник",
+                "department": "Отдел",
+                "firstActivity": "Первая активность",
+                "lastActivity": "Последняя активность",
+                "timeAtWork": "Время на работе",
+                "lateness": "Опоздание (мин)",
+                "earlyLeave": "Ранний уход (мин)",
+                "productiveTime": "Продуктивно",
+                "idleTime": "Простой",
+                "status": "Статус",
+                "hostname": "Hostname",
+                "columns": "Столбцы"
+            }
+        }
+    },
+    "activity": {
+        "timeline": {
+            "title": "История активности",
+            "subtitle": "Таймлайн активности сотрудников за день",
+            "filters": {
+                "date": "Дата",
+                "departments": "Отделы",
+                "timeMode": "Режим времени",
+                "scale": "Масштаб",
+                "searchApp": "Поиск по приложению"
+            },
+            "legend": {
+                "productive": "Продуктивно",
+                "neutral": "Нейтрально",
+                "unproductive": "Непродуктивно",
+                "uncategorized": "Без категории",
+                "idle": "Бездействие",
+                "nodata": "Нет данных"
+            },
+            "popover": {
+                "productivity": "Продуктивность",
+                "activity": "Активность",
+                "idle": "Простой",
+                "moreDetails": "Подробнее"
+            },
+            "tooltip": {
+                "url": "URL",
+                "app": "Приложение"
+            }
+        },
+        "details": {
+            "titleParts": {
+                "date": "Дата",
+                "department": "Отдел",
+                "employee": "Сотрудник",
+                "hostname": "Hostname"
+            },
+            "back": "← Назад к таймлайну",
+            "view": {
+                "short": "Краткий вид",
+                "full": "Полный вид"
+            },
+            "columns": {
+                "period": "Период",
+                "activity": "Активность",
+                "idle": "Простой",
+                "programs": "Программы/Сайты",
+                "url": "URL",
+                "screenshot": "Скриншот"
+            },
+            "idleRow": "Бездействие",
+            "search": "Поиск по приложениям..."
+        }
+    },
+    "common": {
+        "reset": "Сбросить",
+        "search": "Поиск",
+        "loading": "Загрузка...",
+        "noData": "Нет данных",
+        "error": "Ошибка при загрузке данных",
+        "confirmResetAll": "Сбросить все ручные правила?",
+        "save": "Сохранить",
+        "cancel": "Отмена",
+        "delete": "Удалить",
+        "confirmDelete": "Вы уверены, что хотите удалить этот элемент?",
+        "success": "Успешно сохранено",
+        "days": {
+            "mon": "ПН",
+            "tue": "ВТ",
+            "wed": "СР",
+            "thu": "ЧТ",
+            "fri": "ПТ",
+            "sat": "СБ",
+            "sun": "ВС"
+        }
+    },
+    "sidebar": {
+        "settings": "Настройки",
+        "reports": "Отчеты",
+        "workTime": "Рабочее время",
+        "activityHistory": "История активности",
+        "categorization": "Категоризация",
+        "calendar": "Производственный календарь"
+    },
+    "settings": {
+        "categorization": {
+            "title": "Категоризация приложений",
+            "subtitle": "Управление продуктивностью сайтов и программ",
+            "searchPlaceholder": "Поиск по названию...",
+            "resetManual": "Сбросить ручные правила",
+            "noMatches": "Ничего не найдено по вашему запросу",
+            "filter": {
+                "all": "Все",
+                "uncategorized": "Без категории",
+                "manualOnly": "Только ручные",
+                "web": "Сайты",
+                "apps": "Программы"
+            },
+            "table": {
+                "name": "Сайт/Программа",
+                "category": "Категория",
+                "source": "Источник",
+                "actions": "Действия"
+            },
+            "source": {
+                "hardcoded": "Хардкод",
+                "manual": "Ручной"
+            }
+        },
+        "calendar": {
+            "title": "Производственный календарь",
+            "subtitle": "Планирование отсутствий и статусов сотрудников",
+            "month": "Месяц",
+            "employee": "Сотрудник",
+            "allEmployees": "Компания (все)",
+            "massAssign": "Массовое назначение",
+            "from": "С",
+            "to": "По",
+            "apply": "Применить",
+            "status": {
+                "vacation": "Отпуск",
+                "sick": "Больничный",
+                "trip": "Командировка",
+                "absence": "Прогул"
+            },
+            "reset": "Сбросить",
+            "selectEmployee": "Выберите сотрудника"
+        },
+        "general": {
+            "title": "Общие настройки",
+            "timezone": "Часовой пояс",
+            "language": "Язык интерфейса",
+            "idleThreshold": "Порог бездействия (сек)",
+            "lateTolerance": "Допуск опоздания (мин)",
+            "save": "Сохранить настройки"
+        },
+        "accounts": {
+            "title": "Учётные записи администраторов",
+            "login": "Логин",
+            "createdAt": "Создан",
+            "create": "Создать аккаунт",
+            "changePassword": "Сменить пароль",
+            "delete": "Удалить",
+            "modal": {
+                "title": "Новый администратор",
+                "login": "Логин",
+                "password": "Пароль"
+            }
+        },
+        "agentStop": {
+            "title": "Генерация пароля для остановки агента",
+            "generate": "Сгенерировать пароль",
+            "password": "Пароль",
+            "copy": "Копировать",
+            "employee": "Сотрудник"
+        }
+    },
+    "categories": {
+        "productive": "Продуктивно",
+        "unproductive": "Непродуктивно",
+        "neutral": "Нейтрально",
+        "uncategorized": "Без категории"
     }
 }

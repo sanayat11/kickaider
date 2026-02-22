@@ -1,0 +1,1 @@
+export { ActivityDetailsPage } from './view/ActivityDetailsPage';

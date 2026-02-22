@@ -1,13 +1,21 @@
 {
+    "nav": {
+        "reports": {
+            "activity": "Activity History"
+        },
+        "settings": {
+            "general": "General Settings"
+        }
+    },
     "header": {
-        "aboutCompany": "About company",
+        "aboutCompany": "About",
         "features": "Features",
         "faq": "FAQ",
         "login": "Login"
     },
     "dashboard": {
         "title": "Basic Reports",
-        "subtitle": "General analytical overview by company or employee",
+        "subtitle": "General analytical overview of the company or employee",
         "tabs": {
             "time": "Time",
             "efficiency": "Efficiency",
@@ -17,7 +25,7 @@
             "period": "Period",
             "employee": "Employee",
             "contentType": "Content Type",
-            "onlyWorkTime": "Only work time",
+            "onlyWorkTime": "Only Work Time",
             "periods": {
                 "day": "Day",
                 "week": "Week",
@@ -27,7 +35,7 @@
             },
             "types": {
                 "all": "Total",
-                "web": "Web pages",
+                "web": "Web Pages",
                 "apps": "Programs",
                 "total": "Total"
             }
@@ -41,12 +49,12 @@
             "unproductive": "Unproductive"
         },
         "topApps": {
-            "title": "Top 5 Apps",
-            "sortByTime": "By time",
-            "sortByAlphabet": "By alphabet"
+            "title": "Top 5 Applications",
+            "sortByTime": "By Time",
+            "sortByAlphabet": "By Alphabet"
         },
         "efficiency": {
-            "departments": "Department Histograms",
+            "departments": "Histograms by Departments",
             "detailedReport": "Detailed Report",
             "legend": {
                 "productive": "Productive",
@@ -61,7 +69,7 @@
             "day": "Day",
             "week": "Week",
             "uncategorized": "Uncategorized",
-            "totalActivity": "Total activity"
+            "totalActivity": "Total Activity"
         },
         "common": {
             "exportXls": "Export XLS",
@@ -81,84 +89,284 @@
         }
     },
     "hero": {
-        "title": "Control work time. Increase team productivity.",
-        "description": "KickAider automatically tracks employee activity, detects late arrivals and idle time — without manual reports or extra questions.",
+        "title": "Control working time. Boost team efficiency.",
+        "description": "KickAider automatically tracks employee activity, records lateness and idle time - no extra questions or manual reports.",
         "button": "Login"
     },
     "aboutCompany": {
-        "title": "About company",
-        "text": "KickAider is an employee time monitoring system. The agent is installed once on a computer and runs in the background collecting activity data: which apps and websites are open, mouse movement, and keyboard activity. Managers see everything in a convenient web dashboard — anytime, from any device.",
-        "description": "We created KickAider for teams that value transparency: no real-time surveillance, only objective working time data."
+        "title": "About Company",
+        "text": "KickAider is an employee working time monitoring system. The agent is installed on the computer once and collects activity data in background: what applications and websites are open, whether there are mouse movements and keystrokes. The manager sees everything in a convenient web panel - anytime, from any device.",
+        "description": "We created KickAider for teams that value transparency: without real-time tracking, only objective data on working time."
     },
     "features": {
-        "title": "Increase team productivity",
-        "description": "See how work time is actually used. KickAider automatically collects data and turns it into clear reports — without surveys, spreadsheets, or guesswork.",
+        "title": "Boost Team Productivity",
+        "description": "Learn how working time is actually used. KickAider collects data automatically and turns it into clear reports - without surveys, tables and guesses.",
         "cards": {
             "basicReports": {
-                "title": "Basic reports",
-                "description": "Company-wide analytics: top apps and websites, active vs idle time ratio. Filter by departments and employees."
+                "title": "Basic Reports",
+                "description": "Summary analytics for the whole company: top applications and sites, active time and idle time ratio. Filter by departments and employees."
             },
             "activityHistory": {
-                "title": "Activity history",
-                "description": "Minute-level timeline for every employee. Screenshots are captured automatically when switching apps — so you can always reconstruct the day."
+                "title": "Activity History",
+                "description": "Timeline of each employee down to the minute. Screenshots are recorded automatically when switching applications — the picture of the day can always be restored."
             },
             "ratingAndDetails": {
-                "title": "Ratings and daily details",
-                "description": "Employee efficiency ranking and detailed breakdown of each workday: arrival time, active time, and apps used."
+                "title": "Rating and Day Details",
+                "description": "Employee performance ratings, detailed breakdown of each workday: when they arrived, how long they were active, what applications they used."
             },
             "insightsAndRecommendations": {
-                "title": "Insights and recommendations",
-                "description": "The system detects productivity patterns, highlights time-loss areas, and provides actionable recommendations to improve team efficiency."
+                "title": "Insights and Recommendations",
+                "description": "The system identifies productivity patterns, shows time loss areas and offers specific recommendations for team efficiency growth."
             }
         }
     },
     "carousel": {
-        "title": "Everything under control — in real time",
-        "text": "Employee online statuses, alerts about lateness or long idle time, and timesheets with schedules — KickAider provides a complete picture without extra effort."
+        "title": "Everything Under Control - in Real Time",
+        "text": "Employee online statuses, alerts for lateness or long idle time, working time report based on schedule - KickAider provides a full picture without extra actions."
     },
     "clients": {
-        "title": "Trusted by managers",
-        "text": "KickAider is used by companies that value transparent time analytics — without complex setup or IT departments."
+        "title": "Trusted by Leaders",
+        "text": "KickAider is used by companies that value honest working time analytics - without complex settings and IT departments."
     },
     "faq": {
-        "title": "Frequently asked questions",
-        "description": "Answers to the most common questions about KickAider.",
+        "title": "Frequently Asked Questions",
+        "description": "Answers to the most popular questions about KickAider.",
         "questions": [
             {
-                "question": "How is the agent installed on an employee computer?",
-                "answer": "The agent is installed once on the employee’s Windows computer. After installation, it runs in the background and automatically sends data to the company server."
+                "question": "How is the agent installed on the employee's computer?",
+                "answer": "The agent is installed once on the employee's Windows computer. After installation, it works in the background and automatically sends data to the company server."
             },
             {
-                "question": "Do employees know they are being monitored?",
-                "answer": "This can be configured. The agent can run in a visible mode (employees know about the system) or hidden mode — depending on manager preference."
+                "question": "Do employees see they are being observed?",
+                "answer": "This is configurable. The agent can work in open mode (employees know about the system) or stealth mode - at the manager's discretion."
             },
             {
-                "question": "Is data stored on KickAider servers?",
-                "answer": "No. KickAider is deployed on your company infrastructure. All data is stored on your side — we do not have access to it."
+                "question": "Is the data stored on KickAider servers?",
+                "answer": "No. KickAider is deployed on your company infrastructure. All data is stored with you - we have no access to it."
             },
             {
-                "question": "Which operating systems are supported?",
-                "answer": "The agent works on Windows. The manager web dashboard is accessible from any browser on any device."
+                "question": "What operating systems are supported?",
+                "answer": "The agent works on Windows. The web dashboard for the manager is available through any browser on any device."
             }
         ]
     },
     "aboutSection": {
-        "title": "About company",
-        "subtitle": "KickAider is an employee time monitoring system installed once that automatically collects objective activity data. Managers receive transparent analytics in a convenient web dashboard — without real-time surveillance."
+        "title": "About Company",
+        "subtitle": "KickAider is an employee working time monitoring system that is installed once and automatically collects objective activity data. Managers get transparent analytics in a convenient web panel — without real-time tracking."
     },
     "boost": {
-        "title": "Boost your <br /> productivity",
-        "text1": "See how work time is actually used. KickAider automatically collects employee activity data.",
-        "text2": "The system turns data into clear reports, identifies time loss, and helps managers make decisions to improve team efficiency."
+        "title": "Increase your <br /> productivity",
+        "text1": "Find out how working time is actually spent. KickAider automatically collects employee activity data.",
+        "text2": "The system turns data into clear reports, identifies time losses, and helps make decisions to grow team efficiency."
     },
     "members": {
-        "title": "Trusted by managers",
-        "subtitle": "KickAider is used by companies that value transparent time analytics, simple implementation, and objective data without complex setup."
+        "title": "Trusted by Leaders",
+        "subtitle": "KickAider is used by companies that value transparent working time analytics, simple implementation, and objective data without complex settings."
     },
     "subHeader": {
         "team": "team",
         "boost": "productivity",
         "slider": "slider",
         "members": "clients"
+    },
+    "reports": {
+        "workTime": {
+            "title": "Work Time",
+            "subtitle": "Discipline and work schedule control",
+            "filters": {
+                "period": "Period",
+                "employee": "Employee",
+                "grouping": "Grouping",
+                "filter": "Filter",
+                "onlyWorkTime": "Only Work Time",
+                "byEmployee": "By Employee",
+                "byDepartment": "By Department",
+                "all": "All",
+                "withLateness": "With Lateness",
+                "withAbsences": "With Absences"
+            },
+            "cards": {
+                "lateness": "Lateness",
+                "earlyLeaves": "Early Leaves",
+                "timeAtWork": "Time at Work",
+                "absences": "Absences",
+                "trips": "Trips",
+                "vacations": "Vacations",
+                "sickLeaves": "Sick Leaves",
+                "avgDayDuration": "Avg Day Duration",
+                "workDays": "Work Days"
+            },
+            "table": {
+                "employee": "Employee",
+                "department": "Department",
+                "firstActivity": "First Activity",
+                "lastActivity": "Last Activity",
+                "timeAtWork": "Time at Work",
+                "lateness": "Lateness (min)",
+                "earlyLeave": "Early Leave (min)",
+                "productiveTime": "Productive",
+                "idleTime": "Idle",
+                "status": "Status",
+                "hostname": "Hostname",
+                "columns": "Columns"
+            }
+        }
+    },
+    "activity": {
+        "timeline": {
+            "title": "Activity History",
+            "subtitle": "Timeline of employee activity for the day",
+            "filters": {
+                "date": "Date",
+                "departments": "Departments",
+                "timeMode": "Time Mode",
+                "scale": "Scale",
+                "searchApp": "Search by application"
+            },
+            "legend": {
+                "productive": "Productive",
+                "neutral": "Neutral",
+                "unproductive": "Unproductive",
+                "uncategorized": "Uncategorized",
+                "idle": "Inactivity",
+                "nodata": "No data"
+            },
+            "popover": {
+                "productivity": "Productivity",
+                "activity": "Activity",
+                "idle": "Idle",
+                "moreDetails": "Details"
+            },
+            "tooltip": {
+                "url": "URL",
+                "app": "Application"
+            }
+        },
+        "details": {
+            "titleParts": {
+                "date": "Date",
+                "department": "Department",
+                "employee": "Employee",
+                "hostname": "Hostname"
+            },
+            "back": "← Back to Timeline",
+            "view": {
+                "short": "Short View",
+                "full": "Full View"
+            },
+            "columns": {
+                "period": "Period",
+                "activity": "Activity",
+                "idle": "Idle",
+                "programs": "Programs/Sites",
+                "url": "URL",
+                "screenshot": "Screenshot"
+            },
+            "idleRow": "Inactivity",
+            "search": "Search apps..."
+        }
+    },
+    "common": {
+        "reset": "Reset",
+        "search": "Search",
+        "loading": "Loading...",
+        "noData": "No data",
+        "error": "Data loading error",
+        "confirmResetAll": "Reset all manual rules?",
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "confirmDelete": "Are you sure you want to delete this item?",
+        "success": "Saved successfully",
+        "days": {
+            "mon": "MON",
+            "tue": "TUE",
+            "wed": "WED",
+            "thu": "THU",
+            "fri": "FRI",
+            "sat": "SAT",
+            "sun": "SUN"
+        }
+    },
+    "sidebar": {
+        "settings": "Settings",
+        "reports": "Reports",
+        "workTime": "Work Time",
+        "activityHistory": "Activity History",
+        "categorization": "Categorization",
+        "calendar": "Production Calendar"
+    },
+    "settings": {
+        "categorization": {
+            "title": "App Categorization",
+            "subtitle": "Manage productivity for websites and programs",
+            "searchPlaceholder": "Search by name...",
+            "resetManual": "Reset manual rules",
+            "noMatches": "No matches found for your query",
+            "filter": {
+                "all": "All",
+                "uncategorized": "Uncategorized",
+                "manualOnly": "Manual only",
+                "web": "Websites",
+                "apps": "Programs"
+            },
+            "table": {
+                "name": "Website/Program",
+                "category": "Category",
+                "source": "Source",
+                "actions": "Actions"
+            },
+            "source": {
+                "hardcoded": "Hardcoded",
+                "manual": "Manual"
+            }
+        },
+        "calendar": {
+            "title": "Production Calendar",
+            "subtitle": "Manage employee absences and statuses",
+            "month": "Month",
+            "employee": "Employee",
+            "allEmployees": "Company (all)",
+            "massAssign": "Mass Assign",
+            "from": "From",
+            "to": "To",
+            "apply": "Apply",
+            "status": {
+                "vacation": "Vacation",
+                "sick": "Sick leave",
+                "trip": "Business trip",
+                "absence": "Absence"
+            },
+            "reset": "Reset",
+            "selectEmployee": "Select Employee"
+        },
+        "general": {
+            "title": "General Settings",
+            "timezone": "Timezone",
+            "language": "Interface Language",
+            "idleThreshold": "Idle Threshold (sec)",
+            "lateTolerance": "Late Tolerance (min)",
+            "save": "Save Settings"
+        },
+        "accounts": {
+            "title": "Admin Accounts",
+            "login": "Login",
+            "createdAt": "Created At",
+            "create": "Create Account",
+            "changePassword": "Change Password",
+            "delete": "Delete",
+            "modal": {
+                "title": "New Admin Account",
+                "login": "Login",
+                "password": "Password"
+            }
+        },
+        "agentStop": {
+            "title": "Agent Stop Password Generation",
+            "generate": "Generate Password",
+            "password": "Password",
+            "copy": "Copy",
+            "employee": "Employee"
+        }
     }
 }

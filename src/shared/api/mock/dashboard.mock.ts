@@ -73,7 +73,7 @@ export const dashboardApi = {
         return new Promise((resolve) => {
             setTimeout(() => {
                 resolve(MOCK_DASHBOARD_DATA);
-            }, 600); // Artificial delay
+            }, 600); 
         });
     },
 

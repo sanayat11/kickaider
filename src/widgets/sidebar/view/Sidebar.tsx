@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { paths } from '@/shared/constants/constants';
 import classNames from 'classnames';
 import {
@@ -7,7 +8,9 @@ import {
     IoDocumentTextOutline,
     IoChevronDownOutline,
     IoMenuOutline,
-    IoCloseOutline
+    IoCloseOutline,
+    IoTimeOutline,
+    IoCalendarOutline
 } from 'react-icons/io5';
 import styles from './Sidebar.module.scss';
 
@@ -75,11 +78,18 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
 };
 
 export const Sidebar: React.FC = () => {
-    const [collapsed, setCollapsed] = useState(false);
-    const [openMenus, setOpenMenus] = useState<string[]>(['settings', 'reports']);
-
+    const { t } = useTranslation();
     const location = useLocation();
     const navigate = useNavigate();
+
+    const [collapsed, setCollapsed] = useState(false);
+    const [openMenus, setOpenMenus] = useState<string[]>(() => {
+        const initial = ['settings', 'reports'];
+        if (location.pathname === paths.ACTIVITY) {
+            if (!initial.includes('reports')) initial.push('reports');
+        }
+        return initial;
+    });
 
     const toggleCollapse = () => setCollapsed(!collapsed);
 
@@ -111,7 +121,7 @@ export const Sidebar: React.FC = () => {
                 <SidebarItem
                     id="settings"
                     icon={IoSettingsOutline}
-                    label="Настройки"
+                    label={t('sidebar.settings')}
                     collapsed={collapsed}
                     hasSubmenu
                     isOpen={openMenus.includes('settings')}
@@ -120,17 +130,41 @@ export const Sidebar: React.FC = () => {
                     <SidebarItem
                         id="settings-1"
                         icon={IoSettingsOutline}
-                        label="Настройки"
+                        label={t('sidebar.settings')}
                         collapsed={collapsed}
                         active={location.pathname === paths.DASHBOARD_SETTINGS}
                         onClick={() => handleItemClick('settings-1', false, paths.DASHBOARD_SETTINGS)}
+                    />
+                    <SidebarItem
+                        id="settings-categorization"
+                        icon={IoTimeOutline}
+                        label={t('sidebar.categorization')}
+                        collapsed={collapsed}
+                        active={location.pathname === paths.CATEGORIZATION}
+                        onClick={() => handleItemClick('settings-categorization', false, paths.CATEGORIZATION)}
+                    />
+                    <SidebarItem
+                        id="settings-calendar"
+                        icon={IoCalendarOutline}
+                        label={t('sidebar.calendar')}
+                        collapsed={collapsed}
+                        active={location.pathname.startsWith(paths.CALENDAR)}
+                        onClick={() => handleItemClick('settings-calendar', false, paths.CALENDAR)}
+                    />
+                    <SidebarItem
+                        id="settings-general"
+                        icon={IoSettingsOutline}
+                        label={t('nav.settings.general')}
+                        collapsed={collapsed}
+                        active={location.pathname === paths.SETTINGS}
+                        onClick={() => handleItemClick('settings-general', false, paths.SETTINGS)}
                     />
                 </SidebarItem>
 
                 <SidebarItem
                     id="reports"
                     icon={IoDocumentTextOutline}
-                    label="Отчеты"
+                    label={t('sidebar.reports')}
                     collapsed={collapsed}
                     hasSubmenu
                     isOpen={openMenus.includes('reports')}
@@ -139,10 +173,26 @@ export const Sidebar: React.FC = () => {
                     <SidebarItem
                         id="reports-1"
                         icon={IoDocumentTextOutline}
-                        label="Отчеты"
+                        label={t('sidebar.reports')}
                         collapsed={collapsed}
                         active={location.pathname === paths.DASHBOARD_REPORTS}
                         onClick={() => handleItemClick('reports-1', false, paths.DASHBOARD_REPORTS)}
+                    />
+                    <SidebarItem
+                        id="reports-work-time"
+                        icon={IoDocumentTextOutline}
+                        label={t('sidebar.workTime')}
+                        collapsed={collapsed}
+                        active={location.pathname === paths.WORK_TIME}
+                        onClick={() => handleItemClick('reports-work-time', false, paths.WORK_TIME)}
+                    />
+                    <SidebarItem
+                        id="reports-activity"
+                        icon={IoTimeOutline}
+                        label={t('nav.reports.activity')}
+                        collapsed={collapsed}
+                        active={location.pathname.startsWith(paths.ACTIVITY)}
+                        onClick={() => handleItemClick('reports-activity', false, paths.ACTIVITY)}
                     />
                 </SidebarItem>
             </nav>

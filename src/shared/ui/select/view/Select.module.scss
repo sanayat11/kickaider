@@ -1,0 +1,44 @@
+.selectWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #8a91b4;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.select {
+    background: #f8faff;
+    border: 1px solid #f0f2f7;
+    color: #1e2456;
+    padding: 10px 16px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%238a91b4%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+    transition: all 0.2s ease;
+    min-width: 120px;
+
+    &:hover {
+        border-color: #4e5bd9;
+        background-color: #fff;
+        box-shadow: 0 4px 12px rgba(78, 91, 217, 0.05);
+    }
+
+    &:focus {
+        border-color: #4e5bd9;
+        background-color: #fff;
+        box-shadow: 0 4px 15px rgba(78, 91, 217, 0.1);
+    }
+}

@@ -103,6 +103,9 @@
     border: 1px solid #edf1f7;
     box-shadow: 0 10px 40px rgba(78, 91, 217, 0.04);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* allow it to grow */
 }
 
 .legendRow {
@@ -587,6 +590,71 @@
         left: 14px;
         top: 50%;
         transform: translateY(-50%);
+        color: #8a91b4;
+    }
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-top: 1px solid #edf1f7;
+    background-color: #fff;
+    border-radius: 0 0 20px 20px;
+}
+
+.pageInfo {
+    font-size: 13px;
+    color: #8a91b4;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.perPageSelect {
+    background-color: #ffffff;
+    color: #1a1f4d;
+    border: 1px solid #edf1f7;
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    outline: none;
+    cursor: pointer;
+}
+
+.pageControls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .pageBtn {
+        background: none;
+        border: 1px solid #edf1f7;
+        color: #1a1f4d;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        padding: 6px;
+        border-radius: 6px;
+
+        &:hover {
+            background-color: #f8faff;
+            color: #4e5bd9;
+        }
+    }
+
+    .pageCurrent {
+        font-size: 14px;
+        font-weight: 700;
+        color: #1a1f4d;
+    }
+
+    .pageTotal {
+        font-size: 14px;
         color: #8a91b4;
     }
 }

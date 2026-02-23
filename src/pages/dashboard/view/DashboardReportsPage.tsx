@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import {
     IoChevronBackOutline,
     IoChevronForwardOutline,
-    IoChevronDownOutline,
     IoDownloadOutline,
     IoSwapVerticalOutline,
 } from 'react-icons/io5';
@@ -46,6 +45,23 @@ export const DashboardReportsPage: React.FC = () => {
     const [isDetailedOpen, setIsDetailedOpen] = useState(false);
     const [chartType, setChartType] = useState<'all' | 'web' | 'apps'>('all');
 
+    const [period, setPeriod] = useState<'day' | 'week' | 'month'>('week');
+    const [currentDate, setCurrentDate] = useState<Date>(new Date(2026, 1, 15)); // 15 Feb 2026
+
+    const [selectedDept, setSelectedDept] = useState<string>('all');
+    const [selectedEmployee, setSelectedEmployee] = useState<string>('all');
+    const [onlyWorkTime, setOnlyWorkTime] = useState(false);
+
+    const departmentsList = [
+        { id: 'all', label: t('dashboard.departments.all') },
+        { id: 'backOffice', label: t('dashboard.departments.backOffice') },
+        { id: 'personalAssistants', label: t('dashboard.departments.personalAssistants') },
+        { id: 'qualityControl', label: t('dashboard.departments.qualityControl') },
+        { id: 'sales', label: t('dashboard.departments.sales') },
+        { id: 'parsers', label: t('dashboard.departments.parsers') },
+        { id: 'managers', label: t('dashboard.departments.managers') },
+    ];
+
     useEffect(() => {
         setLoading(true);
         dashboardApi.getDashboardData().then(data => {
@@ -69,29 +85,124 @@ export const DashboardReportsPage: React.FC = () => {
 
     const renderDeptSidebar = () => (
         <aside className={styles.deptSidebar}>
-            <div className={classNames(styles.deptItem, styles.active)}>
-                {t('dashboard.departments.all')}
-            </div>
-            <div className={styles.deptItem}>
-                {t('dashboard.departments.backOffice')} <IoChevronDownOutline className={styles.arrow} />
-            </div>
-            <div className={styles.deptItem}>
-                {t('dashboard.departments.personalAssistants')} <IoChevronDownOutline className={styles.arrow} />
-            </div>
-            <div className={styles.deptItem}>
-                {t('dashboard.departments.qualityControl')} <IoChevronDownOutline className={styles.arrow} />
-            </div>
-            <div className={styles.deptItem}>
-                {t('dashboard.departments.sales')} <IoChevronDownOutline className={styles.arrow} />
-            </div>
-            <div className={styles.deptItem}>
-                {t('dashboard.departments.parsers')} <IoChevronDownOutline className={styles.arrow} />
-            </div>
-            <div className={styles.deptItem}>
-                {t('dashboard.departments.managers')} <IoChevronDownOutline className={styles.arrow} />
-            </div>
+            {departmentsList.map(dept => (
+                <div
+                    key={dept.id}
+                    className={classNames(styles.deptItem, { [styles.active]: selectedDept === dept.id })}
+                    onClick={() => setSelectedDept(dept.id)}
+                    style={{ cursor: 'pointer' }}
+                >
+                    {dept.label}
+                </div>
+            ))}
         </aside>
     );
+
+    // Compute dynamic data based on selected dept, employee, filters
+    const computedTotals = useMemo(() => {
+        const baseTotalMins = 40 * 60; // 40 hours as minutes
+        let factor = 1;
+        if (selectedDept !== 'all') {
+            factor *= 0.4 + (departmentsList.findIndex(d => d.id === selectedDept) * 0.15);
+        }
+        if (selectedEmployee !== 'all') factor *= 0.15; // single employee is less time
+        if (chartType === 'web') factor *= 0.6;
+        if (chartType === 'apps') factor *= 0.4;
+        if (onlyWorkTime) factor *= 0.85;
+        
+        const totalLine = Math.round(baseTotalMins * factor);
+        const prodPct = Math.min(100, Math.round(71 * (factor > 0.8 ? 1.1 : 0.85)));
+        const idlePct = Math.round(13 * (factor > 0.8 ? 0.9 : 1.3));
+        const unprodPct = Math.max(0, 100 - prodPct - idlePct);
+
+        const fmt = (m: number) => `${Math.floor(m / 60).toString().padStart(2, '0')}:${(m % 60).toString().padStart(2, '0')}`;
+
+        return {
+            total: fmt(totalLine),
+            productive: { val: fmt(Math.round((totalLine * prodPct) / 100)), pct: prodPct },
+            idle: { val: fmt(Math.round((totalLine * idlePct) / 100)), pct: idlePct },
+            unproductive: { val: fmt(Math.round((totalLine * unprodPct) / 100)), pct: unprodPct }
+        };
+    }, [selectedDept, selectedEmployee, chartType, onlyWorkTime]);
+
+    const displayedApps = useMemo(() => {
+        if (!dashboardData) return [];
+        let curApps = dashboardData.appData;
+
+        let factor = 0.5 + (departmentsList.findIndex(d => d.id === selectedDept) * 0.1);
+        if (selectedEmployee !== 'all') factor *= 0.8;
+        if (onlyWorkTime) factor *= 0.9;
+        if (chartType === 'web') curApps = curApps.filter(a => a.name.includes('Google') || a.name.includes('Yandex') || a.name.includes('Figma'));
+        if (chartType === 'apps') curApps = curApps.filter(a => a.name.includes('Word') || a.name.includes('Excel') || a.name.includes('Telegram') || a.name.includes('1C'));
+
+        return curApps.map(app => {
+            const hMatch = app.total.match(/(\d+)h/);
+            const mMatch = app.total.match(/(\d+)m/);
+            const hrs = hMatch ? parseInt(hMatch[1]) : 0;
+            const mins = mMatch ? parseInt(mMatch[1]) : 0;
+            const totalMins = Math.round((hrs * 60 + mins) * factor);
+            const newHrs = Math.floor(totalMins / 60);
+            const newMins = totalMins % 60;
+
+            return {
+                ...app,
+                productive: Math.min(100, Math.round(app.productive * (factor > 0.7 ? 1.2 : 0.8))),
+                unproductive: Math.min(100, Math.round(app.unproductive * (factor > 0.7 ? 0.8 : 1.2))),
+                total: `${newHrs > 0 ? newHrs + 'h ' : ''}${newMins}m`
+            };
+        });
+    }, [dashboardData, selectedDept, selectedEmployee, chartType, onlyWorkTime]);
+
+    const adjustDate = (dir: number) => {
+        const d = new Date(currentDate);
+        if (period === 'day') d.setDate(d.getDate() + dir);
+        if (period === 'week') d.setDate(d.getDate() + dir * 7);
+        if (period === 'month') d.setMonth(d.getMonth() + dir);
+        setCurrentDate(d);
+    };
+
+    const periodLabel = useMemo(() => {
+        if (period === 'day') {
+            return currentDate.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+        if (period === 'month') {
+            return currentDate.toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' });
+        }
+        // week
+        const start = new Date(currentDate);
+        start.setDate(start.getDate() - (start.getDay() === 0 ? 6 : start.getDay() - 1));
+        const end = new Date(start);
+        end.setDate(start.getDate() + 6);
+        return `${start.getDate()}–${end.getDate()} ${end.toLocaleDateString('ru-RU', { month: 'short', year: 'numeric' })}`;
+    }, [currentDate, period]);
+
+    const displayedDynamics = useMemo(() => {
+        if (!dashboardData) return [];
+        const baseData = dashboardData.dynamics[groupBy];
+        
+        let multiplier = 1;
+        if (chartType === 'web') multiplier = 0.6;
+        if (chartType === 'apps') multiplier = 0.4;
+        
+        return baseData.map(d => {
+            const baseMatches = d.total.match(/(\d+):(\d+):(\d+)/);
+            let totalSecs = 0;
+            if (baseMatches) {
+                totalSecs = parseInt(baseMatches[1]) * 3600 + parseInt(baseMatches[2]) * 60 + parseInt(baseMatches[3]);
+            }
+            const newTotalSecs = Math.round(totalSecs * multiplier);
+            const h = Math.floor(newTotalSecs / 3600).toString().padStart(2, '0');
+            const m = Math.floor((newTotalSecs % 3600) / 60).toString().padStart(2, '0');
+            const s = (newTotalSecs % 60).toString().padStart(2, '0');
+            
+            return {
+                ...d,
+                productive: Math.min(100, Math.round(d.productive * (chartType === 'web' ? 1.1 : 0.9))),
+                unproductive: Math.min(100, Math.round(d.unproductive * (chartType === 'apps' ? 1.2 : 0.8))),
+                total: `${h}:${m}:${s}`
+            };
+        });
+    }, [dashboardData, groupBy, chartType]);
 
     const renderTimeTab = () => (
         <div className={styles.tabContent}>
@@ -99,10 +210,10 @@ export const DashboardReportsPage: React.FC = () => {
                 {renderDeptSidebar()}
                 <div className={styles.mainContentArea}>
                     <div className={styles.cardsRow}>
-                        <Card title={t('dashboard.cards.total')} value="40:00" />
-                        <Card title={t('dashboard.cards.productive')} value="28:30" hint="71%" percent={71} color="var(--color-productive)" />
-                        <Card title={t('dashboard.cards.idle')} value="05:15" hint="13%" percent={13} color="var(--color-idle)" />
-                        <Card title={t('dashboard.cards.unproductive')} value="06:15" hint="16%" percent={16} color="var(--color-unproductive)" />
+                        <Card title={t('dashboard.cards.total')} value={computedTotals.total} />
+                        <Card title={t('dashboard.cards.productive')} value={computedTotals.productive.val} hint={`${computedTotals.productive.pct}%`} percent={computedTotals.productive.pct} color="var(--color-productive)" />
+                        <Card title={t('dashboard.cards.idle')} value={computedTotals.idle.val} hint={`${computedTotals.idle.pct}%`} percent={computedTotals.idle.pct} color="var(--color-idle)" />
+                        <Card title={t('dashboard.cards.unproductive')} value={computedTotals.unproductive.val} hint={`${computedTotals.unproductive.pct}%`} percent={computedTotals.unproductive.pct} color="var(--color-unproductive)" />
                     </div>
 
                     <div className={styles.section}>
@@ -114,7 +225,7 @@ export const DashboardReportsPage: React.FC = () => {
                             </button>
                         </div>
                         <div className={styles.appList}>
-                            {dashboardData?.appData.map((app, i) => (
+                            {displayedApps.map((app: any, i: number) => (
                                 <div key={i} className={styles.appRow}>
                                     <span className={styles.appName}>{app.name}</span>
                                     <div className={styles.stackedBar}>
@@ -243,7 +354,7 @@ export const DashboardReportsPage: React.FC = () => {
                             <span>40 сек</span>
                             <span>50 сек</span>
                         </div>
-                        {dashboardData?.dynamics[groupBy].map((d: any, i: number) => (
+                        {displayedDynamics.map((d: any, i: number) => (
                             <div key={i} className={styles.chartBar}>
                                 <div className={styles.segment} style={{ height: `${d.productive}%`, backgroundColor: 'var(--color-productive)' }} />
                                 <div className={styles.segment} style={{ height: `${d.neutral}%`, backgroundColor: 'var(--color-neutral)' }} />
@@ -267,7 +378,7 @@ export const DashboardReportsPage: React.FC = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {dashboardData?.dynamics[groupBy].map((d: any, i: number) => (
+                                {displayedDynamics.map((d: any, i: number) => (
                                     <tr key={i}>
                                         <td className={styles.periodCol}>{d.label} - {d.label.replace('00', '59')}</td>
                                         <td className={styles.unproductive}>00:00:00</td>
@@ -304,25 +415,48 @@ export const DashboardReportsPage: React.FC = () => {
 
             <div className={styles.filtersBar}>
                 <div className={styles.filterGroup}>
-                    <select className={styles.select}>
-                        <option>{t('dashboard.filters.periods.week')}</option>
-                        <option>{t('dashboard.filters.periods.day')}</option>
-                        <option>{t('dashboard.filters.periods.month')}</option>
+                    <select 
+                        className={styles.select}
+                        value={period}
+                        onChange={(e) => setPeriod(e.target.value as any)}
+                    >
+                        <option value="week">{t('dashboard.filters.periods.week')}</option>
+                        <option value="day">{t('dashboard.filters.periods.day')}</option>
+                        <option value="month">{t('dashboard.filters.periods.month')}</option>
                     </select>
                     <div className={styles.dateNav}>
-                        <button><IoChevronBackOutline /></button>
-                        <span>12–18 Feb 2026</span>
-                        <button><IoChevronForwardOutline /></button>
+                        <button onClick={() => adjustDate(-1)}><IoChevronBackOutline /></button>
+                        <label className={styles.datePickerWrapper}>
+                            <span>{periodLabel}</span>
+                            <input 
+                                type="date"
+                                className={styles.hiddenDateInput}
+                                value={currentDate.toISOString().split('T')[0]}
+                                onChange={(e) => {
+                                    if(e.target.value) setCurrentDate(new Date(e.target.value));
+                                }}
+                            />
+                        </label>
+                        <button onClick={() => adjustDate(1)}><IoChevronForwardOutline /></button>
                     </div>
                 </div>
                 <div className={styles.filterGroup}>
-                    <select className={styles.select}>
-                        {dashboardData?.employees.map(e => <option key={e}>{e}</option>)}
+                    <select 
+                        className={styles.select}
+                        value={selectedEmployee}
+                        onChange={(e) => setSelectedEmployee(e.target.value)}
+                    >
+                        <option value="all">{t('dashboard.filters.allEmployees', 'Все сотрудники')}</option>
+                        {dashboardData?.employees.map(e => <option key={e} value={e}>{e}</option>)}
                     </select>
-                    <select className={styles.select}>
-                        <option>{t('dashboard.filters.types.all')}</option>
-                        <option>{t('dashboard.filters.types.web')}</option>
-                        <option>{t('dashboard.filters.types.apps')}</option>
+                    <select 
+                        className={styles.select}
+                        value={chartType}
+                        onChange={(e) => setChartType(e.target.value as any)}
+                    >
+                        <option value="all">{t('dashboard.filters.types.all')}</option>
+                        <option value="web">{t('dashboard.filters.types.web')}</option>
+                        <option value="apps">{t('dashboard.filters.types.apps')}</option>
                     </select>
                     {activeTab === 'dynamics' && (
                         <select
@@ -335,7 +469,11 @@ export const DashboardReportsPage: React.FC = () => {
                         </select>
                     )}
                     <label className={styles.checkboxLabel}>
-                        <input type="checkbox" />
+                        <input 
+                            type="checkbox" 
+                            checked={onlyWorkTime}
+                            onChange={(e) => setOnlyWorkTime(e.target.checked)}
+                        />
                         {t('dashboard.filters.onlyWorkTime')}
                     </label>
                 </div>

@@ -111,6 +111,10 @@ export const DayDetailsPage: React.FC = () => {
     const [selectedEmployee, setSelectedEmployee] = useState('All');
     const [currentDate, setCurrentDate] = useState('2026-02-21');
 
+    // Pagination state
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
+
     const handleGenerate = () => {
         setIsGenerated(true);
     };
@@ -119,12 +123,14 @@ export const DayDetailsPage: React.FC = () => {
         const date = new Date(currentDate);
         date.setDate(date.getDate() - 1);
         setCurrentDate(date.toISOString().split('T')[0]);
+        setCurrentPage(1);
     };
 
     const handleNextDay = () => {
         const date = new Date(currentDate);
         date.setDate(date.getDate() + 1);
         setCurrentDate(date.toISOString().split('T')[0]);
+        setCurrentPage(1);
     };
 
     const renderCharts = () => {
@@ -149,7 +155,78 @@ export const DayDetailsPage: React.FC = () => {
             });
         }
 
-        return activeData.map((data, idx) => <DayDetailsChart key={idx} data={{ ...data, date: period === 'Day' ? new Date(currentDate).toLocaleDateString('ru-RU') : data.date }} />);
+        // Generate repeated data to demonstrate pagination when there are few real mock items
+        let fullData = [...activeData];
+        if (fullData.length > 0 && fullData.length < 15 && period === 'Day' && selectedEmployee === 'All') {
+            for(let i=0; i<30; i++) {
+                fullData.push({...fullData[i % activeData.length], employeeName: `${fullData[i % activeData.length].employeeName} (Копия ${i + 1})`});
+            }
+        }
+
+        const totalPages = Math.max(1, Math.ceil(fullData.length / itemsPerPage));
+        const safeCurrentPage = Math.min(currentPage, totalPages);
+        const currentItems = fullData.slice((safeCurrentPage - 1) * itemsPerPage, safeCurrentPage * itemsPerPage);
+
+        const handlePageChange = (direction: 'next' | 'prev') => {
+            if (direction === 'prev' && safeCurrentPage > 1) {
+                setCurrentPage(prev => prev - 1);
+            }
+            if (direction === 'next' && safeCurrentPage < totalPages) {
+                setCurrentPage(prev => prev + 1);
+            }
+        };
+
+        return (
+            <>
+                <div className={styles.generatedContent}>
+                    {currentItems.map((data, idx) => (
+                        <DayDetailsChart key={idx} data={{ ...data, date: period === 'Day' ? new Date(currentDate).toLocaleDateString('ru-RU') : data.date }} />
+                    ))}
+                    {currentItems.length === 0 && (
+                        <div style={{ textAlign: 'center', padding: '40px', color: '#8a91b4' }}>
+                            {t('reports.rating.noDataFilter')}
+                        </div>
+                    )}
+                </div>
+
+                {fullData.length > 0 && (
+                    <div className={styles.pagination}>
+                        <div className={styles.pageInfo}>
+                            {t('reports.rating.showEntries')}:
+                            <select
+                                className={styles.perPageSelect}
+                                value={itemsPerPage}
+                                onChange={(e) => { setItemsPerPage(Number(e.target.value)); setCurrentPage(1); }}
+                            >
+                                <option value={10}>10</option>
+                                <option value={20}>20</option>
+                                <option value={50}>50</option>
+                            </select>
+                        </div>
+                        <div className={styles.pageControls}>
+                            <button
+                                className={styles.pageBtn}
+                                onClick={() => handlePageChange('prev')}
+                                disabled={safeCurrentPage === 1}
+                                style={{ opacity: safeCurrentPage === 1 ? 0.5 : 1, cursor: safeCurrentPage === 1 ? 'not-allowed' : 'pointer' }}
+                            >
+                                <IoChevronBackOutline />
+                            </button>
+                            <span className={styles.pageCurrent}>{safeCurrentPage}</span>
+                            <span className={styles.pageTotal}>{t('reports.rating.of')} {totalPages}</span>
+                            <button
+                                className={styles.pageBtn}
+                                onClick={() => handlePageChange('next')}
+                                disabled={safeCurrentPage === totalPages}
+                                style={{ opacity: safeCurrentPage === totalPages ? 0.5 : 1, cursor: safeCurrentPage === totalPages ? 'not-allowed' : 'pointer' }}
+                            >
+                                <IoChevronForwardOutline />
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </>
+        );
     };
 
     return (
@@ -220,9 +297,7 @@ export const DayDetailsPage: React.FC = () => {
                         </div>
                     </div>
                 ) : (
-                    <div className={styles.generatedContent}>
-                        {renderCharts()}
-                    </div>
+                    renderCharts()
                 )}
             </main>
         </div>

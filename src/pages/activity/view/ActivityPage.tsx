@@ -40,6 +40,9 @@ export const ActivityPage: React.FC = () => {
         block: ActivityBlock | null
     }>({ open: false, x: 0, y: 0, employee: null, block: null });
 
+    // Pagination state
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
 
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -63,6 +66,37 @@ export const ActivityPage: React.FC = () => {
     useEffect(() => {
         loadData();
     }, [date, selectedDepts, searchQuery]);
+
+    // Reset page on filter changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [date, selectedDepts, searchQuery, itemsPerPage]);
+
+    // Derived paginated data
+    // Add copies to simulate large dataset if needed, like in DayDetailsPage
+    const fullData = useMemo(() => {
+        let data = [...employees];
+        if (data.length > 0 && data.length < 15 && selectedDepts.includes('Company') && !searchQuery) {
+            for(let i=0; i<30; i++) {
+                data.push({...data[i % employees.length], id: `${data[i % employees.length].id}_${i}`, fullName: `${data[i % employees.length].fullName} (Копия ${i + 1})`});
+            }
+        }
+        return data;
+    }, [employees, selectedDepts, searchQuery]);
+
+    const totalPages = Math.max(1, Math.ceil(fullData.length / itemsPerPage));
+    const safeCurrentPage = Math.min(currentPage, totalPages);
+    const currentItems = fullData.slice((safeCurrentPage - 1) * itemsPerPage, safeCurrentPage * itemsPerPage);
+
+    const handlePageChange = (direction: 'next' | 'prev') => {
+        if (direction === 'prev' && safeCurrentPage > 1) {
+            setCurrentPage(prev => prev - 1);
+        }
+        if (direction === 'next' && safeCurrentPage < totalPages) {
+            setCurrentPage(prev => prev + 1);
+        }
+        setTooltip(prev => ({ ...prev, open: false })); // hide tooltip on page change
+    };
 
     const renderSkeleton = () => (
         <div className={styles.skeletonContainer}>
@@ -260,7 +294,7 @@ export const ActivityPage: React.FC = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {employees.map(emp => (
+                                    {currentItems.map(emp => (
                                         <tr key={emp.id} className={styles.gridRow}>
                                             <td className={styles.frozenColumn}>
                                                 <Link to={`/activity/${emp.id}?date=${date}`} className={styles.employeeLink}>
@@ -307,6 +341,43 @@ export const ActivityPage: React.FC = () => {
                         )
                     )}
                 </div>
+
+                {fullData.length > 0 && !loading && !error && (
+                    <div className={styles.pagination}>
+                        <div className={styles.pageInfo}>
+                            {t('reports.rating.showEntries', 'Показывать:')}
+                            <select
+                                className={styles.perPageSelect}
+                                value={itemsPerPage}
+                                onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                            >
+                                <option value={10}>10</option>
+                                <option value={20}>20</option>
+                                <option value={50}>50</option>
+                            </select>
+                        </div>
+                        <div className={styles.pageControls}>
+                            <button
+                                className={styles.pageBtn}
+                                onClick={() => handlePageChange('prev')}
+                                disabled={safeCurrentPage === 1}
+                                style={{ opacity: safeCurrentPage === 1 ? 0.5 : 1, cursor: safeCurrentPage === 1 ? 'not-allowed' : 'pointer' }}
+                            >
+                                <IoChevronBackOutline />
+                            </button>
+                            <span className={styles.pageCurrent}>{safeCurrentPage}</span>
+                            <span className={styles.pageTotal}>{t('reports.rating.of', 'из')} {totalPages}</span>
+                            <button
+                                className={styles.pageBtn}
+                                onClick={() => handlePageChange('next')}
+                                disabled={safeCurrentPage === totalPages}
+                                style={{ opacity: safeCurrentPage === totalPages ? 0.5 : 1, cursor: safeCurrentPage === totalPages ? 'not-allowed' : 'pointer' }}
+                            >
+                                <IoChevronForwardOutline />
+                            </button>
+                        </div>
+                    </div>
+                )}
             </section>
 
             {tooltip.open && tooltip.employee && tooltip.block && (

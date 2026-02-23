@@ -13,6 +13,7 @@ import {
     IoBusinessOutline,
     IoBarChartOutline,
     IoTimeOutline,
+    IoLogOutOutline,
 } from 'react-icons/io5';
 import logoUrl from '@/shared/assets/images/logo.svg';
 import styles from './Sidebar.module.scss';
@@ -87,10 +88,25 @@ export const Sidebar: React.FC = () => {
 
     const [collapsed, setCollapsed] = useState(false);
     const [openMenus, setOpenMenus] = useState<string[]>(() => {
-        const initial = ['settings', 'reports'];
-        if (location.pathname === paths.ACTIVITY) {
-            if (!initial.includes('reports')) initial.push('reports');
+        const initial: string[] = [];
+        
+        // Auto-open menus if the current route is within them
+        if (location.pathname.startsWith(paths.SETTINGS) ||
+            location.pathname.startsWith(paths.DASHBOARD_WORK_SCHEDULES) ||
+            location.pathname.startsWith(paths.DASHBOARD_ORG_STRUCTURE) ||
+            location.pathname.startsWith(paths.CATEGORIZATION) ||
+            location.pathname.startsWith(paths.CALENDAR)) {
+            initial.push('settings');
         }
+        
+        if (location.pathname.startsWith(paths.DASHBOARD_REPORTS) ||
+            location.pathname.startsWith(paths.DASHBOARD_DAY_DETAILS) ||
+            location.pathname.startsWith(paths.DASHBOARD_EMPLOYEE_RATING) ||
+            location.pathname.startsWith(paths.WORK_TIME) ||
+            location.pathname.startsWith(paths.ACTIVITY)) {
+            initial.push('reports');
+        }
+
         return initial;
     });
 
@@ -230,6 +246,16 @@ export const Sidebar: React.FC = () => {
                     />
                 </SidebarItem>
             </nav>
+
+            <div className={styles.footer}>
+                <div 
+                    className={classNames(styles.logoutBtn, { [styles.collapsed]: collapsed })}
+                    onClick={() => navigate('/')}
+                >
+                    <IoLogOutOutline className={styles.icon} />
+                    {!collapsed && <span>{t('sidebar.logout', 'Выйти')}</span>}
+                </div>
+            </div>
         </aside>
     );
 };

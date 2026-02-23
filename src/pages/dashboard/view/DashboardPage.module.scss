@@ -60,7 +60,7 @@
     margin: 0 -40px;
     position: sticky;
     top: 0;
-    z-index: 50;
+    z-index: 100;
     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.02);
 }
 
@@ -258,6 +258,38 @@
     border-radius: var(--radius-pill);
     font-weight: 600;
     font-size: 0.9rem;
+
+    .datePickerWrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        span {
+            pointer-events: none;
+        }
+
+        .hiddenDateInput {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            box-sizing: border-box;
+
+            &::-webkit-calendar-picker-indicator {
+                position: absolute;
+                inset: 0;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                cursor: pointer;
+            }
+        }
+    }
 
     button {
         background: none;

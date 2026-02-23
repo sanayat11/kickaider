@@ -4,15 +4,13 @@
     font-size: 16px;
     color: #2d2f55;
     user-select: none;
-    z-index: 10000;
 }
 
 .selected {
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 24px;
-
+    padding: 24px 12px;
 }
 
 .arrow {

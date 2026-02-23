@@ -61,9 +61,72 @@ export const DayDetailsChart: React.FC<Props> = ({ data }) => {
     const getLabel = (type: ActivityType) => t(`activity.timeline.legend.${type}`);
 
     // SVG Donut calculation helpers
-    const radius = 60;
+    const radius = 55;
     const circumference = 2 * Math.PI * radius;
-    let donutOffset = 0;
+
+    // Pre-calculate label positions to avoid overlap
+    const LABELS_MIN_GAP = 16;
+    let currentOffset = 0;
+
+    const rawLabels = data.donutSegments.map((seg) => {
+        const midP = currentOffset + seg.percent / 2;
+        currentOffset += seg.percent;
+
+        const angle = (midP / 100) * 2 * Math.PI - Math.PI / 2;
+        const x1 = 80 + radius * Math.cos(angle);
+        const y1 = 80 + radius * Math.sin(angle);
+        const xBend = 80 + (radius + 12) * Math.cos(angle);
+        const yBend = 80 + (radius + 12) * Math.sin(angle);
+        const isLeft = Math.cos(angle) < 0;
+
+        return {
+            seg,
+            midP,
+            angle,
+            x1, y1,
+            xBend, yBend,
+            yLabel: yBend, // initial target Y
+            isLeft,
+            xLabelStart: isLeft ? 10 : 150
+        };
+    });
+
+    // Simple collision resolver by shifting yLabel
+    const resolveCollisions = (labels: typeof rawLabels) => {
+        labels.sort((a, b) => a.yLabel - b.yLabel);
+        
+        // Push down
+        for (let i = 1; i < labels.length; i++) {
+            const prev = labels[i - 1];
+            const curr = labels[i];
+            if (curr.yLabel - prev.yLabel < LABELS_MIN_GAP) {
+                curr.yLabel = prev.yLabel + LABELS_MIN_GAP;
+            }
+        }
+
+        // Push up if pushed too far out of bounds
+        const MAX_Y = 165;
+        if (labels.length > 0 && labels[labels.length - 1].yLabel > MAX_Y) {
+            let overflow = labels[labels.length - 1].yLabel - MAX_Y;
+            for (let i = labels.length - 1; i >= 0; i--) {
+                labels[i].yLabel -= overflow;
+                if (i > 0 && labels[i].yLabel - labels[i - 1].yLabel < LABELS_MIN_GAP) {
+                    overflow = LABELS_MIN_GAP - (labels[i].yLabel - labels[i - 1].yLabel);
+                } else {
+                    break;
+                }
+            }
+        }
+    };
+
+    const leftLabels = rawLabels.filter(l => l.isLeft);
+    const rightLabels = rawLabels.filter(l => !l.isLeft);
+    resolveCollisions(leftLabels);
+    resolveCollisions(rightLabels);
+    
+    const labelsInfo = [...leftLabels, ...rightLabels];
+
+    let donutDrawOffset = 0;
 
     return (
         <div className={styles.card}>
@@ -74,23 +137,15 @@ export const DayDetailsChart: React.FC<Props> = ({ data }) => {
                         <svg viewBox="0 0 160 160" className={styles.donutSvg}>
                             <circle cx="80" cy="80" r={radius} fill="transparent" stroke="#edf1f7" strokeWidth="20" />
                             {data.donutSegments.map((seg) => {
+                                const info = labelsInfo.find(l => l.seg.type === seg.type)!;
                                 const strokeDasharray = `${(seg.percent / 100) * circumference} ${circumference}`;
-                                const dashoffset = (circumference * 0.25) - ((donutOffset / 100) * circumference);
-
-                                const midP = donutOffset + seg.percent / 2;
-                                donutOffset += seg.percent;
+                                const dashoffset = (circumference * 0.25) - ((donutDrawOffset / 100) * circumference);
+                                donutDrawOffset += seg.percent;
 
                                 const isDimmed = hoveredType && hoveredType !== seg.type;
 
-                                // Label geometry
-                                const angle = (midP / 100) * 2 * Math.PI - Math.PI / 2;
-                                const x1 = 80 + radius * Math.cos(angle);
-                                const y1 = 80 + radius * Math.sin(angle);
-                                const x2 = 80 + (radius + 15) * Math.cos(angle);
-                                const y2 = 80 + (radius + 15) * Math.sin(angle);
-                                const isLeft = Math.cos(angle) < 0;
-                                const x3 = x2 + (isLeft ? -10 : 10);
-                                const y3 = y2;
+                                const { x1, y1, xBend, yBend, xLabelStart, yLabel, isLeft } = info;
+                                const xLabelMid = xLabelStart + (isLeft ? 8 : -8);
 
                                 return (
                                     <React.Fragment key={seg.type}>
@@ -108,14 +163,13 @@ export const DayDetailsChart: React.FC<Props> = ({ data }) => {
                                             onMouseLeave={() => setHoveredType(null)}
                                             style={{ transition: 'opacity 0.2s', strokeLinecap: 'butt' }}
                                         />
-                                        {/* pointer line */}
                                         <polyline
-                                            points={`${x1},${y1} ${x2},${y2} ${x3},${y3}`}
+                                            points={`${x1},${y1} ${xBend},${yBend} ${xLabelMid},${yLabel} ${xLabelStart},${yLabel}`}
                                             className={classNames(styles.donutPolyline, { [styles.dimmed]: isDimmed })}
                                         />
                                         <text
-                                            x={x3 + (isLeft ? -4 : 4)}
-                                            y={y3 + 4}
+                                            x={xLabelStart + (isLeft ? -4 : 4)}
+                                            y={yLabel + 4}
                                             textAnchor={isLeft ? 'end' : 'start'}
                                             className={classNames(styles.donutSvgText, { [styles.dimmed]: isDimmed })}
                                         >

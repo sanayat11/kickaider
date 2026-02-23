@@ -22,7 +22,7 @@ export const FaqBlock: FC = () => {
     };
 
     return (
-        <section className={styles.faqBlock}>
+        <section id="faq" className={styles.faqBlock}>
             <div className={styles.header}>
                 <Typography variant="h2" weight="bold" className={styles.title}>
                     {t('faq.title')}

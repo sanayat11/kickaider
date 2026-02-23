@@ -4,7 +4,7 @@ import styles from "./AboutSection.module.scss";
 export const AboutSection: React.FC = () => {
   const { t } = useTranslation();
   return (
-    <section className={styles.about}>
+    <section id="about" className={styles.about}>
       <div className={styles.container}>
         <h2 className={styles.title}>{t("aboutSection.title")}</h2>
 

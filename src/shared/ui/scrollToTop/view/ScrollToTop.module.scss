@@ -1,0 +1,54 @@
+.scrollToTopBtn {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #5c6cff, #4e5bd9);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(78, 91, 217, 0.4);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease, background 0.2s ease;
+    z-index: 9000;
+
+    &:hover {
+        background: linear-gradient(135deg, #4e5bd9, #3b4cca);
+        transform: translateY(18px) scale(1.05);
+    }
+
+    &.visible {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+
+        &:hover {
+            transform: translateY(-2px) scale(1.05);
+        }
+    }
+
+    .icon {
+        font-size: 24px;
+    }
+
+    &.animateSpin .icon {
+        animation: spin 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

@@ -10,7 +10,7 @@ const featuresKeys = ['basicReports', 'activityHistory', 'ratingAndDetails', 'in
 export const FeaturesBlock: FC = () => {
     const { t } = useTranslation();
     return (
-        <section className={styles.featuresBlock}>
+        <section id="features" className={styles.featuresBlock}>
             <div className={styles.header}>
                 <Typography variant="h2" color="white" weight="bold" className={styles.title}>
                     {t('features.title')}

@@ -8,7 +8,7 @@ import { AboutSection } from '@/widgets/AboutSection';
 import { BoostBlock } from '@/widgets/BoostBlock';
 import { MemberBlock } from '@/widgets/MemberBLock';
 import { SubHeader } from '@/features/SubHeader';
-
+import { ScrollToTop } from '@/shared/ui/scrollToTop';
 export const HomePage: FC = () => {
   return (
     <>
@@ -21,6 +21,7 @@ export const HomePage: FC = () => {
       <SliderBlock />
       <MemberBlock/>
       <FaqBlock />
+      <ScrollToTop />
     </>
   );
 };

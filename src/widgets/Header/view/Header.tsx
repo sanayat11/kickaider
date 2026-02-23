@@ -16,9 +16,9 @@ export const Header: React.FC = () => {
           <span className={styles.logoText}>KickAider</span>
         </div>
         <nav className={styles.nav}>
-          <a href="#">{t("header.aboutCompany")}</a>
-          <a href="#">{t("header.features")}</a>
-          <a href="#">{t("header.faq")}</a>
+          <a href="#about">{t("header.aboutCompany")}</a>
+          <a href="#features">{t("header.features")}</a>
+          <a href="#faq">{t("header.faq")}</a>
 
 
           <div className={styles.lang}>

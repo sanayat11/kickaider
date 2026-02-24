@@ -9,7 +9,8 @@ import {
     IoCalendarOutline,
     IoPersonOutline,
     IoBusinessOutline,
-    IoDesktopOutline
+    IoDesktopOutline,
+    IoChevronForwardOutline
 } from 'react-icons/io5';
 import classNames from 'classnames';
 import styles from './ActivityDetailsPage.module.scss';
@@ -52,20 +53,115 @@ export const ActivityDetailsPage: React.FC = () => {
 
     const filteredFullEvents = useMemo(() => {
         if (!data) return [];
-        if (!searchQuery) return data.fullViewEvents;
-        return data.fullViewEvents.filter(e =>
+        let events = data.fullViewEvents;
+
+        if (timeMode === 'workTime') {
+            events = events.filter(e => {
+                const [h, m] = e.timestamp.split(':').map(Number);
+                const t = h * 60 + m;
+                // Work time is typically 09:00 (540) to 18:00 (1080)
+                return t >= 540 && t < 1080;
+            });
+        }
+
+        if (!searchQuery) return events;
+        return events.filter(e =>
             e.appName.toLowerCase().includes(searchQuery.toLowerCase()) ||
             (e.windowTitle && e.windowTitle.toLowerCase().includes(searchQuery.toLowerCase()))
         );
-    }, [data, searchQuery]);
+    }, [data, searchQuery, timeMode]);
 
-    const filteredShortRows = useMemo(() => {
+    const calculatedShortRows = useMemo(() => {
         if (!data) return [];
-        if (!searchQuery) return data.shortViewRows;
-        return data.shortViewRows.filter(row =>
+        const events = data.fullViewEvents;
+        
+        let interval = 5;
+        if (scale === '15m') interval = 15;
+        if (scale === '1h') interval = 60;
+        
+        let minTime = Infinity;
+        let maxTime = -Infinity;
+        
+        events.forEach(e => {
+            const [h, m] = e.timestamp.split(':').map(Number);
+            const t = h * 60 + m;
+            minTime = Math.min(minTime, t);
+            
+            const [dh, dm] = e.duration.split(':').map(Number);
+            maxTime = Math.max(maxTime, t + dh * 60 + dm);
+        });
+        
+        if (minTime === Infinity) return [];
+        
+        minTime = Math.floor(minTime / interval) * interval;
+        
+        const rows = [];
+        for (let time = minTime; time < maxTime; time += interval) {
+            const periodStart = time;
+            const periodEnd = time + interval;
+            
+            const periodEvents = events.filter(e => {
+                const [h, m] = e.timestamp.split(':').map(Number);
+                const t = h * 60 + m;
+                return t >= periodStart && t < periodEnd;
+            });
+            
+            if (periodEvents.length === 0) continue;
+            
+            let actMins = 0;
+            let idleMins = 0;
+            const apps = new Set<string>();
+            
+            periodEvents.forEach(e => {
+                const [dh, dm] = e.duration.split(':').map(Number);
+                const dur = dh * 60 + dm;
+                if (e.type === 'idle' || e.state === 'idle') {
+                    idleMins += dur;
+                } else {
+                    actMins += Math.min(dur, interval); // clamp appropriately if needed
+                    apps.add(e.appName);
+                }
+            });
+            
+            const formatTimeFromMins = (mins: number) => {
+                const hh = Math.floor(mins / 60);
+                const mm = mins % 60;
+                return `${hh.toString().padStart(2, '0')}:${mm.toString().padStart(2, '0')}`;
+            };
+            
+            rows.push({
+                period: `${formatTimeFromMins(periodStart)} - ${formatTimeFromMins(periodEnd)}`,
+                activityMinutes: formatTimeFromMins(actMins),
+                idleMinutes: formatTimeFromMins(idleMins),
+                apps: Array.from(apps)
+            });
+        }
+        
+        if (!searchQuery) return rows;
+        return rows.filter(row => 
             row.apps.some(app => app.toLowerCase().includes(searchQuery.toLowerCase()))
         );
-    }, [data, searchQuery]);
+    }, [data, scale, searchQuery]);
+
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [data, searchQuery, viewMode, itemsPerPage]);
+
+    const totalPages = Math.max(1, Math.ceil(filteredFullEvents.length / itemsPerPage));
+    const safeCurrentPage = Math.min(currentPage, totalPages);
+    const currentItems = filteredFullEvents.slice((safeCurrentPage - 1) * itemsPerPage, safeCurrentPage * itemsPerPage);
+
+    const handlePageChange = (direction: 'next' | 'prev') => {
+        if (direction === 'prev' && safeCurrentPage > 1) {
+            setCurrentPage(prev => prev - 1);
+        }
+        if (direction === 'next' && safeCurrentPage < totalPages) {
+            setCurrentPage(prev => prev + 1);
+        }
+    };
 
     const renderSkeleton = () => (
         <div className={styles.skeletonTable}>
@@ -189,7 +285,7 @@ export const ActivityDetailsPage: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredShortRows.map((row, i) => (
+                            {calculatedShortRows.map((row, i) => (
                                 <tr key={i}>
                                     <td className={styles.periodCell}>{row.period}</td>
                                     <td className={styles.activityCell}>{row.activityMinutes}</td>
@@ -210,7 +306,7 @@ export const ActivityDetailsPage: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredFullEvents.map((event) => (
+                            {currentItems.map((event) => (
                                 <tr key={event.id} className={classNames({ [styles.idleRow]: event.state === 'idle' })}>
                                     <td className={styles.periodCell}>{event.timestamp}</td>
                                     <td className={styles.durationCell}>{event.duration}</td>
@@ -237,6 +333,43 @@ export const ActivityDetailsPage: React.FC = () => {
                             ))}
                         </tbody>
                     </table>
+                )}
+                
+                {viewMode === 'full' && filteredFullEvents.length > 0 && (
+                    <div className={styles.pagination}>
+                        <div className={styles.pageInfo}>
+                            {t('reports.rating.showEntries', 'Показывать:')}
+                            <select
+                                className={styles.perPageSelect}
+                                value={itemsPerPage}
+                                onChange={(e) => { setItemsPerPage(Number(e.target.value)); setCurrentPage(1); }}
+                            >
+                                <option value={10}>10</option>
+                                <option value={20}>20</option>
+                                <option value={50}>50</option>
+                            </select>
+                        </div>
+                        <div className={styles.pageControls}>
+                            <button
+                                className={styles.pageBtn}
+                                onClick={() => handlePageChange('prev')}
+                                disabled={safeCurrentPage === 1}
+                                style={{ opacity: safeCurrentPage === 1 ? 0.5 : 1, cursor: safeCurrentPage === 1 ? 'not-allowed' : 'pointer' }}
+                            >
+                                <IoChevronBackOutline />
+                            </button>
+                            <span className={styles.pageCurrent}>{safeCurrentPage}</span>
+                            <span className={styles.pageTotal}>{t('reports.rating.of', 'из')} {totalPages}</span>
+                            <button
+                                className={styles.pageBtn}
+                                onClick={() => handlePageChange('next')}
+                                disabled={safeCurrentPage === totalPages}
+                                style={{ opacity: safeCurrentPage === totalPages ? 0.5 : 1, cursor: safeCurrentPage === totalPages ? 'not-allowed' : 'pointer' }}
+                            >
+                                <IoChevronForwardOutline />
+                            </button>
+                        </div>
+                    </div>
                 )}
             </div>
         </div>

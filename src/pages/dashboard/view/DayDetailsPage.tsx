@@ -104,11 +104,24 @@ const mockDataMonth: DayActivityData[] = [
     }
 ];
 
+import { useLocation } from 'react-router-dom';
+import { BASE_EMPLOYEES } from '@/shared/api/mock/employees.mock';
+
 export const DayDetailsPage: React.FC = () => {
     const { t } = useTranslation();
-    const [isGenerated, setIsGenerated] = useState(false);
+    const location = useLocation();
+    const passedEmployee = location.state?.selectedEmployee;
+
+    const [isGenerated, setIsGenerated] = useState(!!passedEmployee);
     const [period, setPeriod] = useState('Day');
-    const [selectedEmployee, setSelectedEmployee] = useState('All');
+    
+    // Map the passed employee name to the options. It handles partial name matching used in mock dropdown.
+    const getInitialEmployee = () => {
+        if (!passedEmployee) return 'All';
+        const found = BASE_EMPLOYEES.find(e => e.name === passedEmployee);
+        return found ? found.name : 'All';
+    };
+    const [selectedEmployee, setSelectedEmployee] = useState(getInitialEmployee());
     const [currentDate, setCurrentDate] = useState('2026-02-21');
 
     // Pagination state
@@ -147,12 +160,16 @@ export const DayDetailsPage: React.FC = () => {
         if (period === 'Month') activeData = mockDataMonth;
 
         if (selectedEmployee !== 'All') {
-            activeData = activeData.filter(d => {
-                if (selectedEmployee === 'Sakewa' && d.employeeName.includes('Sakewa')) return true;
-                if (selectedEmployee === 'Ivanov' && d.employeeName.includes('Иванов')) return true;
-                if (selectedEmployee === 'Smirnova' && d.employeeName.includes('Смирнова')) return true;
-                return false;
-            });
+            activeData = activeData.filter(d => d.employeeName === selectedEmployee);
+            
+            // If the filtered array is empty (meaning we don't have hardcoded mock data for this specific new employee)
+            // We'll generate a dummy set based on mockData1 so the chart isn't empty and the filtering still "works" visually.
+            if (activeData.length === 0) {
+                activeData = [
+                    { ...mockData1, employeeName: selectedEmployee, department: BASE_EMPLOYEES.find(e => e.name === selectedEmployee)?.department || 'IT' },
+                    { ...mockData2, employeeName: selectedEmployee, department: BASE_EMPLOYEES.find(e => e.name === selectedEmployee)?.department || 'IT' }
+                ];
+            }
         }
 
         // Generate repeated data to demonstrate pagination when there are few real mock items
@@ -265,9 +282,9 @@ export const DayDetailsPage: React.FC = () => {
                         <span>{t('dashboard.filters.employee')}:</span>
                         <select className={styles.select} value={selectedEmployee} onChange={(e) => setSelectedEmployee(e.target.value)}>
                             <option value="All">{t('dashboard.departments.all')}</option>
-                            <option value="Sakewa">Сауле Абдыкадырова Sakewa</option>
-                            <option value="Ivanov">Иванов Иван</option>
-                            <option value="Smirnova">Смирнова Анна</option>
+                            {BASE_EMPLOYEES.map(emp => (
+                                <option key={emp.id} value={emp.name}>{emp.name}</option>
+                            ))}
                         </select>
                     </div>
                     <label className={styles.checkboxLabel}>

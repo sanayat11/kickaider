@@ -215,7 +215,8 @@
     font-weight: 800;
     color: #1a1f4d;
     font-size: 14px;
-    width: 140px;
+    width: 150px;
+    white-space: nowrap;
 }
 
 .activityCell {
@@ -394,5 +395,70 @@
     p {
         font-size: 15px;
         font-weight: 600;
+    }
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+    border-top: 1px solid #edf1f7;
+    padding-top: 16px;
+    padding-bottom: 8px; /* added some padding specifically for this view */
+}
+
+.pageInfo {
+    font-size: 13px;
+    color: #8a91b4;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.perPageSelect {
+    background-color: #ffffff;
+    color: #1a1f4d;
+    border: 1px solid #edf1f7;
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    outline: none;
+    cursor: pointer;
+}
+
+.pageControls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .pageBtn {
+        background: none;
+        border: 1px solid #edf1f7;
+        color: #1a1f4d;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        padding: 6px;
+        border-radius: 6px;
+
+        &:hover {
+            background-color: #f8faff;
+            color: #4e5bd9;
+        }
+    }
+
+    .pageCurrent {
+        font-size: 14px;
+        font-weight: 700;
+        color: #1a1f4d;
+    }
+
+    .pageTotal {
+        font-size: 14px;
+        color: #8a91b4;
     }
 }

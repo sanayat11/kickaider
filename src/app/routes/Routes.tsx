@@ -2,7 +2,11 @@ import { paths } from '@/shared/constants/constants';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { Layout } from '@/app/layout/Layout';
 import { HomePage } from '@/pages/home/view/HomePage';
-import { DashboardPage, DashboardReportsPage, DashboardSettingsPage, DayDetailsPage, EmployeeRatingPage, WorkSchedulesPage, OrgStructurePage } from '@/pages/dashboard';
+import { DashboardPage, DashboardReportsPage } from '@/pages/dashboard';
+import { DayDetailsPage } from '@/pages/dayDetailsPage/view/DayDetailsPage';
+import { EmployeeRatingPage } from '@/pages/employeeRatingPage';
+import { WorkSchedulesPage } from '@/pages/workSchedulesPage';
+import { OrgStructurePage } from '@/pages/orgStructurePage';
 import { WorkTimePage } from '@/pages/work-time';
 import { NotFoundPage } from '@/pages/notFoundPage/view/NotFoundPage';
 import { AuthPage } from '@/pages/auth';
@@ -41,10 +45,6 @@ export const Router = createBrowserRouter([
       {
         path: paths.DASHBOARD_EMPLOYEE_RATING,
         element: <EmployeeRatingPage />,
-      },
-      {
-        path: paths.DASHBOARD_SETTINGS,
-        element: <DashboardSettingsPage />,
       },
       {
         path: paths.DASHBOARD_WORK_SCHEDULES,

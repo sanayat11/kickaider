@@ -1,0 +1,1 @@
+export {WorkSchedulesPage} from './view/WorkSchedulesPage';

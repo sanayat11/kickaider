@@ -1,0 +1,1 @@
+export {DayDetailsChart} from './view/DayDetailsChart';

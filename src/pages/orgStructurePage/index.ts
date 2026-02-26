@@ -1,0 +1,1 @@
+export {OrgStructurePage} from './view/OrgStructurePage';

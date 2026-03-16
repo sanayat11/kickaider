@@ -1,17 +1,26 @@
 import type { ReactNode } from 'react';
+import type { To } from 'react-router-dom';
 
-export interface CustomButtonProps {
-  type?: 'button' | 'link' | 'submit';
-  variant?: 'primary' | 'secondary' | 'tertiary' | 'text';
-  onClick?: () => void;
-  children: ReactNode;
-  disabled?: boolean;
-  to?: string;
-  className?: string;
+export interface ButtonProps {
+  type?: 'button' | 'link';
   actionType?: 'button' | 'submit' | 'reset';
-  rounded?: boolean;
-  iconButton?: boolean;
-  size?: 'small' | 'large' | 'fullWidth';
+
+  to?: To;
   target?: string;
   rel?: string;
+
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'text' | 'danger';
+  size?: 'small' | 'medium' | 'large' | 'giant';
+
+  fullWidth?: boolean;
+  rounded?: boolean;
+  disabled?: boolean;
+
+  leftIcon?: ReactNode;
+  rightIcon?: ReactNode;
+  iconOnly?: boolean;
+
+  className?: string;
+  children?: ReactNode;
+  onClick?: () => void;
 }

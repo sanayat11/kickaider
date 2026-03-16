@@ -6,11 +6,6 @@ export type TypographyVariant =
   | 'h3'
   | 'h4'
   | 'h5'
-  | 'h6'
-  | 'large'
-  | 'body'
-  | 'medium'
-  | 'small';
 
 export type TypographyWeight = 'regular' | 'medium' | 'bold' | 'semiBold';
 
@@ -27,13 +22,15 @@ export type AllowedTag =
   | 'h3'
   | 'h4'
   | 'h5'
-  | 'h6'
-  | 'p'
-  | 'span'
-  | 'div';
+
+
+export type TypographyContext =
+  | 'dashboard'
+  | 'landing';
 
 export interface TypographyProps {
   variant: TypographyVariant;
+  context?: TypographyContext;
   weight?: TypographyWeight;
   color?: TypographyColor;
   className?: string;

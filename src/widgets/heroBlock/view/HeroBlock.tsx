@@ -17,16 +17,16 @@ export const HeroBlock: FC = () => {
 
             <div className={styles.content}>
                 <div className={styles.textContent}>
-                    <Typography variant="h1" color="white" weight="bold" className={styles.title}>
+                    <Typography context='landing' variant="h1" color="white" weight="bold" className={styles.title}>
                         {t('hero.title')}
                     </Typography>
-                    <Typography variant="h5" color="white" weight="regular" className={styles.description}>
+                    <Typography context='landing' variant="h5" color="white" weight="regular" className={styles.description}>
                         {t('hero.description')}
                     </Typography>
                 </div>
 
                 <div className={styles.buttons}>
-                    <Button variant="primary" size="large" type="link" to={paths.AUTH} iconButton className={styles.button}>
+                    <Button variant="primary" size="large" type="link" to={paths.AUTH} className={styles.button}>
                         {t('hero.button')}
                     </Button>
                 </div>

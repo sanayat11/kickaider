@@ -10,7 +10,7 @@ export const LoginForm = () => {
     formState: { errors },
   } = useLoginForm()
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: unknown) => {
     console.log(data)
   }
 

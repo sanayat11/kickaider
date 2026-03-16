@@ -1,35 +1,75 @@
-.h1 {
-  font-size: 56px;
-  line-height:120%;
-}
-.h2 {
-  font-size: 48px;
-  line-height: 120%;
-}
-.h3 {
+/* dashboard */
+
+.context-dashboard-h1 {
   font-size: 28px;
   line-height: 120%;
 }
-.h4 {
+
+.context-dashboard-h2 {
   font-size: 24px;
   line-height: 120%;
 }
-.h5 {
+
+.context-dashboard-h3 {
+  font-size: 20px;
+  line-height: 120%;
+}
+
+.context-dashboard-h4 {
+  font-size: 16px;
+  line-height: 120%;
+}
+
+.context-dashboard-h5 {
+  font-size: 14px;
+  line-height: 160%;
+}
+
+.context-dashboard-small {
+  font-size: 12px;
+  line-height: 160%;
+}
+
+/* landing */
+
+.context-landing-h1 {
+  font-size: 56px;
+  line-height: 120%;
+}
+
+.context-landing-h2 {
+  font-size: 48px;
+  line-height: 120%;
+}
+
+.context-landing-h3 {
+  font-size: 28px;
+  line-height: 120%;
+}
+
+.context-landing-h4 {
+  font-size: 24px;
+  line-height: 120%;
+}
+
+.context-landing-h5 {
   font-size: 18px;
   line-height: 160%;
 }
 
-.small {
-  font-size: 14px;
+.context-landing-small {
+  font-size: 12px;
   line-height: 160%;
 }
 
 .weight-regular {
   font-weight: 400;
 }
+
 .weight-bold {
   font-weight: 700;
 }
+
 .weight-semiBold {
   font-weight: 600;
 }
@@ -37,15 +77,19 @@
 .color-black {
   color: var(--text-black);
 }
+
 .color-white {
   color: var(--text-white);
 }
+
 .color-primary {
   color: var(--primary);
 }
+
 .color-secondary {
   color: var(--secondary);
 }
+
 .color-gray {
   color: var(--text-gray);
 }

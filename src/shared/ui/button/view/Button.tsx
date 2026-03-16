@@ -1,66 +1,80 @@
 import type { FC } from 'react';
 import { Link } from 'react-router-dom';
-import type { To } from 'react-router-dom';
+import type { ButtonProps } from '../types/Button';
 import classNames from 'classnames';
 import styles from './Button.module.scss';
-import type { CustomButtonProps } from '@/shared/ui/button/types/Button';
-import { Typography } from '@/shared/ui/typoghraphy/view/Typography';
-import { FaArrowRight } from "react-icons/fa6";
 
-export const Button: FC<CustomButtonProps> = ({
+export const Button: FC<ButtonProps> = ({
   type = 'button',
-  variant = 'primary',
-  onClick,
-  children,
-  disabled = false,
-  to,
-  className,
   actionType = 'button',
-  rounded = false,
-  iconButton = false,
-  size = 'large',
+  to,
   target,
   rel,
+  variant = 'primary',
+  size = 'large',
+  fullWidth = false,
+  rounded = false,
+  disabled = false,
+  leftIcon,
+  rightIcon,
+  iconOnly = false,
+  className,
+  children,
+  onClick,
 }) => {
-  const isLink = type === 'link';
-  const isExternal = to?.startsWith('http');
-  
-  const combinedClassName = classNames(
+  const isExternal = typeof to === 'string' && to.startsWith('http');
+
+  const classes = classNames(
     styles.button,
     styles[variant],
     styles[size],
     {
-      [styles.disabled]: disabled,
+      [styles.fullWidth]: fullWidth,
       [styles.rounded]: rounded,
+      [styles.iconOnly]: iconOnly,
+      [styles.disabled]: disabled,
+      [styles.withLeftIcon]: Boolean(leftIcon),
+      [styles.withRightIcon]: Boolean(rightIcon),
     },
     className,
   );
 
-  if (isLink && to) {
+  const content = (
+    <>
+      {leftIcon && <span className={styles.icon}>{leftIcon}</span>}
+      {!iconOnly && children && <span className={styles.label}>{children}</span>}
+      {rightIcon && <span className={styles.icon}>{rightIcon}</span>}
+    </>
+  );
+
+  if (type === 'link' && to) {
     if (isExternal) {
       return (
-        <a href={to} target={target} rel={rel} className={combinedClassName}>
-          <Typography variant="small" weight="regular">
-            {children}
-          </Typography>
-          {iconButton && (
-            <div className={styles.iconWrapper}>
-              <FaArrowRight className={styles.icon} color="white" />
-            </div>
-          )}
+        <a
+          href={String(to)}
+          target={target}
+          rel={rel}
+          className={classes}
+          aria-disabled={disabled}
+          onClick={(event) => {
+            if (disabled) event.preventDefault();
+          }}
+        >
+          {content}
         </a>
       );
     }
+
     return (
-      <Link to={to as To} className={combinedClassName}>
-        <Typography variant="medium" weight="regular">
-          {children}
-        </Typography>
-        {iconButton && (
-          <div className={styles.iconWrapper}>
-            <FaArrowRight className={styles.icon} color="white" />
-          </div>
-        )}
+      <Link
+        to={to}
+        className={classes}
+        aria-disabled={disabled}
+        onClick={(event) => {
+          if (disabled) event.preventDefault();
+        }}
+      >
+        {content}
       </Link>
     );
   }
@@ -68,18 +82,11 @@ export const Button: FC<CustomButtonProps> = ({
   return (
     <button
       type={actionType}
-      onClick={!disabled ? onClick : undefined}
-      className={combinedClassName}
+      className={classes}
       disabled={disabled}
+      onClick={disabled ? undefined : onClick}
     >
-      <Typography variant="body" weight="regular" className={styles.typography}>
-        {children}
-      </Typography>
-      {iconButton && (
-        <div className={styles.iconWrapper}>
-          <FaArrowRight className={styles.icon} color="white" />
-        </div>
-      )}
+      {content}
     </button>
   );
 };

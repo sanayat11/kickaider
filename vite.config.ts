@@ -1,8 +1,7 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { fileURLToPath, URL } from 'node:url'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { fileURLToPath, URL } from 'node:url';
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
   resolve: {
@@ -19,10 +18,8 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        // Make design tokens ($grid-*, @mixin dashboard-container, etc.)
-        // available in every *.module.scss without a manual @use
-        additionalData: `@use '${fileURLToPath(new URL('./src/app/styles/variables.scss', import.meta.url)).replace(/\\/g, '/')}' as *;`,
+        additionalData: `@use "@/app/styles/variables.scss" as *;`,
       },
     },
   },
-})
+});

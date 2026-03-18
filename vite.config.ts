@@ -16,4 +16,13 @@ export default defineConfig({
       '@shared': fileURLToPath(new URL('./src/shared', import.meta.url)),
     },
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        // Make design tokens ($grid-*, @mixin dashboard-container, etc.)
+        // available in every *.module.scss without a manual @use
+        additionalData: `@use '${fileURLToPath(new URL('./src/app/styles/variables.scss', import.meta.url)).replace(/\\/g, '/')}' as *;`,
+      },
+    },
+  },
 })

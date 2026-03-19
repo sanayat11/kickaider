@@ -1,6 +1,17 @@
 import type { ReactNode } from 'react';
 import type { To } from 'react-router-dom';
 
+export type ButtonVariant =
+  | 'primary'
+  | 'secondary'
+  | 'text'
+  | 'danger'
+  | 'icon'
+  | 'badge'
+  | 'select';
+
+export type ButtonSize = 'small' | 'medium' | 'large' | 'giant';
+
 export interface ButtonProps {
   type?: 'button' | 'link';
   actionType?: 'button' | 'submit' | 'reset';
@@ -9,8 +20,8 @@ export interface ButtonProps {
   target?: string;
   rel?: string;
 
-  variant?: 'primary' | 'secondary' | 'tertiary' | 'text' | 'danger';
-  size?: 'small' | 'medium' | 'large' | 'giant';
+  variant?: ButtonVariant;
+  size?: ButtonSize;
 
   fullWidth?: boolean;
   rounded?: boolean;

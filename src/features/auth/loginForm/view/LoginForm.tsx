@@ -50,7 +50,7 @@ export const LoginForm = () => {
           {errors.confirmPassword.message}
         </FormHint>
       )}
-
+      <Checkbox label="Placeholder" disabled />
       <Checkbox
         label="Запомнить меня"
         {...register("remember")}

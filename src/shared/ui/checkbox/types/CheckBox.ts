@@ -1,4 +1,8 @@
+import type { InputHTMLAttributes } from 'react';
+
 export interface CheckboxProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
-  label: string
+  extends InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
+  indeterminate?: boolean;
+  className?: string;
 }

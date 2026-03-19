@@ -3,23 +3,17 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  width: 180px;
+
   height: 40px;
-  padding: 12px 22px;
+  padding: 0 16px;
+
   font-family: var(--font-main);
-
-  background: transparent;
   border-radius: 10px;
-  cursor: pointer;
-  text-decoration: none;
   border: 1px solid transparent;
+  background: transparent;
 
-  transition:
-    background-color 0.25s ease,
-    color 0.25s ease,
-    border-color 0.25s ease,
-    box-shadow 0.25s ease,
-    transform 0.15s ease;
+  cursor: pointer;
+  transition: all 0.2s ease;
 
   &:active {
     transform: scale(0.96);
@@ -29,124 +23,131 @@
   &.disabled {
     cursor: not-allowed;
     opacity: 0.45;
-    background-color: var(--bg-hover);
+    background: var(--bg-hover);
     color: var(--text-muted);
-    border-color: transparent;
-    box-shadow: none;
   }
 }
 
 .primary {
   background: var(--accent-primary);
-  color: var(--text-primary);
-  border-color: var(--accent-primary);
-  box-shadow: 0 0 10px rgba(181, 123, 255, 0.32);
+  color: white;
 
   &:hover {
     background: var(--accent-primary-hover);
-    border-color: var(--accent-primary-hover);
-    box-shadow: 0 0 14px rgba(181, 123, 255, 0.48);
   }
+
   &:active {
     background: var(--accent-primary-active);
-    box-shadow: 0 0 6px rgba(181, 123, 255, 0.24);
-  }
-  &:focus-visible{
-    background: var(--accent-primary);
-    border: 3px, solid ,(--accent-primary-focus);
-  }
-  &:disabled{
-    background: var(--accent-primary-disable);
-    pointer-events: none;
-    cursor:none;
   }
 }
+
 .secondary {
-  background: transparent;
-  border: 1.5px,solid, var(--accent-primary);
-  color: var(--accent-primary);
-  box-shadow: 0 0 6px rgba(181, 123, 255, 0.18);
-
-  &:hover {
-    background: #EDEFFE;
-    color: var(--accent-primary);
-    box-shadow: 0 0 10px rgba(181, 123, 255, 0.32);
-  }
-
-  &:active {
-    background: #C8CEFC;
-    border-color:#4E61F6;
-  }
-}
-
-.tertiary {
-  background: transparent;
+  border: 1.5px solid var(--accent-primary);
   color: var(--accent-primary);
 
   &:hover {
-    background: #EDEFFE;
-  }
-
-  &:active {
-    background: #C8CEFC;
+    background: #edeffe;
   }
 }
+
 
 .text {
-  background: transparent;
   border: none;
+  padding: 4px;
   color: var(--accent-primary);
-  font-weight: 500;
-  padding: 6px 4px;
+}
 
-  transition:
-    color 0.2s ease,
-    text-shadow 0.25s ease;
+
+.danger {
+  background: #ff3b3b;
+  color: white;
 
   &:hover {
-    color: var(--accent-primary-hover);
-    text-shadow: 0 0 6px rgba(181, 123, 255, 0.45);
-  }
-
-  &:active {
-    color: var(--accent-primary-active);
-    text-shadow: 0 0 4px rgba(181, 123, 255, 0.3);
+    background: #e63232;
   }
 }
 
-.rounded {
-  border-radius: 999px !important;
+
+.icon {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 8px;
+  background: #f2f3f7;
+
+  &:hover {
+    background: #e5e7ee;
+  }
 }
 
-.fullWidth {
-  width: 100%;
-  height: 54px;
+.badge {
+  min-width: 63px;  
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
 }
 
+.badge.red {
+  background: #ffe3e3;
+  color: #ff3b3b;
+}
+
+.badge.blue {
+  background: #e5ebff;
+  color: #4c63ff;
+}
+
+.badge.yellow {
+  background: #fff3c4;
+  color: #f2a900;
+}
+
+
+.select {
+  width: 220px;
+  justify-content: space-between;
+  background: #f2f3f7;
+
+  &:hover {
+    background: #e9ebf3;
+  }
+}
+
+/* ===== SIZES ===== */
+.giant{
+  width: 172px;
+  height: 56px;
+}
 .small {
-  padding: 8px 16px;
-  font-size: 14px;
-  min-width: 120px;
+  height: 32px;
+  width: 95px;
+  font-size: 12px;
+}
+
+.medium {
+  height: 40px;
+  width: 110px;
 }
 
 .large {
-  padding: 12px 24px;
+  width: 156px;
+  height: 48px;
 }
 
-.iconWrapper {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+/* ===== MODIFIERS ===== */
+.fullWidth {
+  width: 100%;
 }
 
-.icon {
+.rounded {
+  border-radius: 999px;
+}
+
+/* ===== ICON INSIDE ===== */
+.iconInner {
+  display: flex;
   width: 16px;
   height: 16px;
-  fill: currentColor;
-  color: currentColor;
-}
-
-.typography {
-  display: inline-flex;
-  align-items: center;
 }

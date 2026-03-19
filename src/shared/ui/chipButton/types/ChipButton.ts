@@ -1,10 +1,8 @@
-import type { ReactNode } from 'react';
-
-export interface ChipButtonProps {
-  children: ReactNode;
-  color?: 'purple' | 'red' | 'yellow' | 'green' | 'blue';
+export interface ChipProps {
+  children: React.ReactNode;
+  tone?: 'purple' | 'red' | 'yellow' | 'green' | 'blue' | 'gray';
+  variant?: 'list' | 'filter'; 
   selected?: boolean;
   disabled?: boolean;
-  onClick?: () => void;
   className?: string;
 }

@@ -1,22 +1,14 @@
 import type { FC } from 'react';
 import classNames from 'classnames';
 import styles from './ChipButton.module.scss';
-
-interface ChipProps {
-  children: React.ReactNode;
-  tone?: 'purple' | 'red' | 'yellow' | 'green' | 'blue' | 'gray';
-  selected?: boolean;
-  disabled?: boolean;
-  leftAccent?: boolean;
-  className?: string;
-}
+import type { ChipProps } from '../types/ChipButton';
 
 export const Chip: FC<ChipProps> = ({
   children,
   tone = 'purple',
+  variant = 'filter',
   selected,
   disabled,
-  leftAccent,
   className,
 }) => {
   return (
@@ -24,10 +16,10 @@ export const Chip: FC<ChipProps> = ({
       className={classNames(
         styles.chip,
         styles[tone],
+        styles[variant], 
         {
-          [styles.selected]: selected,
+          [styles.selected]: selected && variant === 'filter',
           [styles.disabled]: disabled,
-          [styles.leftAccent]: leftAccent,
         },
         className,
       )}

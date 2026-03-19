@@ -1,10 +1,9 @@
-import styles from "./AuthPage.module.scss"
-import image from "@/shared/assets/images/imgAuth.png"
-import logo from "@shared/assets/images/logo.svg"
-import { LoginForm } from "@/features/auth/loginForm/view/LoginForm"
-import { Button } from "@/shared/ui/button/view/Button"
-import { paths } from "@/shared/constants/constants"
-import { Chip } from "@/shared/ui/chipButton/view/ChipButton"
+import styles from './AuthPage.module.scss';
+import image from '@/shared/assets/images/imgAuth.png';
+import logo from '@shared/assets/images/logo.svg';
+import { LoginForm } from '@/features/auth/loginForm/view/LoginForm';
+import { Button } from '@/shared/ui/button/view/Button';
+
 
 export const AuthPage = () => {
   return (
@@ -22,18 +21,8 @@ export const AuthPage = () => {
             </div>
 
             <LoginForm />
-            <Button
-              type="link"
-              to={paths.DASHBOARD}
-              className={styles.button}
-              size="giant"
-              fullWidth
-            >
-              Войти
+            <Button variant="icon">
             </Button>
-            <Chip tone="purple" leftAccent>
-              Больничный
-            </Chip>
           </div>
         </div>
 
@@ -43,4 +32,4 @@ export const AuthPage = () => {
       </div>
     </div>
   );
-} 
+};

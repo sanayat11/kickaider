@@ -1,8 +1,8 @@
 import type { FC } from 'react';
 import { Link } from 'react-router-dom';
-import type { ButtonProps } from '../types/Button';
 import classNames from 'classnames';
 import styles from './Button.module.scss';
+import type { ButtonProps } from '../types/Button';
 
 export const Button: FC<ButtonProps> = ({
   type = 'button',
@@ -11,13 +11,14 @@ export const Button: FC<ButtonProps> = ({
   target,
   rel,
   variant = 'primary',
-  size = 'large',
+  size = 'medium',
+  tone = 'primary',
   fullWidth = false,
   rounded = false,
   disabled = false,
+  iconOnly = false,
   leftIcon,
   rightIcon,
-  iconOnly = false,
   className,
   children,
   onClick,
@@ -28,22 +29,21 @@ export const Button: FC<ButtonProps> = ({
     styles.button,
     styles[variant],
     styles[size],
+    styles[tone],
     {
       [styles.fullWidth]: fullWidth,
       [styles.rounded]: rounded,
       [styles.iconOnly]: iconOnly,
       [styles.disabled]: disabled,
-      [styles.withLeftIcon]: Boolean(leftIcon),
-      [styles.withRightIcon]: Boolean(rightIcon),
     },
     className,
   );
 
   const content = (
     <>
-      {leftIcon && <span className={styles.icon}>{leftIcon}</span>}
+      {leftIcon && <span className={styles.iconInner}>{leftIcon}</span>}
       {!iconOnly && children && <span className={styles.label}>{children}</span>}
-      {rightIcon && <span className={styles.icon}>{rightIcon}</span>}
+      {rightIcon && <span className={styles.iconInner}>{rightIcon}</span>}
     </>
   );
 
@@ -56,8 +56,8 @@ export const Button: FC<ButtonProps> = ({
           rel={rel}
           className={classes}
           aria-disabled={disabled}
-          onClick={(event) => {
-            if (disabled) event.preventDefault();
+          onClick={(e) => {
+            if (disabled) e.preventDefault();
           }}
         >
           {content}
@@ -70,8 +70,8 @@ export const Button: FC<ButtonProps> = ({
         to={to}
         className={classes}
         aria-disabled={disabled}
-        onClick={(event) => {
-          if (disabled) event.preventDefault();
+        onClick={(e) => {
+          if (disabled) e.preventDefault();
         }}
       >
         {content}

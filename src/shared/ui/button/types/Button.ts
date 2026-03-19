@@ -1,6 +1,27 @@
 import type { ReactNode } from 'react';
 import type { To } from 'react-router-dom';
 
+export type ButtonVariant =
+  | 'primary'
+  | 'solid'
+  | 'outline'
+  | 'ghost'
+  | 'iconSolid'
+  | 'iconOutline'
+  | 'iconGhost'
+  | 'metric'
+  | 'dangerBlock';
+
+export type ButtonSize = 'giant' | 'large' | 'medium' | 'small';
+
+export type ButtonTone =
+  | 'primary'
+  | 'blue'
+  | 'red'
+  | 'yellow'
+  | 'gray'
+  | 'mint';
+
 export interface ButtonProps {
   type?: 'button' | 'link';
   actionType?: 'button' | 'submit' | 'reset';
@@ -9,16 +30,17 @@ export interface ButtonProps {
   target?: string;
   rel?: string;
 
-  variant?: 'primary' | 'secondary' | 'tertiary' | 'text' | 'danger';
-  size?: 'small' | 'medium' | 'large' | 'giant';
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  tone?: ButtonTone;
 
   fullWidth?: boolean;
   rounded?: boolean;
   disabled?: boolean;
+  iconOnly?: boolean;
 
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
-  iconOnly?: boolean;
 
   className?: string;
   children?: ReactNode;

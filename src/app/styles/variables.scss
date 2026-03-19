@@ -1,36 +1,28 @@
-// ─────────────────────────────────────────────
-// BRAND — Primary
-// ─────────────────────────────────────────────
 :root {
-    --primary:          #212967;   // primary main
+    //PRIMARY COLORS 
+    --primary:          #212967;   
     --primary-50:       #EDEFFE;
     --primary-100:      #C8CEFC;
     --primary-700:      #3745AF;
     --primary-800:      #2B3587;
     --primary-900:      #212967;
 
-    // ─────────────────────────────────────────
     // BRAND — Grey / Secondary
-    // ─────────────────────────────────────────
-    --secondary:        #F9FAFB;   // grey-50
+    --secondary:        #F9FAFB;   
     --grey-50:          #F9FAFB;
     --grey-100:         #F3F4F6;
     --grey-200:         #E5E7EA;
     --grey-300:         #D1D5DB;
     --grey-400:         #9EA2AE;
 
-    // ─────────────────────────────────────────
     // TYPOGRAPHY
-    // ─────────────────────────────────────────
-    --text-color:       #9197B3;   // Color text
-    --text-color-2:     #5D5A88;   // text color 2
-    --text-primary-800: #2B3587;   // primary 800
-    --text-white:       #FFFFFF;   // White 100%
-    --text-grey-400:    #9EA2AE;   // grey 400
+    --text-color:       #9197B3;   
+    --text-color-2:     #5D5A88;   
+    --text-primary-800: #2B3587;   
+    --text-white:       #FFFFFF;   
+    --text-grey-400:    #9EA2AE;   
 
-    // ─────────────────────────────────────────
     // STATE / SEMANTIC
-    // ─────────────────────────────────────────
     --danger:           #FF0000;
     --danger-25:        rgba(255, 0, 0, 0.25);
     --success:          #8DE4DB;
@@ -38,9 +30,7 @@
     --disabled:         #D2D5DB;
     --pink:             #CB5FFF;
 
-    // ─────────────────────────────────────────
     // LEGACY / ACCENT (kept for compatibility)
-    // ─────────────────────────────────────────
     --bg-color:                  #FFFFFF;
     --accent-primary:            #4E61F6;
     --accent-primary-hover:      #3745AF;
@@ -49,6 +39,27 @@
     --accent-primary-focus:      #AEB6FB;
     --text-gray:                 #9197B3;
     --text-gray-2:               #5D5A88;
+
+    //SPACING
+    --space-8:   8px;
+    --space-12:  12px;
+    --space-16:  16px;
+    --space-20:  20px;
+    --space-24:  24px;
+    --space-32:  32px;
+    --space-40:  40px;
+    --space-56:  56px;
+    --space-72:  72px;
+    --space-80:  80px;
+    --space-96:  96px;
+    --space-100: 100px;
+    --space-120: 120px;
+
+    --space-xs: var(--space-8);
+    --space-sm: var(--space-12);
+    --space-md: var(--space-16);
+    --space-lg: var(--space-24);
+    --space-xl: var(--space-32);
 }
 
 // ─────────────────────────────────────────────

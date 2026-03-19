@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import styles from './OrgStructurePage.module.scss';
 import { IoChevronDownOutline, IoSearchOutline, IoTrashOutline, IoPencilOutline, IoAddOutline, IoCloseOutline, IoDesktopOutline, IoPeopleOutline } from 'react-icons/io5';
+import { BaseInput } from '@/shared/ui/input/view/BaseInput';
 
 // --- Types ---
 interface Employee {
@@ -222,12 +223,12 @@ export const OrgStructurePage: React.FC = () => {
         <div className={styles.tabContent}>
             <div className={styles.actionBar}>
                 <div className={styles.searchBox}>
-                    <IoSearchOutline className={styles.searchIcon} />
-                    <input
+                    <BaseInput
                         type="text"
                         placeholder={t('settings.organization.employees.search')}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
+                        icon={<IoSearchOutline />}
                     />
                 </div>
                 <button className={styles.primaryBtn} onClick={openCreateDeptModal}>
@@ -394,8 +395,8 @@ export const OrgStructurePage: React.FC = () => {
                         </div>
                         <div className={styles.modalBody}>
                             <div className={styles.inputGroup}>
-                                <label>{t('settings.organization.modals.dept.name')}</label>
-                                <input
+                                <BaseInput
+                                    label={t('settings.organization.modals.dept.name')}
                                     type="text"
                                     value={deptFormName}
                                     onChange={(e) => setDeptFormName(e.target.value)}
@@ -426,16 +427,16 @@ export const OrgStructurePage: React.FC = () => {
                         </div>
                         <div className={styles.modalBody}>
                             <div className={styles.inputGroup}>
-                                <label>ФИО Сотрудника</label>
-                                <input
+                                <BaseInput
+                                    label="ФИО Сотрудника"
                                     type="text"
                                     value={empFormName}
                                     onChange={(e) => setEmpFormName(e.target.value)}
                                 />
                             </div>
                             <div className={styles.inputGroup}>
-                                <label>Должность</label>
-                                <input
+                                <BaseInput
+                                    label="Должность"
                                     type="text"
                                     value={empFormPosition}
                                     onChange={(e) => setEmpFormPosition(e.target.value)}
@@ -478,8 +479,8 @@ export const OrgStructurePage: React.FC = () => {
                                 {t('settings.organization.modals.bind.desc1')}<strong>{unassignedDevices.find(d => d.id === bindingDeviceId)?.hostname}</strong>{t('settings.organization.modals.bind.desc2')}
                             </p>
                             <div className={styles.inputGroup}>
-                                <label>{t('settings.organization.modals.emp.name')}</label>
-                                <input
+                                <BaseInput
+                                    label={t('settings.organization.modals.emp.name')}
                                     type="text"
                                     value={empFormName}
                                     onChange={(e) => setEmpFormName(e.target.value)}
@@ -488,8 +489,8 @@ export const OrgStructurePage: React.FC = () => {
                                 />
                             </div>
                             <div className={styles.inputGroup}>
-                                <label>{t('settings.organization.modals.emp.position')}</label>
-                                <input
+                                <BaseInput
+                                    label={t('settings.organization.modals.emp.position')}
                                     type="text"
                                     value={empFormPosition}
                                     onChange={(e) => setEmpFormPosition(e.target.value)}

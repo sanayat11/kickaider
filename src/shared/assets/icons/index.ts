@@ -1,18 +1,39 @@
-export { default as LupaIcon } from './lupa.svg';
-export { default as ArrowGraphUpIcon } from './arrowGraphUp.svg';
-export { default as ArrowUpIcon } from './arrowUp.svg';
-export { default as AttachmentIcon } from './attachment.svg';
-export { default as CalendarIcon } from './calendar.svg';
-export { default as ClockIcon } from './clock.svg';
-export { default as DocumentIcon } from './document.svg';
-export { default as EditIcon } from './edit.svg';
-export { default as FilterIcon } from './filter.svg';
-export { default as GraphUpIcon } from './graph-up.svg';
-export { default as GroupIcon } from './group.svg';
-export { default as LaptopIcon } from './laptop.svg';
-export { default as LogOutIcon } from './logOut.svg';
-export { default as MenuIcon } from './menu.svg';
-export { default as SettingsIcon } from './settings.svg';
-export { default as StatUpIcon } from './statUp.svg';
-export { default as TimeZoneIcon } from './timeZone.svg';
-export { default as TrashIcon } from './trash.svg';
+import LupaIcon from './lupa.svg?react';
+import ArrowGraphUpIcon from './arrowGraphUp.svg?react';
+import ArrowUpIcon from './arrowUp.svg?react';
+import AttachmentIcon from './attachment.svg?react';
+import CalendarIcon from './calendar.svg?react';
+import ClockIcon from './clock.svg?react';
+import DocumentIcon from './document.svg?react';
+import EditIcon from './edit.svg?react';
+import FilterIcon from './filter.svg?react';
+import GraphUpIcon from './graph-up.svg?react';
+import GroupIcon from './group.svg?react';
+import LaptopIcon from './laptop.svg?react';
+import LogOutIcon from './logOut.svg?react';
+import MenuIcon from './menu.svg?react';
+import SettingsIcon from './settings.svg?react';
+import StatUpIcon from './statUp.svg?react';
+import TimeZoneIcon from './timeZone.svg?react';
+import TrashIcon from './trash.svg?react';
+
+export {
+  LupaIcon,
+  ArrowGraphUpIcon,
+  ArrowUpIcon,
+  AttachmentIcon,
+  CalendarIcon,
+  ClockIcon,
+  DocumentIcon,
+  EditIcon,
+  FilterIcon,
+  GraphUpIcon,
+  GroupIcon,
+  LaptopIcon,
+  LogOutIcon,
+  MenuIcon,
+  SettingsIcon,
+  StatUpIcon,
+  TimeZoneIcon,
+  TrashIcon,
+};

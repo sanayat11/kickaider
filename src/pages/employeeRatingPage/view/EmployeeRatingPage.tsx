@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { paths } from '@/shared/constants/constants';
 import styles from './EmployeeRatingPage.module.scss';
 import classNames from 'classnames';
+import { BaseInput } from '@/shared/ui/input/view/BaseInput';
 
 type Criterion = 'productive' | 'unproductive' | 'neutral' | 'idle';
 
@@ -193,13 +194,12 @@ export const EmployeeRatingPage: React.FC = () => {
                 {/* Bottom Row / Search */}
                 <div className={styles.filterRow} style={{ marginTop: '16px' }}>
                     <div className={styles.searchBox}>
-                        <IoSearchOutline className={styles.searchIcon} />
-                        <input
+                        <BaseInput
                             type="text"
                             placeholder={t('reports.rating.searchPlaceholder')}
-                            className={styles.searchInput}
                             value={searchQuery}
                             onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+                            icon={<IoSearchOutline />}
                         />
                     </div>
                 </div>

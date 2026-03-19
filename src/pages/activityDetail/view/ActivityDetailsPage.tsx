@@ -14,6 +14,7 @@ import {
 } from 'react-icons/io5';
 import classNames from 'classnames';
 import styles from './ActivityDetailsPage.module.scss';
+import { BaseInput } from '@/shared/ui/input/view/BaseInput';
 import { activityMockApi } from '@/shared/api/mock/activity.mock';
 import type { EmployeeDayDetails } from '@/shared/api/mock/activity.mock';
 
@@ -257,12 +258,12 @@ export const ActivityDetailsPage: React.FC = () => {
                     </div>
 
                     <div className={styles.searchWrapper}>
-                        <IoSearchOutline className={styles.searchIcon} />
-                        <input
+                        <BaseInput
                             type="text"
                             placeholder={t('activity.details.search')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
+                            icon={<IoSearchOutline />}
                         />
                     </div>
                 </div>

@@ -1,9 +1,16 @@
+<<<<<<< HEAD
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import svgr from 'vite-plugin-svgr'
+import { fileURLToPath, URL } from 'node:url'
+=======
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { fileURLToPath, URL } from 'node:url';
+>>>>>>> e0628205e3efe8dc89b158ea6bcf74d447d99647
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), svgr()],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),

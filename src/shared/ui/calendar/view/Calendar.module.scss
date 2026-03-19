@@ -1,0 +1,153 @@
+.wrapper {
+  display: inline-block;
+}
+
+.calendar {
+  width: 348px;
+  padding: 24px;
+  background: var(--bg-color);
+  border-radius: 0;
+  box-sizing: border-box;
+  color: var(--text-primary-800);
+}
+
+.months {
+  display: block;
+}
+
+.month {
+  display: block;
+}
+
+.header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+  min-height: 36px;
+}
+
+.captionLabel {
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 400;
+  color: #7d80a6;
+}
+
+.nav {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.navBtn {
+  pointer-events: auto;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #7f86c2;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-primary-800);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.navBtn:hover,
+.navBtn:active {
+  background: transparent;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.head {
+  margin-bottom: 10px;
+}
+
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 8px;
+}
+
+.weekday {
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 400;
+  color: #9ea2ae;
+  text-transform: none;
+}
+
+.body {
+  display: block;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  box-sizing: border-box;
+}
+
+.day {
+  width: 42px;
+  height: 38px;
+  border: 1px solid #f0f1f6;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #5f6394;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.day:hover,
+.day:active {
+  background: #ffffff;
+}
+
+.selected {
+  background: #cfd3ff;
+  border-color: #cfd3ff;
+  color: #ffffff;
+}
+
+.today {
+  border-color: #e8eaf4;
+}
+
+.outside {
+  color: #a9aec2;
+}
+
+.disabled {
+  color: #d2d5db;
+  cursor: not-allowed;
+}

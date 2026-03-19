@@ -3,14 +3,24 @@ import type { To } from 'react-router-dom';
 
 export type ButtonVariant =
   | 'primary'
-  | 'secondary'
-  | 'text'
-  | 'danger'
-  | 'icon'
-  | 'badge'
-  | 'select';
+  | 'solid'
+  | 'outline'
+  | 'ghost'
+  | 'iconSolid'
+  | 'iconOutline'
+  | 'iconGhost'
+  | 'metric'
+  | 'dangerBlock';
 
-export type ButtonSize = 'small' | 'medium' | 'large' | 'giant';
+export type ButtonSize = 'giant' | 'large' | 'medium' | 'small';
+
+export type ButtonTone =
+  | 'primary'
+  | 'blue'
+  | 'red'
+  | 'yellow'
+  | 'gray'
+  | 'mint';
 
 export interface ButtonProps {
   type?: 'button' | 'link';
@@ -22,14 +32,15 @@ export interface ButtonProps {
 
   variant?: ButtonVariant;
   size?: ButtonSize;
+  tone?: ButtonTone;
 
   fullWidth?: boolean;
   rounded?: boolean;
   disabled?: boolean;
+  iconOnly?: boolean;
 
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
-  iconOnly?: boolean;
 
   className?: string;
   children?: ReactNode;

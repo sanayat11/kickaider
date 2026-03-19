@@ -27,7 +27,7 @@ export const FaqBlock: FC = () => {
                 <Typography variant="h2" weight="bold" className={styles.title}>
                     {t('faq.title')}
                 </Typography>
-                <Typography variant="body" className={styles.description}>
+                <Typography variant="h5" context='landing' className={styles.description}>
                     {t('faq.description')}
                 </Typography>
             </div>

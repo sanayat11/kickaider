@@ -36,6 +36,27 @@
     --accent-primary-focus:      #AEB6FB;
     --text-gray:                 #9197B3;
     --text-gray-2:               #5D5A88;
+
+    //SPACING
+    --space-8:   8px;
+    --space-12:  12px;
+    --space-16:  16px;
+    --space-20:  20px;
+    --space-24:  24px;
+    --space-32:  32px;
+    --space-40:  40px;
+    --space-56:  56px;
+    --space-72:  72px;
+    --space-80:  80px;
+    --space-96:  96px;
+    --space-100: 100px;
+    --space-120: 120px;
+
+    --space-xs: var(--space-8);
+    --space-sm: var(--space-12);
+    --space-md: var(--space-16);
+    --space-lg: var(--space-24);
+    --space-xl: var(--space-32);
 }
 
 // ─────────────────────────────────────────────

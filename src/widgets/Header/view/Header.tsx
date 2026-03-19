@@ -26,7 +26,7 @@ export const Header: React.FC = () => {
           </div>
         </nav>
 
-        <Button type="link" to={paths.AUTH} className={styles.button}>{t("header.login")}</Button>
+        <Button type="link" size='giant' to={paths.AUTH} className={styles.button}>{t("header.login")}</Button>
       </div>
     </header>
   );

@@ -12,12 +12,13 @@ export const Button: FC<ButtonProps> = ({
   rel,
   variant = 'primary',
   size = 'medium',
+  tone = 'primary',
   fullWidth = false,
   rounded = false,
   disabled = false,
+  iconOnly = false,
   leftIcon,
   rightIcon,
-  iconOnly = false,
   className,
   children,
   onClick,
@@ -28,6 +29,7 @@ export const Button: FC<ButtonProps> = ({
     styles.button,
     styles[variant],
     styles[size],
+    styles[tone],
     {
       [styles.fullWidth]: fullWidth,
       [styles.rounded]: rounded,
@@ -40,7 +42,7 @@ export const Button: FC<ButtonProps> = ({
   const content = (
     <>
       {leftIcon && <span className={styles.iconInner}>{leftIcon}</span>}
-      {!iconOnly && children && <span>{children}</span>}
+      {!iconOnly && children && <span className={styles.label}>{children}</span>}
       {rightIcon && <span className={styles.iconInner}>{rightIcon}</span>}
     </>
   );
@@ -54,7 +56,9 @@ export const Button: FC<ButtonProps> = ({
           rel={rel}
           className={classes}
           aria-disabled={disabled}
-          onClick={(e) => disabled && e.preventDefault()}
+          onClick={(e) => {
+            if (disabled) e.preventDefault();
+          }}
         >
           {content}
         </a>
@@ -66,7 +70,9 @@ export const Button: FC<ButtonProps> = ({
         to={to}
         className={classes}
         aria-disabled={disabled}
-        onClick={(e) => disabled && e.preventDefault()}
+        onClick={(e) => {
+          if (disabled) e.preventDefault();
+        }}
       >
         {content}
       </Link>

@@ -17,6 +17,7 @@ import {
 } from 'react-icons/io5';
 import logoUrl from '@/shared/assets/images/logo.svg';
 import styles from './Sidebar.module.scss';
+import { LogOutIcon, LupaIcon } from '@/shared/assets/icons';
 
 interface SidebarItemProps {
     id: string;
@@ -252,7 +253,7 @@ export const Sidebar: React.FC = () => {
                     className={classNames(styles.logoutBtn, { [styles.collapsed]: collapsed })}
                     onClick={() => navigate('/')}
                 >
-                    <IoLogOutOutline className={styles.icon} />
+                    <LogOutIcon/>  
                     {!collapsed && <span>{t('sidebar.logout', 'Выйти')}</span>}
                 </div>
             </div>

@@ -18,6 +18,7 @@ import dashboardStyles from '@/pages/dashboard/view/DashboardPage.module.scss';
 import { Select } from '@/shared/ui/select/view/Select';
 import { categorizationMockApi } from '@/shared/api/mock/categorization.mock';
 import type { CategorizationRow, Category } from '@/shared/api/mock/categorization.mock';
+import { BaseInput } from '@/shared/ui/input/view/BaseInput';
 
 export const CategorizationPage: React.FC = () => {
     const { t } = useTranslation();
@@ -110,12 +111,12 @@ export const CategorizationPage: React.FC = () => {
                 <div className={styles.controlsRow}>
                     <div className={styles.filterGroup}>
                         <div className={styles.searchWrapper}>
-                            <IoSearchOutline className={styles.searchIcon} />
-                            <input
+                            <BaseInput
                                 type="text"
                                 placeholder={t('settings.categorization.searchPlaceholder')}
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}
+                                icon={<IoSearchOutline />}
                             />
                         </div>
                         <Select

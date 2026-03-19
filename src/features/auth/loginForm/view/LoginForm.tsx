@@ -1,11 +1,11 @@
-import { FormHint } from "@/shared/ui/formHint/view/FormHint"
 import { Checkbox } from "@/shared/ui/checkbox/view/CheckBox"
 import { useLoginForm } from "../model/useLoginForm"
+import { Input } from "@/shared/ui/input/view/Input"
 import styles from "./LoginForm.module.scss"
 
 export const LoginForm = () => {
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useLoginForm()
@@ -14,46 +14,38 @@ export const LoginForm = () => {
     console.log(data)
   }
 
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-      <label>Email</label>
-      <input
+      <Input
+        name="email"
+        label="Email"
         type="email"
         placeholder="example@gmail.com"
-        {...register("email")}
+        control={control}
+        error={errors.email?.message}
       />
-      {errors.email && (
-        <FormHint type="error">{errors.email.message}</FormHint>
-      )}
 
-      <label>Пароль</label>
-      <input
+      <Input
+        name="password"
+        label="Пароль"
         type="password"
         placeholder="enter your password"
-        {...register("password")}
+        control={control}
+        error={errors.password?.message}
       />
 
-      {errors.password && (
-        <FormHint type="error">{errors.password.message}</FormHint>
-      )}
-
-      <label>Подтвердите пароль</label>
-      <input
+      <Input
+        name="confirmPassword"
+        label="Подтвердите пароль"
         type="password"
         placeholder="confirm password"
-        {...register("confirmPassword")}
+        control={control}
+        error={errors.confirmPassword?.message}
       />
-
-      {errors.confirmPassword && (
-        <FormHint type="error">
-          {errors.confirmPassword.message}
-        </FormHint>
-      )}
 
       <Checkbox
         label="Запомнить меня"
-        {...register("remember")}
+        name="remember"
       />
     </form>
   )

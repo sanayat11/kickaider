@@ -11,6 +11,7 @@ import {
 } from 'react-icons/io5';
 import classNames from 'classnames';
 import styles from './SettingsPage.module.scss';
+import { BaseInput } from '@/shared/ui/input/view/BaseInput';
 import { settingsMockApi } from '@/shared/api/mock/settings.mock';
 import type {
     GeneralSettings,
@@ -167,9 +168,8 @@ export const SettingsPage: React.FC = () => {
                         </div>
 
                         <div className={styles.field}>
-                            <label className={styles.label}>{t('settings.general.idleThreshold')}</label>
-                            <input
-                                className={styles.control}
+                            <BaseInput
+                                label={t('settings.general.idleThreshold')}
                                 type="number"
                                 min={0}
                                 value={genSettings.idleThreshold}
@@ -180,9 +180,8 @@ export const SettingsPage: React.FC = () => {
                         </div>
 
                         <div className={styles.field}>
-                            <label className={styles.label}>{t('settings.general.lateTolerance')}</label>
-                            <input
-                                className={styles.control}
+                            <BaseInput
+                                label={t('settings.general.lateTolerance')}
                                 type="number"
                                 min={0}
                                 value={genSettings.lateTolerance}
@@ -280,9 +279,8 @@ export const SettingsPage: React.FC = () => {
 
                         <div className={styles.modalBody}>
                             <div className={styles.field}>
-                                <label className={styles.label}>{t('settings.accounts.modal.login')}</label>
-                                <input
-                                    className={styles.control}
+                                <BaseInput
+                                    label={t('settings.accounts.modal.login')}
                                     type="text"
                                     autoFocus
                                     value={newAccount.login}
@@ -290,9 +288,8 @@ export const SettingsPage: React.FC = () => {
                                 />
                             </div>
                             <div className={styles.field}>
-                                <label className={styles.label}>{t('settings.accounts.modal.password')}</label>
-                                <input
-                                    className={styles.control}
+                                <BaseInput
+                                    label={t('settings.accounts.modal.password')}
                                     type="password"
                                     value={newAccount.password}
                                     onChange={(e) => setNewAccount((p) => ({ ...p, password: e.target.value }))}

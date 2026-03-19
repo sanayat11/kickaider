@@ -1,31 +1,38 @@
 import type { FC } from 'react';
 import classNames from 'classnames';
-import type { ChipButtonProps } from '../types/ChipButton';
 import styles from './ChipButton.module.scss';
 
-export const ChipButton: FC<ChipButtonProps> = ({
+interface ChipProps {
+  children: React.ReactNode;
+  tone?: 'purple' | 'red' | 'yellow' | 'green' | 'blue' | 'gray';
+  selected?: boolean;
+  disabled?: boolean;
+  leftAccent?: boolean;
+  className?: string;
+}
+
+export const Chip: FC<ChipProps> = ({
   children,
-  color = 'purple',
-  selected = false,
-  disabled = false,
-  onClick,
+  tone = 'purple',
+  selected,
+  disabled,
+  leftAccent,
   className,
 }) => {
   return (
-    <button
-      type="button"
-      disabled={disabled}
-      onClick={disabled ? undefined : onClick}
+    <div
       className={classNames(
         styles.chip,
-        styles[color],
+        styles[tone],
         {
           [styles.selected]: selected,
+          [styles.disabled]: disabled,
+          [styles.leftAccent]: leftAccent,
         },
         className,
       )}
     >
       <span className={styles.label}>{children}</span>
-    </button>
+    </div>
   );
 };

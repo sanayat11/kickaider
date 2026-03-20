@@ -15,6 +15,7 @@ export const Calendar = () => {
         showOutsideDays
         fixedWeeks
         weekStartsOn={1}
+        className={styles.dayPicker}
         classNames={{
           root: styles.calendar,
           months: styles.months,
@@ -31,10 +32,10 @@ export const Calendar = () => {
           row: styles.row,
           cell: styles.cell,
           day: styles.day,
-          day_selected: styles.selected,
-          day_today: styles.today,
-          day_outside: styles.outside,
-          day_disabled: styles.disabled,
+          day_selected: styles.daySelected,
+          day_today: styles.dayToday,
+          day_outside: styles.dayOutside,
+          day_disabled: styles.dayDisabled,
         }}
       />
     </div>

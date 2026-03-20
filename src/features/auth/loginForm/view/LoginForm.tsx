@@ -1,5 +1,5 @@
 import { FormHint } from "@/shared/ui/formHint/view/FormHint"
-import { Checkbox } from "@/shared/ui/checkbox/view/CheckBox"
+import { Checkbox } from "@/shared/ui/index"
 import { useLoginForm } from "../model/useLoginForm"
 import styles from "./LoginForm.module.scss"
 

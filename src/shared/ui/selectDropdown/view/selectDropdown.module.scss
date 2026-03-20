@@ -1,0 +1,296 @@
+.root {
+  position: relative;
+  width: 100%;
+  max-width: 350px;
+  height: 48px;
+  color: #2f3e8c;
+  font-family: inherit;
+}
+
+.sm {
+  .trigger {
+    min-height: 40px;
+    padding: 10px 14px;
+  }
+
+  .option {
+    min-height: 36px;
+    padding: 8px 12px;
+  }
+}
+
+.md {
+  .trigger {
+    min-height: 48px;
+    padding: 12px 14px;
+  }
+
+  .option {
+    min-height: 38px;
+    padding: 10px 12px;
+  }
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  border: 1px solid #c7cffd;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #2f3e8c;
+  cursor: pointer;
+  outline: none;
+  transition:
+    border-color 0.22s ease,
+    box-shadow 0.22s ease,
+    background-color 0.22s ease,
+    color 0.22s ease,
+    transform 0.16s ease;
+
+  &:hover:not(:disabled) {
+    border-color: #5a68ff;
+    color: #3b4bdb;
+  }
+
+  &:focus-visible {
+    border-color: #5a68ff;
+    box-shadow: 0 0 0 3px rgba(90, 104, 255, 0.14);
+    color: #3b4bdb;
+  }
+
+  &:active:not(:disabled) {
+    box-shadow: 0 3px 0 rgba(90, 104, 255, 0.18);
+    transform: translateY(1px);
+  }
+}
+
+.triggerOpen {
+  border-color: #5a68ff;
+  box-shadow: 0 0 0 3px rgba(90, 104, 255, 0.08);
+}
+
+.left {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: inherit;
+  transition:
+    color 0.22s ease,
+    opacity 0.22s ease,
+    transform 0.22s ease;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+  }
+
+  svg,
+  path,
+  circle,
+  rect,
+  line,
+  polyline,
+  ellipse {
+    transition:
+      stroke 0.22s ease,
+      fill 0.22s ease,
+      color 0.22s ease;
+  }
+}
+
+.value,
+.optionLabel {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  line-height: 1.2;
+  transition: color 0.22s ease, opacity 0.22s ease;
+}
+
+.value {
+  color: inherit;
+}
+
+.placeholder {
+  color: #6f79b3;
+}
+
+.chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #5864b3;
+  transition:
+    transform 0.22s ease,
+    color 0.22s ease;
+  flex-shrink: 0;
+
+  svg,
+  path {
+    transition:
+      stroke 0.22s ease,
+      fill 0.22s ease,
+      color 0.22s ease;
+  }
+}
+
+.trigger:hover:not(:disabled) {
+  .icon,
+  .value,
+  .chevron {
+    color: #3b4bdb;
+  }
+
+  .placeholder {
+    color: #3b4bdb;
+  }
+}
+
+.trigger:focus-visible {
+  .icon,
+  .value,
+  .chevron {
+    color: #3b4bdb;
+  }
+
+  .placeholder {
+    color: #3b4bdb;
+  }
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.disabled {
+  background: #fbfbfe;
+  border-color: #e6e9f7;
+  color: #c7cce3;
+  cursor: not-allowed;
+  box-shadow: none;
+
+  .value,
+  .placeholder,
+  .icon,
+  .chevron {
+    color: #d7dced;
+  }
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  z-index: 20;
+  width: 100%;
+  margin: 0;
+  padding: 8px;
+  list-style: none;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow:
+    0 10px 30px rgba(31, 42, 93, 0.08),
+    0 2px 8px rgba(31, 42, 93, 0.05);
+  border: 1px solid #eef1fb;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: #2f3e8c;
+  cursor: pointer;
+  outline: none;
+  transition:
+    background-color 0.22s ease,
+    color 0.22s ease,
+    box-shadow 0.22s ease;
+
+  .icon,
+  .optionLabel {
+    color: inherit;
+    transition:
+      color 0.22s ease,
+      opacity 0.22s ease,
+      transform 0.22s ease;
+  }
+
+  &:hover:not(:disabled) {
+    background: #8a96f2;
+    color: #ffffff;
+  }
+
+  &:hover:not(:disabled) .icon,
+  &:hover:not(:disabled) .optionLabel {
+    color: #ffffff;
+  }
+
+  &:focus-visible {
+    background: #8a96f2;
+    color: #ffffff;
+  }
+
+  &:focus-visible .icon,
+  &:focus-visible .optionLabel {
+    color: #ffffff;
+  }
+}
+
+.optionHovered {
+  background: #8a96f2;
+  color: #ffffff;
+
+  .icon,
+  .optionLabel {
+    color: #ffffff;
+  }
+}
+
+.optionSelected {
+  background: #5260f1;
+  color: #ffffff;
+
+  .icon,
+  .optionLabel {
+    color: #ffffff;
+  }
+}
+
+.optionDisabled {
+  color: #d2d7eb;
+  cursor: not-allowed;
+  background: transparent;
+
+  .icon,
+  .optionLabel {
+    color: #d2d7eb;
+  }
+}
+
+.optionDisabled:hover {
+  background: transparent;
+  color: #d2d7eb;
+
+  .icon,
+  .optionLabel {
+    color: #d2d7eb;
+  }
+}

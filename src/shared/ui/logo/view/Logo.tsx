@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Logo.module.scss';
-import logo from '@/shared/assets/images/Frame 1321317829.svg';
+import logo from '@/shared/assets/images/logo.svg';
 
 export const Logo: FC = () => {
   return (

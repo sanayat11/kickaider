@@ -1,0 +1,28 @@
+.wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.longControl {
+  min-width: 312px;
+}
+
+.mediumControl {
+  min-width: 280px;
+}
+
+.shortControl {
+  min-width: 180px;
+}
+
+.tinyControl {
+  min-width: 86px;
+}

@@ -4,7 +4,6 @@ import logo from "@shared/assets/images/logo.svg"
 import { LoginForm } from "@/features/auth/loginForm/view/LoginForm"
 import { Button } from "@/shared/ui/button/view/Button"
 import { paths } from "@/shared/constants/constants"
-import { Calendar } from "@/shared/ui"
 
 export const AuthPage = () => {
   return (
@@ -26,7 +25,6 @@ export const AuthPage = () => {
               Войти
             </Button>
           </div>
-          <Calendar/>
         </div>
 
         <div className={styles.right}>

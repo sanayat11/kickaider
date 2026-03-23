@@ -1,0 +1,42 @@
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--primary-800);
+  cursor: pointer;
+  transition: color 0.2s ease, opacity 0.2s ease;
+
+  &:hover:not(:disabled) {
+    color: var(--accent-primary);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.label {
+  font-size: 14px;
+  line-height: 1.2;
+  font-weight: 600;
+  color: inherit;
+}
+
+.chevron {
+  transition: transform 0.2s ease;
+}
+
+.open {
+  transform: rotate(180deg);
+}
+
+.active {
+  color: var(--primary-800);
+}
+
+.disabled {
+  color: #cfd4e6;
+}

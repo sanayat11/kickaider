@@ -6,12 +6,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  transition: width 0.28s ease;
   border-right: 1px solid rgba(255, 255, 255, 0.06);
-
-  &.collapsed {
-    width: 84px;
-  }
 }
 
 .header {
@@ -19,7 +14,6 @@
   padding: 22px 18px 18px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   flex-shrink: 0;
 }
 
@@ -47,32 +41,6 @@
   font-weight: 700;
   color: #ffffff;
   letter-spacing: -0.02em;
-}
-
-.toggleBtn {
-  width: 36px;
-  height: 36px;
-  border: none;
-  border-radius: 10px;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.82);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
-
-  svg {
-    width: 20px;
-    height: 20px;
-  }
-
-  &:hover {
-    background: var(--primary-300);
-    color: #ffffff;
-  }
 }
 
 .nav {
@@ -118,11 +86,6 @@
     background: var(--primary-300);
     color: #ffffff;
   }
-}
-
-.collapsedItem {
-  justify-content: center;
-  padding: 10px;
 }
 
 .iconWrapper {
@@ -178,8 +141,6 @@
   transform: rotate(180deg);
 }
 
-
-
 .isOpen {
   color: #ffffff;
 }
@@ -197,14 +158,23 @@
     font-weight: 500;
     margin-left: 20px;
   }
-  &:active{
-    background-color: #4E61F6;
+
+  &:active {
+    background-color: #4e61f6;
   }
-  
 }
 
 .withoutIcon {
   gap: 0;
+}
+
+.submenu {
+  padding: 2px 0 4px 0;
+}
+
+.active {
+  background-color: #4e61f6;
+  color: #ffffff;
 }
 
 .footer {
@@ -213,10 +183,7 @@
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   flex-shrink: 0;
 }
-.active {
-  background-color: #4E61F6;
-  color: #ffffff;
-}
+
 .logoutBtn {
   width: 100%;
   min-height: 42px;
@@ -238,11 +205,6 @@
     background: var(--primary-300);
     color: #ffffff;
   }
-}
-
-.collapsedLogout {
-  justify-content: center;
-  padding: 10px;
 }
 
 .logoutIcon {

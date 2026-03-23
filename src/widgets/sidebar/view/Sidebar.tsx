@@ -7,8 +7,6 @@ import {
   IoSettingsOutline,
   IoDocumentTextOutline,
   IoChevronDownOutline,
-  IoMenuOutline,
-  IoCloseOutline,
 } from 'react-icons/io5';
 import logoUrl from '@/shared/assets/images/logo.svg';
 import styles from './Sidebar.module.scss';
@@ -18,7 +16,6 @@ interface SidebarItemProps {
   id: string;
   icon?: React.ElementType;
   label: string;
-  collapsed: boolean;
   active?: boolean;
   hasSubmenu?: boolean;
   isOpen?: boolean;
@@ -30,7 +27,6 @@ interface SidebarItemProps {
 const SidebarItem: React.FC<SidebarItemProps> = ({
   icon: Icon,
   label,
-  collapsed,
   active,
   hasSubmenu,
   isOpen,
@@ -44,7 +40,6 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         type="button"
         className={classNames(styles.item, {
           [styles.active]: active,
-          [styles.collapsedItem]: collapsed,
           [styles.hasSubmenu]: hasSubmenu,
           [styles.isOpen]: isOpen,
           [styles.nested]: nested,
@@ -58,20 +53,16 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           </span>
         )}
 
-        {!collapsed && (
-          <>
-            <span className={styles.label}>{label}</span>
+        <span className={styles.label}>{label}</span>
 
-            {hasSubmenu && (
-              <span className={classNames(styles.arrow, { [styles.open]: isOpen })}>
-                <IoChevronDownOutline />
-              </span>
-            )}
-          </>
+        {hasSubmenu && (
+          <span className={classNames(styles.arrow, { [styles.open]: isOpen })}>
+            <IoChevronDownOutline />
+          </span>
         )}
       </button>
 
-      {!collapsed && isOpen && children && <div className={styles.submenu}>{children}</div>}
+      {isOpen && children && <div className={styles.submenu}>{children}</div>}
     </div>
   );
 };
@@ -81,7 +72,6 @@ export const Sidebar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [collapsed, setCollapsed] = useState(false);
   const [openMenus, setOpenMenus] = useState<string[]>(() => {
     const initial: string[] = [];
 
@@ -108,8 +98,6 @@ export const Sidebar: React.FC = () => {
     return initial;
   });
 
-  const toggleCollapse = () => setCollapsed((prev) => !prev);
-
   const toggleMenu = (menuId: string) => {
     setOpenMenus((prev) =>
       prev.includes(menuId) ? prev.filter((id) => id !== menuId) : [...prev, menuId],
@@ -128,17 +116,11 @@ export const Sidebar: React.FC = () => {
   };
 
   return (
-    <aside className={classNames(styles.sidebar, { [styles.collapsed]: collapsed })}>
+    <aside className={styles.sidebar}>
       <div className={styles.header}>
-        {!collapsed && (
-          <button type="button" className={styles.brand} onClick={() => navigate('/')}>
-            <img src={logoUrl} alt="KickAider Logo" className={styles.logo} />
-            <span className={styles.brandName}>KickAider</span>
-          </button>
-        )}
-
-        <button type="button" className={styles.toggleBtn} onClick={toggleCollapse}>
-          {collapsed ? <IoMenuOutline /> : <IoCloseOutline />}
+        <button type="button" className={styles.brand} onClick={() => navigate('/')}>
+          <img src={logoUrl} alt="KickAider Logo" className={styles.logo} />
+          <span className={styles.brandName}>KickAider</span>
         </button>
       </div>
 
@@ -147,7 +129,6 @@ export const Sidebar: React.FC = () => {
           id="reports"
           icon={IoDocumentTextOutline}
           label={t('sidebar.reports')}
-          collapsed={collapsed}
           hasSubmenu
           isOpen={openMenus.includes('reports')}
           active={
@@ -162,7 +143,6 @@ export const Sidebar: React.FC = () => {
           <SidebarItem
             id="reports-1"
             label={t('sidebar.reports')}
-            collapsed={collapsed}
             nested
             active={location.pathname === paths.DASHBOARD_REPORTS}
             onClick={() => handleItemClick('reports-1', false, paths.DASHBOARD_REPORTS)}
@@ -170,7 +150,6 @@ export const Sidebar: React.FC = () => {
           <SidebarItem
             id="reports-day-details"
             label={t('sidebar.dayDetails')}
-            collapsed={collapsed}
             nested
             active={location.pathname === paths.DASHBOARD_DAY_DETAILS}
             onClick={() =>
@@ -180,7 +159,6 @@ export const Sidebar: React.FC = () => {
           <SidebarItem
             id="reports-employee-rating"
             label={t('sidebar.employeeRating')}
-            collapsed={collapsed}
             nested
             active={location.pathname === paths.DASHBOARD_EMPLOYEE_RATING}
             onClick={() =>
@@ -190,7 +168,6 @@ export const Sidebar: React.FC = () => {
           <SidebarItem
             id="reports-work-time"
             label={t('sidebar.workTime')}
-            collapsed={collapsed}
             nested
             active={location.pathname === paths.WORK_TIME}
             onClick={() => handleItemClick('reports-work-time', false, paths.WORK_TIME)}
@@ -198,7 +175,6 @@ export const Sidebar: React.FC = () => {
           <SidebarItem
             id="reports-activity"
             label={t('nav.reports.activity')}
-            collapsed={collapsed}
             nested
             active={location.pathname.startsWith(paths.ACTIVITY)}
             onClick={() => handleItemClick('reports-activity', false, paths.ACTIVITY)}
@@ -209,7 +185,6 @@ export const Sidebar: React.FC = () => {
           id="settings"
           icon={IoSettingsOutline}
           label={t('sidebar.settings')}
-          collapsed={collapsed}
           hasSubmenu
           isOpen={openMenus.includes('settings')}
           active={
@@ -224,7 +199,6 @@ export const Sidebar: React.FC = () => {
           <SidebarItem
             id="settings-calendar"
             label={t('sidebar.calendar')}
-            collapsed={collapsed}
             nested
             active={location.pathname.startsWith(paths.CALENDAR)}
             onClick={() => handleItemClick('settings-calendar', false, paths.CALENDAR)}
@@ -232,7 +206,6 @@ export const Sidebar: React.FC = () => {
           <SidebarItem
             id="settings-categorization"
             label={t('sidebar.categorization')}
-            collapsed={collapsed}
             nested
             active={location.pathname === paths.CATEGORIZATION}
             onClick={() => handleItemClick('settings-categorization', false, paths.CATEGORIZATION)}
@@ -240,7 +213,6 @@ export const Sidebar: React.FC = () => {
           <SidebarItem
             id="settings-schedules"
             label={t('sidebar.workSchedules')}
-            collapsed={collapsed}
             nested
             active={location.pathname === paths.DASHBOARD_WORK_SCHEDULES}
             onClick={() =>
@@ -250,7 +222,6 @@ export const Sidebar: React.FC = () => {
           <SidebarItem
             id="settings-org-structure"
             label={t('sidebar.orgStructure')}
-            collapsed={collapsed}
             nested
             active={location.pathname === paths.DASHBOARD_ORG_STRUCTURE}
             onClick={() =>
@@ -260,7 +231,6 @@ export const Sidebar: React.FC = () => {
           <SidebarItem
             id="settings-general"
             label={t('nav.settings.general')}
-            collapsed={collapsed}
             nested
             active={location.pathname === paths.SETTINGS}
             onClick={() => handleItemClick('settings-general', false, paths.SETTINGS)}
@@ -271,14 +241,13 @@ export const Sidebar: React.FC = () => {
       <div className={styles.footer}>
         <button
           type="button"
-          className={classNames(styles.logoutBtn, { [styles.collapsedLogout]: collapsed })}
+          className={styles.logoutBtn}
           onClick={() => navigate('/')}
         >
           <span className={styles.logoutIcon}>
             <LogOutIcon />
           </span>
-
-          {!collapsed && <span className={styles.logoutLabel}>{t('sidebar.logout', 'Выйти')}</span>}
+          <span className={styles.logoutLabel}>{t('sidebar.logout', 'Выйти')}</span>
         </button>
       </div>
     </aside>

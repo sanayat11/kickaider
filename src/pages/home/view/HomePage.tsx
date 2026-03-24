@@ -9,6 +9,8 @@ import { BoostBlock } from '@/widgets/BoostBlock';
 import { MemberBlock } from '@/widgets/MemberBLock';
 import { SubHeader } from '@/features/SubHeader';
 import { ScrollToTop } from '@/shared/ui/index';
+
+
 export const HomePage: FC = () => {
   return (
     <>

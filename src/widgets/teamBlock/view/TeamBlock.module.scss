@@ -15,10 +15,10 @@
 }
 
 .image {
-    min-width: 543px;
-    min-height: 632px;
+    min-width: 632px;
+    min-height: 543px;
     height: auto;
-    border-radius: 20px;
+    border-radius: 29px;
     object-fit: cover;
 
     img {
@@ -45,7 +45,7 @@
 }
 
 .description {
-    color: var(--text-gray);
+    color: var(--primary-800);
     line-height: 1.6;
     font-size: 16px;
 }

@@ -12,10 +12,10 @@ export const FeaturesBlock: FC = () => {
     return (
         <section id="features" className={styles.featuresBlock}>
             <div className={styles.header}>
-                <Typography variant="h2" color="white" weight="bold" className={styles.title}>
+                <Typography context='landing'variant="h2" color="white" weight="bold" className={styles.title}>
                     {t('features.title')}
                 </Typography>
-                <Typography variant="h5" color="white" weight="regular" className={styles.description}>
+                <Typography context='landing'variant="h5" color="white" weight="regular" className={styles.description}>
                     {t('features.description')}
                 </Typography>
             </div>
@@ -24,10 +24,10 @@ export const FeaturesBlock: FC = () => {
                 {featuresKeys.map((key, index) => (
                     <div key={key} className={styles.card}>
                         <span className={styles.cardNumber}>{String(index + 1).padStart(2, '0')}</span>
-                        <Typography variant="h4" weight="bold" className={styles.cardTitle}>
+                        <Typography context='landing' variant="h4" weight="semiBold" className={styles.cardTitle}>
                             {t(`features.cards.${key}.title`)}
                         </Typography>
-                        <Typography variant="h5" className={styles.cardDescription}>
+                        <Typography variant="h5" context='dashboard' className={styles.cardDescription}>
                             {t(`features.cards.${key}.description`)}
                         </Typography>
                     </div>

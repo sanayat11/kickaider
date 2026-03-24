@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 import { IoChevronBackOutline, IoChevronForwardOutline } from 'react-icons/io5';
+import { FilterIcon, AttachmentIcon } from '@/shared/assets/icons';
 import styles from './DayDetailsPage.module.scss';
 import { DayDetailsChart } from '../../dayDetailsChart/view/DayDetailsChart';
 import type { DayActivityData } from '../../dayDetailsChart/view/DayDetailsChart';
+import { BASE_EMPLOYEES } from '@/shared/api/mock/employees.mock';
 
 const mockData1: DayActivityData = {
     employeeName: 'Сауле Абдыкадырова Sakewa',
@@ -104,17 +107,13 @@ const mockDataMonth: DayActivityData[] = [
     }
 ];
 
-import { useLocation } from 'react-router-dom';
-import { BASE_EMPLOYEES } from '@/shared/api/mock/employees.mock';
-
 export const DayDetailsPage: React.FC = () => {
     const { t } = useTranslation();
     const location = useLocation();
     const passedEmployee = location.state?.selectedEmployee;
 
-    const [isGenerated, setIsGenerated] = useState(!!passedEmployee);
     const [period, setPeriod] = useState('Day');
-    
+
     // Map the passed employee name to the options. It handles partial name matching used in mock dropdown.
     const getInitialEmployee = () => {
         if (!passedEmployee) return 'All';
@@ -128,10 +127,6 @@ export const DayDetailsPage: React.FC = () => {
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
 
-    const handleGenerate = () => {
-        setIsGenerated(true);
-    };
-
     const handlePrevDay = () => {
         const date = new Date(currentDate);
         date.setDate(date.getDate() - 1);
@@ -144,6 +139,11 @@ export const DayDetailsPage: React.FC = () => {
         date.setDate(date.getDate() + 1);
         setCurrentDate(date.toISOString().split('T')[0]);
         setCurrentPage(1);
+    };
+
+    const formatDisplayDate = (dateStr: string) => {
+        const d = new Date(dateStr);
+        return d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
     };
 
     const renderCharts = () => {
@@ -161,7 +161,7 @@ export const DayDetailsPage: React.FC = () => {
 
         if (selectedEmployee !== 'All') {
             activeData = activeData.filter(d => d.employeeName === selectedEmployee);
-            
+
             // If the filtered array is empty (meaning we don't have hardcoded mock data for this specific new employee)
             // We'll generate a dummy set based on mockData1 so the chart isn't empty and the filtering still "works" visually.
             if (activeData.length === 0) {
@@ -248,74 +248,79 @@ export const DayDetailsPage: React.FC = () => {
 
     return (
         <div className={styles.container}>
-            <div className={styles.filtersBar}>
-                <div className={styles.filterGroup}>
-                    <div className={styles.labelGroup}>
-                        <span>{t('dashboard.filters.period')}:</span>
-                        <select className={styles.select} value={period} onChange={(e) => setPeriod(e.target.value)}>
-                            <option value="Day">{t('dashboard.filters.periods.day')}</option>
-                            <option value="Week">{t('dashboard.filters.periods.week')}</option>
-                            <option value="Month">{t('dashboard.filters.periods.month')}</option>
-                        </select>
-                    </div>
-
-                    <div className={styles.dateNav}>
-                        <div className={styles.dateInputWrapper}>
-                            <input
-                                type="date"
-                                value={currentDate}
-                                onChange={(e) => setCurrentDate(e.target.value)}
-                                className={styles.dateInput}
-                            />
-                        </div>
-                        <div className={styles.dateActions}>
-                            <div className={styles.arrows}>
-                                <button onClick={handlePrevDay}><IoChevronBackOutline /></button>
-                                <button onClick={handleNextDay}><IoChevronForwardOutline /></button>
-                            </div>
-                        </div>
-                    </div>
+            {/* Page Header */}
+            <div className={styles.pageHeader}>
+                <div className={styles.headerText}>
+                    <h1>{t('dayDetails.title')}</h1>
+                    <p>{t('dayDetails.subtitle', 'Общий аналитический обзор по компании или сотруднику')}</p>
                 </div>
-
-                <div className={styles.filterGroup}>
-                    <div className={styles.labelGroup}>
-                        <span>{t('dashboard.filters.employee')}:</span>
-                        <select className={styles.select} value={selectedEmployee} onChange={(e) => setSelectedEmployee(e.target.value)}>
-                            <option value="All">{t('dashboard.departments.all')}</option>
-                            {BASE_EMPLOYEES.map(emp => (
-                                <option key={emp.id} value={emp.name}>{emp.name}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <label className={styles.checkboxLabel}>
-                        <input type="checkbox" defaultChecked />
-                        <span className={styles.checkmark}></span>
-                        {t('dashboard.filters.onlyWorkTime')}
-                    </label>
-                </div>
-
-                <div className={styles.actionGroup}>
-                    <button className={styles.generateBtn} onClick={handleGenerate}>
-                        {t('dayDetails.generate')}
-                    </button>
-                    <button className={styles.exportBtn}>
-                        {t('dayDetails.exportXls')}
-                    </button>
-                </div>
+                <button className={styles.exportBtn}>
+                    <AttachmentIcon className={styles.exportIcon} />
+                    {t('dayDetails.exportXls', 'Экспорт XLS')}
+                </button>
             </div>
 
-            <main className={styles.main}>
-                {!isGenerated ? (
-                    <div className={styles.emptyState}>
-                        <h2>{t('dayDetails.title')}</h2>
-                        <div className={styles.infoBox}>
-                            <span className={styles.infoIcon}>i</span>
-                            <p>{t('dayDetails.emptyStateInfo')}</p>
-                        </div>
+            {/* Filter Bar */}
+            <div className={styles.filtersBar}>
+                <div className={styles.filterGroupShort}>
+                    <FilterIcon className={styles.filterIcon} />
+                </div>
+
+                <div className={styles.filterGroupShort}>
+                    <span className={styles.filterLabel}>{t('dashboard.filters.period')}</span>
+                    <select className={styles.filterSelect} value={period} onChange={(e) => setPeriod(e.target.value)}>
+                        <option value="Day">{t('dashboard.filters.periods.day')}</option>
+                        <option value="Week">{t('dashboard.filters.periods.week')}</option>
+                        <option value="Month">{t('dashboard.filters.periods.month')}</option>
+                    </select>
+                </div>
+
+                <div className={styles.filterGroupShort}>
+                    <button className={styles.navBtn} onClick={handlePrevDay}>
+                        <IoChevronBackOutline />
+                    </button>
+                    <div className={styles.dateInputContainer}>
+                        <span className={styles.dateText}>{formatDisplayDate(currentDate)}</span>
+                        <input
+                            type="date"
+                            value={currentDate}
+                            onChange={(e) => setCurrentDate(e.target.value)}
+                            className={styles.hiddenDateInput}
+                        />
                     </div>
-                ) : (
-                    renderCharts()
-                )}
+                    <button className={styles.navBtn} onClick={handleNextDay}>
+                        <IoChevronForwardOutline />
+                    </button>
+                </div>
+
+                <div className={styles.filterGroupFull}>
+                    <select className={styles.filterSelect} value={selectedEmployee} onChange={(e) => setSelectedEmployee(e.target.value)}>
+                        <option value="All">{t('dashboard.departments.all')}</option>
+                        {BASE_EMPLOYEES.map(emp => (
+                            <option key={emp.id} value={emp.name}>{emp.name}</option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className={styles.filterGroupFull}>
+                    <select className={styles.filterSelect}>
+                        <option>{t('dayDetails.contentType', 'Тип контента')}</option>
+                    </select>
+                </div>
+
+                <label className={styles.toggleLabel}>
+                    <span>{t('dashboard.filters.onlyWorkTime')}</span>
+                    <div className={styles.toggleSwitch}>
+                        <input type="checkbox" defaultChecked />
+                        <span className={styles.toggleSlider} />
+                    </div>
+                </label>
+
+            </div>
+
+            {/* Main Content */}
+            <main className={styles.main}>
+                {renderCharts()}
             </main>
         </div>
     );

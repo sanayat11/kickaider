@@ -1,0 +1,84 @@
+.wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.track {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+  background-color: var(--grey-200);
+  transition: background-color 300ms ease-out, box-shadow 300ms ease-out;
+  flex-shrink: 0;
+
+  .wrapper:hover & {
+    background-color: var(--grey-300);
+  }
+}
+
+.thumb {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 300ms ease-out;
+}
+
+  .input:checked ~ .track {
+  background-color: var(--accent-primary);
+
+  .wrapper:hover & {
+    background-color: var(--primary-700);
+  }
+}
+
+.input:checked ~ .track .thumb {
+  transform: translateX(20px);
+}
+
+.input:focus-visible ~ .track {
+  background-color: var(--grey-200);
+  box-shadow: 0px 0px 0px 3px #AEB6FB;
+}
+
+.input:focus-visible:checked ~ .track {
+  background-color: var(--accent-primary);
+  box-shadow: 0px 0px 0px 3px #AEB6FB;
+}
+
+.wrapper:has(.input:disabled) {
+  cursor: not-allowed;
+}
+
+.input:disabled ~ .track {
+  background-color: var(--grey-100);
+  box-shadow: none;
+}
+
+.input:disabled:checked ~ .track {
+  background-color: var(--primary-50);
+  box-shadow: none;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-color);
+  line-height: 1;
+}

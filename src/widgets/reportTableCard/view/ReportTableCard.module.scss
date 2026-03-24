@@ -1,0 +1,69 @@
+.card {
+  width: 100%;
+}
+
+.header {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--primary-800);
+  cursor: pointer;
+}
+
+.title {
+  color: var(--primary-800);
+}
+
+.chevron {
+  color: var(--primary-800);
+  transition: transform 0.2s ease;
+}
+
+.open {
+  transform: rotate(180deg);
+}
+
+.content {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition:
+    max-height 0.32s ease,
+    opacity 0.22s ease;
+}
+
+.contentOpen {
+  max-height: 500px;
+  opacity: 1;
+}
+
+.inner {
+  padding-top: 18px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+
+  th,
+  td {
+    text-align: left;
+    padding: 10px 0;
+    border-bottom: 1px solid #dfe5fb;
+    font-size: 14px;
+    line-height: 1.2;
+    color: var(--primary-800);
+  }
+
+  th {
+    font-weight: 700;
+  }
+
+  td {
+    font-weight: 500;
+  }
+}

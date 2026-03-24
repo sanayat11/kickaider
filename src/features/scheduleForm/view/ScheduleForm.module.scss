@@ -1,0 +1,162 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.disabled {
+  opacity: 0.7;
+}
+
+/* ================= SWITCH ================= */
+
+.switchRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.switch {
+  width: 28px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--grey-200);
+  position: relative;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s;
+}
+
+.switchOn {
+  background: var(--primery-500); // ⚠️ у тебя опечатка в переменной
+}
+
+.switchThumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--text-white);
+  transition: transform 0.2s;
+}
+
+.switchOn .switchThumb {
+  transform: translateX(12px);
+}
+
+.switchLabel {
+  color: var(--text-color);
+}
+
+/* ================= CONTENT ================= */
+
+.formContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  transition: 0.25s;
+}
+
+.formContentLocked {
+  opacity: 0.5;
+  filter: blur(1px);
+  pointer-events: none;
+}
+
+/* ================= FIELDS ================= */
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-sm);
+}
+
+.field {
+  min-width: 0;
+}
+
+.label {
+  margin-bottom: 4px;
+  font-size: 11px;
+  color: var(--text-grey-400);
+}
+
+.input,
+.select {
+  width: 100%;
+  height: 44px;
+  padding: 0 var(--space-xs);
+
+  border: 1px solid var(--grey-200);
+  border-radius: 12px;
+
+  background: var(--bg-color);
+  color: var(--text-color-2);
+
+  font-size: 12px;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.input:focus,
+.select:focus {
+  border-color: var(--primary-300);
+}
+
+/* ================= SELECT ARROW ================= */
+
+.select {
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--grey-400) 50%),
+    linear-gradient(135deg, var(--grey-400) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 18px,
+    calc(100% - 10px) 18px;
+  background-size: 4px 4px;
+  background-repeat: no-repeat;
+
+  padding-right: 24px;
+}
+
+/* ================= DAYS ================= */
+
+.days {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.dayChip {
+  width: 44px;
+  height: 34px;
+
+  border-radius: 8px;
+  border: none;
+
+  background: transparent;
+  color: var(--text-grey-400);
+
+  font-size: 10px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.dayChip:hover {
+  background: var(--grey-50);
+}
+
+.dayChipActive {
+  background: var(--primary-50);
+  color: var(--primery-500);
+}
+
+/* ================= BUTTON ================= */
+
+.saveButton {
+  align-self: flex-start;
+}

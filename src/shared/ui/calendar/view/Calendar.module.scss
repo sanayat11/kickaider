@@ -1,0 +1,161 @@
+.calendar {
+  width: 348px;
+  height: 328px;
+  padding: 20px;
+  border-radius: 16px;
+  background: var(--bg-color);
+  box-shadow: 0 2px 12px rgba(42, 52, 120, 0.06);
+  box-sizing: border-box;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.title {
+  font-size: 16px;
+  line-height: 1.2;
+  font-weight: 500;
+  color: #7278a6;
+}
+
+.navButton {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #8990c6;
+  border-radius: 50%;
+  background: transparent;
+  color: #49528d;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+
+  &:hover {
+    background: #f5f6ff;
+    border-color: #6671c9;
+  }
+}
+
+.monthGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border: 1px solid #f1f2f8;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.monthCell {
+  height: 34px;
+  border: none;
+  border-right: 1px solid #f1f2f8;
+  border-bottom: 1px solid #f1f2f8;
+  background: #ffffff;
+  color: #666d9f;
+  font-size: 14px;
+  line-height: 1.2;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:nth-child(3n) {
+    border-right: none;
+  }
+
+  &:nth-last-child(-n + 3) {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: #f6f7ff;
+  }
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 8px;
+}
+
+.weekday {
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.2;
+  font-weight: 500;
+  color: #9ca2b8;
+}
+
+.daysGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.dayCell {
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dayButton {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #f1f2f8;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #666d9f;
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+
+  &:hover {
+    background: #f6f7ff;
+  }
+}
+
+.dayOutside {
+  color: #b8bccd;
+}
+
+.daySelected {
+  background: #cfd4ff;
+  border-color: #cfd4ff;
+  color: #ffffff;
+}
+
+.rangeMiddle {
+  background: #eef0ff;
+}
+
+.rangeStartWrap {
+  background: #eef0ff;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.rangeEndWrap {
+  background: #eef0ff;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.rangeStart,
+.rangeEnd {
+  background: #cfd4ff;
+  border-color: #cfd4ff;
+  color: #ffffff;
+  border-radius: 10px;
+}

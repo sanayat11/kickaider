@@ -1,0 +1,39 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--primary-800);
+}
+
+.arrowButton {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color 0.2s ease, opacity 0.2s ease;
+
+  &:hover:not(:disabled) {
+    color: var(--accent-primary);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.value {
+  font-size: 14px;
+  line-height: 1.2;
+  font-weight: 600;
+  color: inherit;
+}
+
+.disabled {
+  color: #cfd4e6;
+}

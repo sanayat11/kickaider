@@ -1,10 +1,17 @@
 .card {
     background-color: #ffffff;
     border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    padding: 28px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
     border: 1px solid #edf1f7;
     color: #1a1f4d;
+}
+
+.chartTitle {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: var(--accent-primary, #4E61F6);
 }
 
 .chartArea {
@@ -13,6 +20,7 @@
     align-items: flex-start;
 }
 
+/* ── DONUT COLUMN ── */
 .donutColumn {
     display: flex;
     flex-direction: column;
@@ -96,7 +104,7 @@
     }
 }
 
-/* TIMELINE SECTION */
+/* ── TIMELINE / AREA CHART ── */
 .timelineColumn {
     flex: 1;
     display: flex;
@@ -104,104 +112,55 @@
     min-width: 0;
 }
 
-.chartTitle {
-    font-size: 16px;
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 30px;
-    color: #1a1f4d;
-}
-
-.timelineWrapper {
+.areaChartWrapper {
     position: relative;
-    height: 140px;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #edf1f7;
+    width: 100%;
+    height: 170px;
+    margin-bottom: 4px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: linear-gradient(to bottom, #fafbff 0%, #f4f6fc 100%);
 }
 
-.barArea {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 60px;
-    /* Max height of bars */
-    display: flex;
-    align-items: flex-end;
-}
-
-.timeSegment {
-    position: absolute;
-    bottom: 0;
+.areaChartSvg {
+    width: 100%;
     height: 100%;
+    display: block;
+}
+
+.areaPath {
     transition: opacity 0.3s ease;
     cursor: pointer;
-    border-radius: 4px 4px 0 0;
 
     &.dimmed {
-        opacity: 0.2;
+        opacity: 0.08;
     }
 }
 
-.hourMarkers {
-    position: absolute;
-    bottom: -24px;
-    left: 0;
-    right: 0;
+.hourLabels {
     display: flex;
     justify-content: space-between;
+    padding: 8px 0 16px;
+    border-bottom: 1px solid #edf1f7;
 }
 
-.hourMark {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    .tick {
-        width: 2px;
-        height: 6px;
-        background-color: #edf1f7;
-        margin-bottom: 4px;
-    }
-
-    .hourLabel {
-        color: #8a91b4;
-        font-size: 11px;
-        font-weight: 600;
-    }
-
-    .redDottedLine {
-        position: absolute;
-        bottom: 24px;
-        /* Above the axis */
-        width: 1px;
-        height: 140px;
-        border-right: 1.5px dashed #ef4444;
-    }
-
-    .redTimeLabel {
-        position: absolute;
-        top: -150px;
-        color: #ef4444;
-        font-size: 11px;
-        font-weight: 700;
-        white-space: nowrap;
-    }
+.hourLabel {
+    font-size: 11px;
+    font-weight: 600;
+    color: #8a91b4;
 }
 
-/* STATS TABLE */
+/* ── STATS TABLE ── */
 .statsTable {
     display: flex;
     flex-direction: column;
     background-color: #ffffff;
-    border-radius: 8px;
+    border-radius: 10px;
     border: 1px solid #edf1f7;
     overflow-x: auto;
+    overflow-y: hidden;
     margin-top: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
 
-    /* Custom scrollbar for better look */
     &::-webkit-scrollbar {
         height: 6px;
     }
@@ -214,37 +173,44 @@
         background: #dce1f0;
         border-radius: 3px;
     }
+}
 
-    .tableRowHeader,
-    .tableRowData {
-        display: grid;
-        grid-template-columns: repeat(9, minmax(90px, 1fr));
-        min-width: 810px;
-        text-align: center;
+.tableRowHeader,
+.tableRowData {
+    display: grid;
+    grid-template-columns: repeat(9, minmax(90px, 1fr));
+    min-width: 810px;
+    text-align: center;
 
-        div {
-            padding: 10px 4px;
-            font-size: 11px;
-            border-right: 1px solid #edf1f7;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 1.3;
+    div {
+        padding: 12px 6px;
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1.3;
 
-            &:last-child {
-                border-right: none;
-            }
+        &:last-child {
+            border-right: none;
         }
     }
+}
 
-    .tableRowHeader {
-        background-color: #f8faff;
-        color: #8a91b4;
-        font-weight: 700;
+.tableRowHeader {
+    background: linear-gradient(135deg, #4E61F6 0%, #3745AF 100%);
+    color: white;
+    font-weight: 700;
+
+    div {
+        border-right: 1px solid rgba(255, 255, 255, 0.15);
     }
+}
 
-    .tableRowData {
-        color: #1a1f4d;
-        font-weight: 600;
+.tableRowData {
+    color: #1a1f4d;
+    font-weight: 600;
+
+    div {
+        border-right: 1px solid #edf1f7;
     }
 }

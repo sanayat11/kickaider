@@ -1,0 +1,83 @@
+.card {
+  width: 100%;
+  background: var(--bg-color);
+  border: 1px solid #eef0fb;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.header {
+  width: 100%;
+  position: relative;
+  height: 90px;
+  padding: 0 18px;
+  border: none;
+  border-bottom: 1px solid #eef0fb;
+  background: var(--bg-color);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  justify-content: left;
+  text-align: left;
+  cursor: pointer;
+}
+
+
+.left,
+.center,
+.right {
+  min-width: 0;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.right {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #7e86b9;
+}
+
+.chevronIcon {
+  transition: transform 0.2s ease;
+}
+
+.open {
+  transform: rotate(180deg);
+}
+
+.content {
+  overflow: hidden;
+
+  /* стартовое состояние */
+  max-height: 0;
+  opacity: 0;
+
+  transition:
+    max-height 0.35s ease,
+    opacity 0.25s ease;
+}
+
+/* открытое состояние */
+.contentOpen {
+  max-height: 500px; // достаточно большое значение
+  opacity: 1;
+}
+
+/* внутренний контейнер (чтобы padding не ломал анимацию) */
+.inner {
+  padding: 14px 18px 18px;
+}

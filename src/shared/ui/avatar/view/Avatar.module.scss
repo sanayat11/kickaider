@@ -1,0 +1,83 @@
+.avatar {
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #5a67f7, #4e61f6);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-white);
+  flex-shrink: 0;
+}
+
+.xl {
+  width: 96px;
+  height: 96px;
+  font-size: 36px;
+}
+
+.lg {
+  width: 72px;
+  height: 72px;
+  font-size: 28px;
+}
+
+.md {
+  width: 56px;
+  height: 56px;
+  font-size: 22px;
+}
+
+.sm {
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+}
+
+.xs {
+  width: 28px;
+  height: 28px;
+  font-size: 12px;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.initials {
+  font-weight: 600;
+  line-height: 1;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 60%;
+    height: 60%;
+  }
+}
+
+.withStatus {
+  padding: 2px;
+}
+
+.status {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+
+  width: 14%;
+  height: 14%;
+
+  min-width: 8px;
+  min-height: 8px;
+
+  background: #3fb950;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+}

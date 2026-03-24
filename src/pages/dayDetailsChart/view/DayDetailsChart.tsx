@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import styles from './DayDetailsChart.module.scss';
@@ -51,17 +51,21 @@ const colorMap: Record<ActivityType, string> = {
     idle: '#a96aeb',
 };
 
+const SVG_W = 1000;
+const SVG_H = 150;
+const NUM_POINTS = 200;
+const HOURS = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
+const AREA_TYPES: ActivityType[] = ['idle', 'unproductive', 'neutral', 'uncategorized', 'productive'];
+
 export const DayDetailsChart: React.FC<Props> = ({ data }) => {
     const { t } = useTranslation();
     const [hoveredType, setHoveredType] = useState<ActivityType | null>(null);
 
     const getLabel = (type: ActivityType) => t(`activity.timeline.legend.${type}`);
 
-    // SVG Donut calculation helpers
+    // ── DONUT CHART calculation (unchanged logic) ──
     const radius = 55;
     const circumference = 2 * Math.PI * radius;
-
-    // Pre-calculate label positions to avoid overlap
     const LABELS_MIN_GAP = 16;
     let currentOffset = 0;
 
@@ -91,7 +95,7 @@ export const DayDetailsChart: React.FC<Props> = ({ data }) => {
     // Simple collision resolver by shifting yLabel
     const resolveCollisions = (labels: typeof rawLabels) => {
         labels.sort((a, b) => a.yLabel - b.yLabel);
-        
+
         // Push down
         for (let i = 1; i < labels.length; i++) {
             const prev = labels[i - 1];
@@ -120,15 +124,63 @@ export const DayDetailsChart: React.FC<Props> = ({ data }) => {
     const rightLabels = rawLabels.filter(l => !l.isLeft);
     resolveCollisions(leftLabels);
     resolveCollisions(rightLabels);
-    
+
     const labelsInfo = [...leftLabels, ...rightLabels];
 
     let donutDrawOffset = 0;
 
+    // ── AREA CHART data generation ──
+    const areaPaths = useMemo(() => {
+        const heightsByType: Record<string, number[]> = {};
+
+        AREA_TYPES.forEach(type => {
+            heightsByType[type] = new Array(NUM_POINTS).fill(0);
+        });
+
+        data.timelineSegments.forEach(seg => {
+            const centerX = (seg.startPercent + seg.widthPercent / 2) / 100;
+            const sigma = Math.max(seg.widthPercent, 3) / 100 * 1.2;
+            const peakHeight = 0.3 + Math.min(seg.widthPercent / 8, 0.7);
+
+            for (let i = 0; i < NUM_POINTS; i++) {
+                const x = i / (NUM_POINTS - 1);
+                const dist = x - centerX;
+                const value = peakHeight * Math.exp(-dist * dist / (2 * sigma * sigma));
+                heightsByType[seg.type][i] += value;
+            }
+        });
+
+        const maxH = Math.max(
+            ...Object.values(heightsByType).flatMap(h => h),
+            0.01
+        );
+
+        const paths: { type: ActivityType; path: string }[] = [];
+
+        AREA_TYPES.forEach(type => {
+            const heights = heightsByType[type];
+            if (heights.every(h => h === 0)) return;
+
+            let d = `M 0 ${SVG_H}`;
+            for (let i = 0; i < NUM_POINTS; i++) {
+                const x = (i / (NUM_POINTS - 1)) * SVG_W;
+                const y = SVG_H - (heights[i] / maxH) * SVG_H * 0.82;
+                d += ` L ${x.toFixed(1)} ${y.toFixed(1)}`;
+            }
+            d += ` L ${SVG_W} ${SVG_H} Z`;
+
+            paths.push({ type, path: d });
+        });
+
+        return paths;
+    }, [data.timelineSegments]);
+
     return (
         <div className={styles.card}>
+            <h3 className={styles.chartTitle}>{data.date}, {data.department}, {data.employeeName}</h3>
+
             <div className={styles.chartArea}>
-                {/* DONUT CHART */}
+                {/* ── DONUT CHART ── */}
                 <div className={styles.donutColumn}>
                     <div className={styles.svgWrapper}>
                         <svg viewBox="0 0 160 160" className={styles.donutSvg}>
@@ -193,48 +245,33 @@ export const DayDetailsChart: React.FC<Props> = ({ data }) => {
                     </div>
                 </div>
 
-                {/* TIMELINE CHART */}
+                {/* ── AREA CHART (replaces bar timeline visually) ── */}
                 <div className={styles.timelineColumn}>
-                    <h3 className={styles.chartTitle}>{data.date}, {data.department}, {data.employeeName}</h3>
-
-                    <div className={styles.timelineWrapper}>
-                        {/* Hour markers */}
-                        <div className={styles.hourMarkers}>
-                            {[8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19].map((hour) => (
-                                <div key={hour} className={styles.hourMark}>
-                                    <div className={styles.tick} />
-                                    <span className={styles.hourLabel}>{hour.toString().padStart(2, '0')}</span>
-                                    {/* Red dotted lines for bounds based on screenshot (9:00 and 18:00) */}
-                                    {(hour === 9 || hour === 18) && (
-                                        <>
-                                            <div className={styles.redDottedLine} />
-                                            <span className={styles.redTimeLabel}>{hour}:00</span>
-                                        </>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-
-                        {/* Bar area */}
-                        <div className={styles.barArea}>
-                            {data.timelineSegments.map(seg => (
-                                <div
-                                    key={seg.id}
-                                    className={classNames(styles.timeSegment, { [styles.dimmed]: hoveredType && hoveredType !== seg.type })}
-                                    style={{
-                                        left: `${seg.startPercent}%`,
-                                        width: `${Math.max(0.5, seg.widthPercent)}%`, // Ensure minimum visible width
-                                        backgroundColor: colorMap[seg.type]
-                                    }}
-                                    title={`${getLabel(seg.type)}: ${seg.tooltipTime}`}
-                                    onMouseEnter={() => setHoveredType(seg.type)}
+                    <div className={styles.areaChartWrapper}>
+                        <svg viewBox={`0 0 ${SVG_W} ${SVG_H}`} className={styles.areaChartSvg} preserveAspectRatio="none">
+                            {areaPaths.map(({ type, path }) => (
+                                <path
+                                    key={type}
+                                    d={path}
+                                    fill={colorMap[type]}
+                                    className={classNames(styles.areaPath, { [styles.dimmed]: hoveredType && hoveredType !== type })}
+                                    opacity={0.65}
+                                    onMouseEnter={() => setHoveredType(type)}
                                     onMouseLeave={() => setHoveredType(null)}
                                 />
                             ))}
-                        </div>
+                        </svg>
                     </div>
 
-                    {/* DATA TABLE */}
+                    <div className={styles.hourLabels}>
+                        {HOURS.map(hour => (
+                            <span key={hour} className={styles.hourLabel}>
+                                {hour.toString().padStart(2, '0')}:00
+                            </span>
+                        ))}
+                    </div>
+
+                    {/* ── DATA TABLE ── */}
                     <div className={styles.statsTable}>
                         <div className={styles.tableRowHeader}>
                             <div>{t('activity.timeline.legend.idle')}</div>

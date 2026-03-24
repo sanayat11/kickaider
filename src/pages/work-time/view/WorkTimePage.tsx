@@ -6,9 +6,9 @@ import {
 } from 'react-icons/io5';
 import classNames from 'classnames';
 import styles from './WorkTimePage.module.scss';
-import { Select } from '@/shared/ui/select';
-import { FiltersBar } from '@/shared/ui/filters-bar';
-import { CheckBox } from '@/shared/ui/checkbox';
+import { Select } from '@/shared/ui/index';
+import { FiltersBar } from '@/shared/ui/index';
+import { Checkbox } from '@/shared/ui/index';
 
 interface TableRow {
     id: number;
@@ -143,7 +143,7 @@ export const WorkTimePage: React.FC = () => {
 
             <FiltersBar
                 rightSection={
-                    <CheckBox
+                    <Checkbox
                         checked={filters.onlyWorkTime}
                         onChange={(e) => handleFilterChange('onlyWorkTime', e.target.checked)}
                         label={t('reports.workTime.filters.onlyWorkTime')}

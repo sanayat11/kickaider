@@ -1,9 +1,9 @@
-import styles from "./AuthPage.module.scss"
-import image from "@/shared/assets/images/imgAuth.png"
-import logo from "@shared/assets/images/logo.svg"
-import { LoginForm } from "@/features/auth/loginForm/view/LoginForm"
-import { Button } from "@/shared/ui/button/view/Button"
-import { paths } from "@/shared/constants/constants"
+import styles from './AuthPage.module.scss';
+import logo from '@shared/assets/images/logo.svg';
+import { LoginForm } from '@/features/auth/loginForm/view/LoginForm';
+import { Button } from '@/shared/ui/button/view/Button';
+import { paths } from '@/shared/constants/constants';
+import { Typography } from '@/shared/ui';
 
 export const AuthPage = () => {
   return (
@@ -13,24 +13,33 @@ export const AuthPage = () => {
           <div className={styles.card}>
             <div className={styles.logo}>
               <img src={logo} alt="Logo" />
-              <span>KickAider</span>
+              <Typography variant="h4" context="landing" weight="bold">
+                KickAider
+              </Typography>
             </div>
 
             <div className={styles.title}>
-              <h1>Войти в аккаунт</h1>
+              <Typography variant="h2" context="landing" weight="bold">
+                Войти в аккаунт
+              </Typography>
             </div>
 
-            <LoginForm />
-            <Button type="link" to={paths.DASHBOARD} className={styles.button} size='giant' fullWidth>
-              Войти
-            </Button>
-          </div>
-        </div>
+            <div className={styles.form}>
+              <LoginForm />
 
-        <div className={styles.right}>
-          <img src={image} alt="img" />
+              <Button
+                type="link"
+                to={paths.DASHBOARD}
+                className={styles.button}
+                size="giant"
+                fullWidth
+              >
+                Войти
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  )
-} 
+  );
+};

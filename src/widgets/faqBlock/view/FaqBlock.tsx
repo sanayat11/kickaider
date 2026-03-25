@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styles from './FaqBlock.module.scss';
 import { Typography } from '@/shared/ui/typoghraphy/view/Typography';
-import { MdKeyboardArrowDown } from 'react-icons/md';
 import classNames from 'classnames';
+import { RiArrowUpWideFill } from 'react-icons/ri';
 
 interface FaqItem {
     question: string;
@@ -24,7 +24,7 @@ export const FaqBlock: FC = () => {
     return (
         <section id="faq" className={styles.faqBlock}>
             <div className={styles.header}>
-                <Typography variant="h2" weight="bold" className={styles.title}>
+                <Typography variant="h2" context='landing' weight="bold" className={styles.title}>
                     {t('faq.title')}
                 </Typography>
                 <Typography variant="h5" context='landing' className={styles.description}>
@@ -43,7 +43,7 @@ export const FaqBlock: FC = () => {
                         >
                             <div className={styles.question}>
                                 <span>{item.question}</span>
-                                <MdKeyboardArrowDown
+                                <RiArrowUpWideFill
                                     className={classNames(styles.icon, { [styles.rotate]: isOpen })}
                                 />
                             </div>

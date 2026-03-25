@@ -6,6 +6,7 @@ import imgBottomRight from "@/shared/assets/images/imgBoost3.png";
 import imgTopRight from "@/shared/assets/images/imgBoost4.png";
 import { Typography } from "@/shared/ui";
 
+
 export const BoostBlock: React.FC = () => {
   const { t } = useTranslation();
   return (

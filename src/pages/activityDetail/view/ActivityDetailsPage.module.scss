@@ -446,7 +446,7 @@
         border-radius: 6px;
 
         &:hover {
-            background-color: #f8faff;
+            background-color: var(--grey-50, #F9FAFB);
             color: #4e5bd9;
         }
     }

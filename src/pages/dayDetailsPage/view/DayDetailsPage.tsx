@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { IoChevronBackOutline, IoChevronForwardOutline } from 'react-icons/io5';
-import { FilterIcon, AttachmentIcon } from '@/shared/assets/icons';
+import { AttachmentIcon } from '@/shared/assets/icons';
 import styles from './DayDetailsPage.module.scss';
 import { DayDetailsChart } from '../../dayDetailsChart/view/DayDetailsChart';
 import type { DayActivityData } from '../../dayDetailsChart/view/DayDetailsChart';
 import { BASE_EMPLOYEES } from '@/shared/api/mock/employees.mock';
+import { DayDetailsFilter } from './DayDetailsFilter';
 
 const mockData1: DayActivityData = {
     employeeName: 'Сауле Абдыкадырова Sakewa',
@@ -14,18 +15,17 @@ const mockData1: DayActivityData = {
     department: 'Парсеры',
     donutSegments: [
         { type: 'neutral', percent: 94.6, duration: '01:03:14' },
-        { type: 'idle', percent: 3.9, duration: '00:02:38' },
+        { type: 'unproductive', percent: 3.9, duration: '00:02:38' },
         { type: 'uncategorized', percent: 1.4, duration: '00:00:54' },
     ],
     timelineSegments: [
         { id: '1', type: 'neutral', startPercent: 70, widthPercent: 1.5, tooltipTime: '16:00-16:05' },
         { id: '2', type: 'neutral', startPercent: 71, widthPercent: 2, tooltipTime: '16:05-16:15' },
-        { id: '3', type: 'idle', startPercent: 73, widthPercent: 0.5, tooltipTime: '16:20-16:22' },
+        { id: '3', type: 'uncategorized', startPercent: 73, widthPercent: 0.5, tooltipTime: '16:20-16:22' },
         { id: '4', type: 'neutral', startPercent: 76, widthPercent: 1, tooltipTime: '16:45-16:50' },
         { id: '5', type: 'neutral', startPercent: 78, widthPercent: 3, tooltipTime: '16:55-17:07' },
     ],
     stats: {
-        idle: '01:03:14',
         active: '00:03:38',
         productive: '00:00:05',
         unproductive: '-',
@@ -42,7 +42,7 @@ const mockData2: DayActivityData = {
     date: '2026-02-19',
     department: 'Парсеры',
     donutSegments: [
-        { type: 'idle', percent: 58.8, duration: '03:13:30' },
+        { type: 'unproductive', percent: 58.8, duration: '03:13:30' },
         { type: 'productive', percent: 12.6, duration: '00:41:30' },
         { type: 'uncategorized', percent: 11.3, duration: '00:37:07' },
         { type: 'neutral', percent: 17.3, duration: '00:56:57' },
@@ -52,12 +52,11 @@ const mockData2: DayActivityData = {
         { id: '11', type: 'productive', startPercent: 55, widthPercent: 2, tooltipTime: '14:00' },
         { id: '12', type: 'uncategorized', startPercent: 58, widthPercent: 1.5, tooltipTime: '14:20' },
         { id: '13', type: 'neutral', startPercent: 65, widthPercent: 4, tooltipTime: '15:15' },
-        { id: '14', type: 'idle', startPercent: 70, widthPercent: 10, tooltipTime: '16:00' },
+        { id: '14', type: 'unproductive', startPercent: 70, widthPercent: 10, tooltipTime: '16:00' },
         { id: '15', type: 'productive', startPercent: 82, widthPercent: 3, tooltipTime: '17:30' },
-        { id: '16', type: 'idle', startPercent: 86, widthPercent: 2, tooltipTime: '18:00' },
+        { id: '16', type: 'unproductive', startPercent: 86, widthPercent: 2, tooltipTime: '18:00' },
     ],
     stats: {
-        idle: '03:13:30',
         active: '02:15:37',
         productive: '00:41:30',
         unproductive: '00:00:01',
@@ -112,7 +111,7 @@ export const DayDetailsPage: React.FC = () => {
     const location = useLocation();
     const passedEmployee = location.state?.selectedEmployee;
 
-    const [period, setPeriod] = useState('Day');
+    const [period, setPeriod] = useState('');
 
     // Map the passed employee name to the options. It handles partial name matching used in mock dropdown.
     const getInitialEmployee = () => {
@@ -127,28 +126,9 @@ export const DayDetailsPage: React.FC = () => {
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
 
-    const handlePrevDay = () => {
-        const date = new Date(currentDate);
-        date.setDate(date.getDate() - 1);
-        setCurrentDate(date.toISOString().split('T')[0]);
-        setCurrentPage(1);
-    };
-
-    const handleNextDay = () => {
-        const date = new Date(currentDate);
-        date.setDate(date.getDate() + 1);
-        setCurrentDate(date.toISOString().split('T')[0]);
-        setCurrentPage(1);
-    };
-
-    const formatDisplayDate = (dateStr: string) => {
-        const d = new Date(dateStr);
-        return d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
-    };
-
     const renderCharts = () => {
         let activeData: DayActivityData[] = [];
-        if (period === 'Day') {
+        if (!period) {
             activeData = [
                 mockData1,
                 mockData2,
@@ -174,7 +154,7 @@ export const DayDetailsPage: React.FC = () => {
 
         // Generate repeated data to demonstrate pagination when there are few real mock items
         let fullData = [...activeData];
-        if (fullData.length > 0 && fullData.length < 15 && period === 'Day' && selectedEmployee === 'All') {
+        if (fullData.length > 0 && fullData.length < 15 && !period && selectedEmployee === 'All') {
             for(let i=0; i<30; i++) {
                 fullData.push({...fullData[i % activeData.length], employeeName: `${fullData[i % activeData.length].employeeName} (Копия ${i + 1})`});
             }
@@ -197,7 +177,7 @@ export const DayDetailsPage: React.FC = () => {
             <>
                 <div className={styles.generatedContent}>
                     {currentItems.map((data, idx) => (
-                        <DayDetailsChart key={idx} data={{ ...data, date: period === 'Day' ? new Date(currentDate).toLocaleDateString('ru-RU') : data.date }} />
+                        <DayDetailsChart key={idx} data={{ ...data, date: !period ? new Date(currentDate).toLocaleDateString('ru-RU') : data.date }} />
                     ))}
                     {currentItems.length === 0 && (
                         <div style={{ textAlign: 'center', padding: '40px', color: '#8a91b4' }}>
@@ -255,68 +235,20 @@ export const DayDetailsPage: React.FC = () => {
                     <p>{t('dayDetails.subtitle', 'Общий аналитический обзор по компании или сотруднику')}</p>
                 </div>
                 <button className={styles.exportBtn}>
+                    Экспорт XLS
                     <AttachmentIcon className={styles.exportIcon} />
-                    {t('dayDetails.exportXls', 'Экспорт XLS')}
                 </button>
             </div>
 
             {/* Filter Bar */}
-            <div className={styles.filtersBar}>
-                <div className={styles.filterGroupShort}>
-                    <FilterIcon className={styles.filterIcon} />
-                </div>
-
-                <div className={styles.filterGroupShort}>
-                    <span className={styles.filterLabel}>{t('dashboard.filters.period')}</span>
-                    <select className={styles.filterSelect} value={period} onChange={(e) => setPeriod(e.target.value)}>
-                        <option value="Day">{t('dashboard.filters.periods.day')}</option>
-                        <option value="Week">{t('dashboard.filters.periods.week')}</option>
-                        <option value="Month">{t('dashboard.filters.periods.month')}</option>
-                    </select>
-                </div>
-
-                <div className={styles.filterGroupShort}>
-                    <button className={styles.navBtn} onClick={handlePrevDay}>
-                        <IoChevronBackOutline />
-                    </button>
-                    <div className={styles.dateInputContainer}>
-                        <span className={styles.dateText}>{formatDisplayDate(currentDate)}</span>
-                        <input
-                            type="date"
-                            value={currentDate}
-                            onChange={(e) => setCurrentDate(e.target.value)}
-                            className={styles.hiddenDateInput}
-                        />
-                    </div>
-                    <button className={styles.navBtn} onClick={handleNextDay}>
-                        <IoChevronForwardOutline />
-                    </button>
-                </div>
-
-                <div className={styles.filterGroupFull}>
-                    <select className={styles.filterSelect} value={selectedEmployee} onChange={(e) => setSelectedEmployee(e.target.value)}>
-                        <option value="All">{t('dashboard.departments.all')}</option>
-                        {BASE_EMPLOYEES.map(emp => (
-                            <option key={emp.id} value={emp.name}>{emp.name}</option>
-                        ))}
-                    </select>
-                </div>
-
-                <div className={styles.filterGroupFull}>
-                    <select className={styles.filterSelect}>
-                        <option>{t('dayDetails.contentType', 'Тип контента')}</option>
-                    </select>
-                </div>
-
-                <label className={styles.toggleLabel}>
-                    <span>{t('dashboard.filters.onlyWorkTime')}</span>
-                    <div className={styles.toggleSwitch}>
-                        <input type="checkbox" defaultChecked />
-                        <span className={styles.toggleSlider} />
-                    </div>
-                </label>
-
-            </div>
+            <DayDetailsFilter
+                period={period}
+                onPeriodChange={setPeriod}
+                currentDate={currentDate}
+                onDateChange={(date) => { setCurrentDate(date); setCurrentPage(1); }}
+                selectedEmployee={selectedEmployee}
+                onEmployeeChange={setSelectedEmployee}
+            />
 
             {/* Main Content */}
             <main className={styles.main}>

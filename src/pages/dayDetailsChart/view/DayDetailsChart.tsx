@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import styles from './DayDetailsChart.module.scss';
 
-export type ActivityType = 'productive' | 'neutral' | 'unproductive' | 'uncategorized' | 'idle';
+export type ActivityType = 'productive' | 'neutral' | 'unproductive' | 'uncategorized';
 
 export interface TimeSegment {
     id: string;
@@ -27,7 +27,6 @@ export interface DayActivityData {
     timelineSegments: TimeSegment[];
 
     stats: {
-        idle: string;
         active: string;
         productive: string;
         unproductive: string;
@@ -44,18 +43,79 @@ interface Props {
 }
 
 const colorMap: Record<ActivityType, string> = {
-    productive: '#2ebd59',
-    neutral: '#e5b112',
-    unproductive: '#ef4444',
-    uncategorized: '#a0a5b1',
-    idle: '#a96aeb',
+    productive: '#8DE4DB',
+    neutral: '#FFCC00',
+    unproductive: '#FF0000',
+    uncategorized: '#D2D5DB',
 };
 
 const SVG_W = 1000;
 const SVG_H = 150;
-const NUM_POINTS = 200;
 const HOURS = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
-const AREA_TYPES: ActivityType[] = ['idle', 'unproductive', 'neutral', 'uncategorized', 'productive'];
+const AREA_TYPES: ActivityType[] = ['unproductive', 'neutral', 'uncategorized', 'productive'];
+
+const NUM_POINTS = 60;
+
+/** Generate smooth wave data points for each activity type from timeline segments */
+function generateWavePoints(segments: TimeSegment[], type: ActivityType): number[] {
+    const points: number[] = new Array(NUM_POINTS).fill(0);
+    const segs = segments.filter(s => s.type === type);
+
+    segs.forEach(seg => {
+        const centerX = (seg.startPercent + seg.widthPercent / 2) / 100;
+        const spread = Math.max(seg.widthPercent / 100, 0.04) * 2.5;
+        const peak = 0.35 + (seg.startPercent % 17) / 17 * 0.5;
+
+        for (let i = 0; i < NUM_POINTS; i++) {
+            const x = i / (NUM_POINTS - 1);
+            const dist = Math.abs(x - centerX);
+            const gauss = peak * Math.exp(-(dist * dist) / (2 * spread * spread));
+            points[i] += gauss;
+        }
+    });
+
+    // Clamp to [0, 1]
+    for (let i = 0; i < NUM_POINTS; i++) {
+        points[i] = Math.min(points[i], 1);
+    }
+
+    return points;
+}
+
+/** Build a smooth SVG area path using cubic bezier curves */
+function buildSmoothAreaPath(points: number[], w: number, h: number): string {
+    if (points.length < 2) return '';
+
+    const coords = points.map((val, i) => ({
+        x: (i / (points.length - 1)) * w,
+        y: h - val * h * 0.85,
+    }));
+
+    let d = `M 0 ${h} L ${coords[0].x.toFixed(1)} ${coords[0].y.toFixed(1)}`;
+
+    for (let i = 0; i < coords.length - 1; i++) {
+        const p0 = coords[Math.max(i - 1, 0)];
+        const p1 = coords[i];
+        const p2 = coords[i + 1];
+        const p3 = coords[Math.min(i + 2, coords.length - 1)];
+
+        const cp1x = p1.x + (p2.x - p0.x) / 6;
+        const cp1y = p1.y + (p2.y - p0.y) / 6;
+        const cp2x = p2.x - (p3.x - p1.x) / 6;
+        const cp2y = p2.y - (p3.y - p1.y) / 6;
+
+        d += ` C ${cp1x.toFixed(1)} ${cp1y.toFixed(1)}, ${cp2x.toFixed(1)} ${cp2y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
+    }
+
+    d += ` L ${w} ${h} Z`;
+    return d;
+}
+
+
+const CX = 70;
+const CY = 70;
+const RADIUS = 48;
+const LABELS_MIN_GAP = 16;
 
 export const DayDetailsChart: React.FC<Props> = ({ data }) => {
     const { t } = useTranslation();
@@ -63,50 +123,39 @@ export const DayDetailsChart: React.FC<Props> = ({ data }) => {
 
     const getLabel = (type: ActivityType) => t(`activity.timeline.legend.${type}`);
 
-    // ── DONUT CHART calculation (unchanged logic) ──
-    const radius = 55;
-    const circumference = 2 * Math.PI * radius;
-    const LABELS_MIN_GAP = 16;
-    let currentOffset = 0;
+    const circumference = 2 * Math.PI * RADIUS;
 
+    // ── DONUT label positions ──
+    let currentOffset = 0;
     const rawLabels = data.donutSegments.map((seg) => {
         const midP = currentOffset + seg.percent / 2;
         currentOffset += seg.percent;
 
         const angle = (midP / 100) * 2 * Math.PI - Math.PI / 2;
-        const x1 = 80 + radius * Math.cos(angle);
-        const y1 = 80 + radius * Math.sin(angle);
-        const xBend = 80 + (radius + 12) * Math.cos(angle);
-        const yBend = 80 + (radius + 12) * Math.sin(angle);
+        const x1 = CX + RADIUS * Math.cos(angle);
+        const y1 = CY + RADIUS * Math.sin(angle);
+        const xBend = CX + (RADIUS + 10) * Math.cos(angle);
+        const yBend = CY + (RADIUS + 10) * Math.sin(angle);
         const isLeft = Math.cos(angle) < 0;
 
         return {
             seg,
-            midP,
-            angle,
             x1, y1,
             xBend, yBend,
-            yLabel: yBend, // initial target Y
+            yLabel: yBend,
             isLeft,
-            xLabelStart: isLeft ? 10 : 150
+            xLabelStart: isLeft ? 8 : 132,
         };
     });
 
-    // Simple collision resolver by shifting yLabel
     const resolveCollisions = (labels: typeof rawLabels) => {
         labels.sort((a, b) => a.yLabel - b.yLabel);
-
-        // Push down
         for (let i = 1; i < labels.length; i++) {
-            const prev = labels[i - 1];
-            const curr = labels[i];
-            if (curr.yLabel - prev.yLabel < LABELS_MIN_GAP) {
-                curr.yLabel = prev.yLabel + LABELS_MIN_GAP;
+            if (labels[i].yLabel - labels[i - 1].yLabel < LABELS_MIN_GAP) {
+                labels[i].yLabel = labels[i - 1].yLabel + LABELS_MIN_GAP;
             }
         }
-
-        // Push up if pushed too far out of bounds
-        const MAX_Y = 165;
+        const MAX_Y = 138;
         if (labels.length > 0 && labels[labels.length - 1].yLabel > MAX_Y) {
             let overflow = labels[labels.length - 1].yLabel - MAX_Y;
             for (let i = labels.length - 1; i >= 0; i--) {
@@ -124,52 +173,23 @@ export const DayDetailsChart: React.FC<Props> = ({ data }) => {
     const rightLabels = rawLabels.filter(l => !l.isLeft);
     resolveCollisions(leftLabels);
     resolveCollisions(rightLabels);
-
     const labelsInfo = [...leftLabels, ...rightLabels];
 
     let donutDrawOffset = 0;
 
-    // ── AREA CHART data generation ──
+    // ── SMOOTH AREA CHART data generation ──
     const areaPaths = useMemo(() => {
-        const heightsByType: Record<string, number[]> = {};
-
-        AREA_TYPES.forEach(type => {
-            heightsByType[type] = new Array(NUM_POINTS).fill(0);
-        });
-
-        data.timelineSegments.forEach(seg => {
-            const centerX = (seg.startPercent + seg.widthPercent / 2) / 100;
-            const sigma = Math.max(seg.widthPercent, 3) / 100 * 1.2;
-            const peakHeight = 0.3 + Math.min(seg.widthPercent / 8, 0.7);
-
-            for (let i = 0; i < NUM_POINTS; i++) {
-                const x = i / (NUM_POINTS - 1);
-                const dist = x - centerX;
-                const value = peakHeight * Math.exp(-dist * dist / (2 * sigma * sigma));
-                heightsByType[seg.type][i] += value;
-            }
-        });
-
-        const maxH = Math.max(
-            ...Object.values(heightsByType).flatMap(h => h),
-            0.01
-        );
-
         const paths: { type: ActivityType; path: string }[] = [];
 
         AREA_TYPES.forEach(type => {
-            const heights = heightsByType[type];
-            if (heights.every(h => h === 0)) return;
+            const wavePoints = generateWavePoints(data.timelineSegments, type);
+            const hasData = wavePoints.some(p => p > 0);
+            if (!hasData) return;
 
-            let d = `M 0 ${SVG_H}`;
-            for (let i = 0; i < NUM_POINTS; i++) {
-                const x = (i / (NUM_POINTS - 1)) * SVG_W;
-                const y = SVG_H - (heights[i] / maxH) * SVG_H * 0.82;
-                d += ` L ${x.toFixed(1)} ${y.toFixed(1)}`;
+            const path = buildSmoothAreaPath(wavePoints, SVG_W, SVG_H);
+            if (path) {
+                paths.push({ type, path });
             }
-            d += ` L ${SVG_W} ${SVG_H} Z`;
-
-            paths.push({ type, path: d });
         });
 
         return paths;
@@ -180,11 +200,11 @@ export const DayDetailsChart: React.FC<Props> = ({ data }) => {
             <h3 className={styles.chartTitle}>{data.date}, {data.department}, {data.employeeName}</h3>
 
             <div className={styles.chartArea}>
-                {/* ── DONUT CHART ── */}
+                {/* ── DONUT CHART 140×140 ── */}
                 <div className={styles.donutColumn}>
                     <div className={styles.svgWrapper}>
-                        <svg viewBox="0 0 160 160" className={styles.donutSvg}>
-                            <circle cx="80" cy="80" r={radius} fill="transparent" stroke="#edf1f7" strokeWidth="20" />
+                        <svg viewBox="0 0 140 140" className={styles.donutSvg}>
+                            <circle cx={CX} cy={CY} r={RADIUS} fill="transparent" stroke="#edf1f7" strokeWidth="16" />
                             {data.donutSegments.map((seg) => {
                                 const info = labelsInfo.find(l => l.seg.type === seg.type)!;
                                 const strokeDasharray = `${(seg.percent / 100) * circumference} ${circumference}`;
@@ -192,19 +212,17 @@ export const DayDetailsChart: React.FC<Props> = ({ data }) => {
                                 donutDrawOffset += seg.percent;
 
                                 const isDimmed = hoveredType && hoveredType !== seg.type;
-
-                                const { x1, y1, xBend, yBend, xLabelStart, yLabel, isLeft } = info;
-                                const xLabelMid = xLabelStart + (isLeft ? 8 : -8);
+                                const { x1, y1, xLabelStart, yLabel, isLeft } = info;
 
                                 return (
                                     <React.Fragment key={seg.type}>
                                         <circle
-                                            cx="80"
-                                            cy="80"
-                                            r={radius}
+                                            cx={CX}
+                                            cy={CY}
+                                            r={RADIUS}
                                             fill="transparent"
                                             stroke={colorMap[seg.type]}
-                                            strokeWidth="20"
+                                            strokeWidth="16"
                                             strokeDasharray={strokeDasharray}
                                             strokeDashoffset={dashoffset}
                                             className={classNames(styles.donutSegment, { [styles.dimmed]: isDimmed })}
@@ -213,11 +231,11 @@ export const DayDetailsChart: React.FC<Props> = ({ data }) => {
                                             style={{ transition: 'opacity 0.2s', strokeLinecap: 'butt' }}
                                         />
                                         <polyline
-                                            points={`${x1},${y1} ${xBend},${yBend} ${xLabelMid},${yLabel} ${xLabelStart},${yLabel}`}
+                                            points={`${x1},${y1} ${xLabelStart},${yLabel}`}
                                             className={classNames(styles.donutPolyline, { [styles.dimmed]: isDimmed })}
                                         />
                                         <text
-                                            x={xLabelStart + (isLeft ? -4 : 4)}
+                                            x={xLabelStart + (isLeft ? -3 : 3)}
                                             y={yLabel + 4}
                                             textAnchor={isLeft ? 'end' : 'start'}
                                             className={classNames(styles.donutSvgText, { [styles.dimmed]: isDimmed })}
@@ -245,7 +263,7 @@ export const DayDetailsChart: React.FC<Props> = ({ data }) => {
                     </div>
                 </div>
 
-                {/* ── AREA CHART (replaces bar timeline visually) ── */}
+                {/* ── AREA CHART ── */}
                 <div className={styles.timelineColumn}>
                     <div className={styles.areaChartWrapper}>
                         <svg viewBox={`0 0 ${SVG_W} ${SVG_H}`} className={styles.areaChartSvg} preserveAspectRatio="none">
@@ -255,7 +273,7 @@ export const DayDetailsChart: React.FC<Props> = ({ data }) => {
                                     d={path}
                                     fill={colorMap[type]}
                                     className={classNames(styles.areaPath, { [styles.dimmed]: hoveredType && hoveredType !== type })}
-                                    opacity={0.65}
+                                    opacity={0.75}
                                     onMouseEnter={() => setHoveredType(type)}
                                     onMouseLeave={() => setHoveredType(null)}
                                 />
@@ -274,7 +292,6 @@ export const DayDetailsChart: React.FC<Props> = ({ data }) => {
                     {/* ── DATA TABLE ── */}
                     <div className={styles.statsTable}>
                         <div className={styles.tableRowHeader}>
-                            <div>{t('activity.timeline.legend.idle')}</div>
                             <div>{t('dashboard.cards.activity')}</div>
                             <div>{t('dashboard.cards.productive')}</div>
                             <div>{t('dashboard.cards.unproductive')}</div>
@@ -285,7 +302,6 @@ export const DayDetailsChart: React.FC<Props> = ({ data }) => {
                             <div>{t('reports.workTime.table.timeAtWork')}</div>
                         </div>
                         <div className={styles.tableRowData}>
-                            <div>{data.stats.idle}</div>
                             <div>{data.stats.active}</div>
                             <div>{data.stats.productive}</div>
                             <div>{data.stats.unproductive}</div>

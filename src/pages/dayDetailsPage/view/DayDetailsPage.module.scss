@@ -5,7 +5,7 @@
     width: 100%;
     flex: 1;
     color: #1a1f4d;
-    background-color: #f8faff;
+    background-color: var(--grey-50, #F9FAFB);
     max-width: 1400px;
     margin: 0 auto;
     min-width: 0;
@@ -38,13 +38,16 @@
 .exportBtn {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
+    width: 200px;
+    height: 40px;
     background: var(--accent-primary, #4E61F6);
     color: white;
     border: none;
     border-radius: 14px;
-    padding: 14px 28px;
-    font-size: 15px;
+    padding: 0;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     transition: background-color 0.2s;
@@ -57,203 +60,10 @@
     .exportIcon {
         width: 18px;
         height: 18px;
+        color: white;
     }
 }
 
-/* ── FILTER BAR ── */
-.filtersBar {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    padding: 10px 24px;
-    background-color: #ffffff;
-    border: none;
-    border-radius: 14px;
-    margin: 20px 40px;
-    box-shadow: 0px 0px 10px 0px #AEB6FB40;
-    flex-wrap: nowrap;
-    height: 84px;
-    box-sizing: border-box;
-}
-
-/* Short border: doesn't stretch full height — centered with margin */
-.filterGroupShort {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 0 20px;
-    height: 40px;
-    border-right: 1px solid #edf1f7;
-    flex-shrink: 0;
-}
-
-/* Full border: stretches the entire 64px content height */
-.filterGroupFull {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 0 20px;
-    height: 64px;
-    border-right: 1px solid #edf1f7;
-    flex-shrink: 0;
-}
-
-.filterIcon {
-    color: #8a91b4;
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
-}
-
-.filterLabel {
-    font-size: 14px;
-    color: #8a91b4;
-    font-weight: 500;
-    white-space: nowrap;
-}
-
-.filterSelect {
-    background-color: transparent;
-    color: #1a1f4d;
-    border: none;
-    font-size: 14px;
-    font-weight: 600;
-    outline: none;
-    cursor: pointer;
-    appearance: none;
-    padding: 6px 8px;
-    max-width: 200px;
-
-    &:focus {
-        color: var(--accent-primary, #4E61F6);
-    }
-}
-
-.navBtn {
-    background: none;
-    border: none;
-    color: #8a91b4;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    padding: 4px;
-    border-radius: 6px;
-    font-size: 14px;
-    transition: all 0.15s;
-
-    &:hover {
-        color: var(--accent-primary, #4E61F6);
-        background-color: #f0f2ff;
-    }
-}
-
-.dateInputContainer {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.dateText {
-    font-size: 14px;
-    font-weight: 700;
-    color: #1a1f4d;
-    white-space: nowrap;
-    cursor: pointer;
-    padding: 2px 6px;
-}
-
-.hiddenDateInput {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer;
-    z-index: 1;
-}
-
-/* ── TOGGLE SWITCH ── */
-.toggleLabel {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 14px;
-    color: #4a517d;
-    font-weight: 500;
-    cursor: pointer;
-    user-select: none;
-    white-space: nowrap;
-    margin-left: auto;
-    padding: 0 20px;
-    height: 64px;
-}
-
-.toggleSwitch {
-    position: relative;
-    width: 44px;
-    height: 24px;
-    flex-shrink: 0;
-
-    input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-        position: absolute;
-
-        &:checked + .toggleSlider {
-            background-color: var(--accent-primary, #4E61F6);
-        }
-
-        &:checked + .toggleSlider::before {
-            transform: translateX(20px);
-        }
-    }
-}
-
-.toggleSlider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #dce1f0;
-    border-radius: 24px;
-    transition: 0.3s;
-
-    &::before {
-        position: absolute;
-        content: "";
-        height: 18px;
-        width: 18px;
-        left: 3px;
-        bottom: 3px;
-        background-color: white;
-        border-radius: 50%;
-        transition: 0.3s;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-    }
-}
-
-/* ── GENERATE BUTTON (in filter bar) ── */
-.generateBtn {
-    background-color: #34c759;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 8px 18px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    white-space: nowrap;
-    flex-shrink: 0;
-
-    &:hover {
-        background-color: #2eb04f;
-    }
-}
 
 /* ── MAIN CONTENT ── */
 .main {
@@ -366,7 +176,7 @@
     border-radius: 6px;
 
     &:hover {
-        background-color: #f8faff;
+        background-color: var(--grey-50, #F9FAFB);
         color: #4e5bd9;
     }
 }

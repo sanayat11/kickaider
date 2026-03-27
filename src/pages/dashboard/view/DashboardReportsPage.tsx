@@ -2,38 +2,80 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import {
-    IoChevronBackOutline,
-    IoChevronForwardOutline,
-    IoDownloadOutline,
     IoSwapVerticalOutline,
+    IoTimeOutline,
+    IoTrendingUpOutline,
 } from 'react-icons/io5';
+import { AttachmentIcon, GraphUpIcon } from '@/shared/assets/icons';
 import { dashboardApi } from '@/shared/api/mock/dashboard.mock';
 import type { DashboardData } from '@/shared/api/mock/dashboard.mock';
 import styles from './DashboardPage.module.scss';
+import { DashboardReportsFilter } from './DashboardReportsFilter';
+import { SelectDropdown } from '@/shared/ui/selectDropdown/view/selectDropdown';
 
 type TabType = 'time' | 'efficiency' | 'dynamics';
 
-const Card = ({ title, value, hint, percent, color }: any) => (
+const Card = ({ title, value, hint, icon, iconColor, iconOpacity = '33' }: any) => (
     <div className={styles.card}>
-        <span className={styles.cardTitle}>{title}</span>
-        <div className={styles.cardMain}>
-            <span className={styles.cardValue}>{value}</span>
-            {hint && <span className={styles.cardHint}>{hint}</span>}
-        </div>
-        {percent !== undefined && (
-            <div className={styles.progressBar}>
-                <div
-                    className={styles.progressFill}
-                    style={{ width: `${percent}%`, backgroundColor: color || 'var(--color-accent)' }}
-                />
+        <div className={styles.cardBody}>
+            <div className={styles.cardText}>
+                <span className={styles.cardTitle}>{title}</span>
+                <div className={styles.cardMain}>
+                    <span className={styles.cardValue}>{value}</span>
+                    {hint && <span className={styles.cardHint}>{hint}</span>}
+                </div>
             </div>
-        )}
+            {icon && (
+                <div className={styles.cardIconBox} style={{ backgroundColor: iconColor ? `${iconColor}${iconOpacity}` : undefined, color: iconColor }}>
+                    {icon}
+                </div>
+            )}
+        </div>
     </div>
 );
 
 const Skeleton = ({ className }: { className?: string }) => (
     <div className={classNames(styles.skeleton, className)} />
 );
+
+const CHART_COLORS = {
+    productive: '#34c759',
+    neutral: '#F59E0B',
+    unproductive: '#ff3b30',
+    uncategorized: '#f2f2f7',
+    idle: '#e5e5ea',
+};
+
+const DonutChart: React.FC<{
+    productive: number; neutral: number; unproductive: number; uncategorized: number; idle: number;
+}> = ({ productive, neutral, unproductive, uncategorized, idle }) => {
+    const size = 90;
+    const cx = 45, cy = 45, R = 38, r = 24;
+    const segs = [
+        { val: productive, fill: CHART_COLORS.productive },
+        { val: neutral, fill: CHART_COLORS.neutral },
+        { val: unproductive, fill: CHART_COLORS.unproductive },
+        { val: uncategorized, fill: CHART_COLORS.uncategorized },
+    ];
+    const total = segs.reduce((s, x) => s + x.val, 0) || 100;
+    let a = -Math.PI / 2;
+    const paths = segs.flatMap((seg) => {
+        if (seg.val <= 0) return [];
+        const sweep = (seg.val / total) * 2 * Math.PI;
+        const a2 = a + sweep;
+        const large = sweep > Math.PI ? 1 : 0;
+        const c1 = [Math.cos(a), Math.sin(a)];
+        const c2 = [Math.cos(a2), Math.sin(a2)];
+        const d = `M${cx + R * c1[0]} ${cy + R * c1[1]} A${R} ${R} 0 ${large} 1 ${cx + R * c2[0]} ${cy + R * c2[1]} L${cx + r * c2[0]} ${cy + r * c2[1]} A${r} ${r} 0 ${large} 0 ${cx + r * c1[0]} ${cy + r * c1[1]}Z`;
+        a = a2;
+        return [{ d, fill: seg.fill }];
+    });
+    return (
+        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+            {paths.map((p, i) => <path key={i} d={p.d} fill={p.fill} />)}
+        </svg>
+    );
+};
 
 export const DashboardReportsPage: React.FC = () => {
     const { t } = useTranslation();
@@ -42,7 +84,9 @@ export const DashboardReportsPage: React.FC = () => {
     const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
     const [groupBy, setGroupBy] = useState<'day' | 'week'>('day');
     const [isExporting, setIsExporting] = useState(false);
-    const [isDetailedOpen, setIsDetailedOpen] = useState(false);
+    const [detailedReport, setDetailedReport] = useState<string>('');
+    const [appSortAlpha, setAppSortAlpha] = useState<'asc' | 'desc' | ''>('');
+    const [appSortTime, setAppSortTime] = useState<'asc' | 'desc' | ''>('');
     const [chartType, setChartType] = useState<'all' | 'web' | 'apps'>('all');
 
     const [period, setPeriod] = useState<'day' | 'week' | 'month'>('week');
@@ -83,21 +127,7 @@ export const DashboardReportsPage: React.FC = () => {
         }, 1000);
     };
 
-    const renderDeptSidebar = () => (
-        <aside className={styles.deptSidebar}>
-            {departmentsList.map(dept => (
-                <div
-                    key={dept.id}
-                    className={classNames(styles.deptItem, { [styles.active]: selectedDept === dept.id })}
-                    onClick={() => setSelectedDept(dept.id)}
-                    style={{ cursor: 'pointer' }}
-                >
-                    {dept.label}
-                </div>
-            ))}
-        </aside>
-    );
-
+   
     // Compute dynamic data based on selected dept, employee, filters
     const computedTotals = useMemo(() => {
         const baseTotalMins = 40 * 60; // 40 hours as minutes
@@ -207,191 +237,217 @@ export const DashboardReportsPage: React.FC = () => {
     const renderTimeTab = () => (
         <div className={styles.tabContent}>
             <div className={styles.tabSplit}>
-                {renderDeptSidebar()}
                 <div className={styles.mainContentArea}>
                     <div className={styles.cardsRow}>
-                        <Card title={t('dashboard.cards.total')} value={computedTotals.total} />
-                        <Card title={t('dashboard.cards.productive')} value={computedTotals.productive.val} hint={`${computedTotals.productive.pct}%`} percent={computedTotals.productive.pct} color="var(--color-productive)" />
-                        <Card title={t('dashboard.cards.idle')} value={computedTotals.idle.val} hint={`${computedTotals.idle.pct}%`} percent={computedTotals.idle.pct} color="var(--color-idle)" />
-                        <Card title={t('dashboard.cards.unproductive')} value={computedTotals.unproductive.val} hint={`${computedTotals.unproductive.pct}%`} percent={computedTotals.unproductive.pct} color="var(--color-unproductive)" />
+                        <Card title="Общее время" value={computedTotals.total} icon={<IoTimeOutline />} iconColor="#8897F9" />
+                        <Card title={t('dashboard.cards.productive')} value={computedTotals.productive.val} icon={<GraphUpIcon />} iconColor="#8DE4DB" />
+                        <Card title="Нейтрально" value={computedTotals.idle.val} icon={<IoTrendingUpOutline />} iconColor="#FFCC00" iconOpacity="40" />
+                        <Card title={t('dashboard.cards.unproductive')} value={computedTotals.unproductive.val} icon={<IoTimeOutline />} iconColor="#FF0000" iconOpacity="40" />
                     </div>
 
-                    <div className={styles.section}>
-                        <div className={styles.sectionHeader}>
-                            <h2>{t('dashboard.topApps.title')}</h2>
-                            <button className={styles.sortBtn}>
-                                <IoSwapVerticalOutline />
-                                {t('dashboard.topApps.sortByTime')}
-                            </button>
+                    <div className={styles.appsCard}>
+                        <div className={styles.appsCardHeader}>
+                            <h1 className={styles.appsCardTitle}>Топ 5 приложений</h1>
+                            <div className={styles.appsFilters}>
+                                <SelectDropdown
+                                    placeholder="По алфавиту"
+                                    value={appSortAlpha || undefined}
+                                    onChange={(val) => { setAppSortAlpha(val as any); setAppSortTime(''); }}
+                                    options={[
+                                        { value: 'asc', label: 'А → Я' },
+                                        { value: 'desc', label: 'Я → А' },
+                                    ]}
+                                    size="sm"
+                                    className={styles.appsDropdown}
+                                    menuClassName={styles.appsDropdownMenu}
+                                />
+                                <SelectDropdown
+                                    placeholder="По времени"
+                                    value={appSortTime || undefined}
+                                    onChange={(val) => { setAppSortTime(val as any); setAppSortAlpha(''); }}
+                                    options={[
+                                        { value: 'desc', label: 'Больше → Меньше' },
+                                        { value: 'asc', label: 'Меньше → Больше' },
+                                    ]}
+                                    size="sm"
+                                    className={styles.appsDropdown}
+                                    menuClassName={styles.appsDropdownMenu}
+                                />
+                            </div>
+                        </div>
+                        <div className={styles.appsTableHeader}>
+                            <h4 className={styles.appsTableHeaderTitle}>Product Name</h4>
                         </div>
                         <div className={styles.appList}>
-                            {displayedApps.map((app: any, i: number) => (
-                                <div key={i} className={styles.appRow}>
-                                    <span className={styles.appName}>{app.name}</span>
-                                    <div className={styles.stackedBar}>
-                                        <div className={styles.segment} style={{ width: `${app.productive}%`, backgroundColor: 'var(--color-productive)' }} />
-                                        <div className={styles.segment} style={{ width: `${app.neutral}%`, backgroundColor: 'var(--color-neutral)' }} />
-                                        <div className={styles.segment} style={{ width: `${app.unproductive}%`, backgroundColor: 'var(--color-unproductive)' }} />
+                            {[...displayedApps]
+                                .sort((a: any, b: any) => {
+                                    if (appSortAlpha === 'asc') return a.name.localeCompare(b.name);
+                                    if (appSortAlpha === 'desc') return b.name.localeCompare(a.name);
+                                    return 0;
+                                })
+                                .map((app: any, i: number) => {
+                                    const total = (app.neutral || 0) + (app.productive || 0) + (app.unproductive || 0) || 100;
+                                    const n = Math.round((app.neutral || 0) / total * 100);
+                                    const p = Math.round((app.productive || 0) / total * 100);
+                                    const u = 100 - n - p;
+                                    return (
+                                    <div key={i} className={styles.appRow}>
+                                        <div className={styles.appThumb} />
+                                        <div className={styles.appInfo}>
+                                            <h3 className={styles.appName}>{app.name}</h3>
+                                            <h5 className={styles.appDesc}>Отслеживание активности</h5>
+                                        </div>
+                                        <div className={styles.appProgressBar}>
+                                            <span className={styles.appProgressSegment} style={{ width: `${n}%`, backgroundColor: '#FFCC0040' }}>{n}%</span>
+                                            <span className={styles.appProgressSegment} style={{ width: `${p}%`, backgroundColor: '#8DE4DB40' }}>{p}%</span>
+                                            <span className={styles.appProgressSegment} style={{ width: `${u}%`, backgroundColor: '#FF000040' }}>{u}%</span>
+                                        </div>
                                     </div>
-                                    <span className={styles.appTime}>{app.total}</span>
+                                    );
+                                })}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
+    const renderEfficiencyTab = () => {
+        const depts = dashboardData?.efficiencyDept ?? [];
+
+        return (
+            <div className={styles.tabContent}>
+                <div className={styles.efficiencyBlock}>
+                    <div className={styles.efficiencyBlockHeader}>
+                        <h2 className={styles.efficiencyBlockTitle}>{t('dashboard.efficiency.departments')}</h2>
+                        <div className={styles.efficiencyLegend}>
+                            <span className={styles.efficiencyLegendItem}><em style={{ background: CHART_COLORS.productive }} />{t('dashboard.efficiency.legend.productive')}</span>
+                            <span className={styles.efficiencyLegendItem}><em style={{ background: CHART_COLORS.neutral }} />{t('dashboard.efficiency.legend.neutral')}</span>
+                            <span className={styles.efficiencyLegendItem}><em style={{ background: CHART_COLORS.unproductive }} />{t('dashboard.efficiency.legend.unproductive')}</span>
+                            <span className={styles.efficiencyLegendItem}><em style={{ background: CHART_COLORS.uncategorized }} />{t('dashboard.efficiency.legend.uncategorized')}</span>
+                        </div>
+                    </div>
+
+                    <div className={styles.donutsRow}>
+                        {depts.map((dept, i) => (
+                            <div key={i} className={styles.donutCol}>
+                                <DonutChart
+                                    productive={dept.productive}
+                                    neutral={dept.neutral}
+                                    unproductive={dept.unproductive}
+                                    uncategorized={dept.uncategorized}
+                                    idle={dept.idle}
+                                />
+                                <span className={styles.donutLabel}>{dept.name}</span>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className={styles.detailedRow}>
+                        <SelectDropdown
+                            placeholder={t('dashboard.efficiency.detailedReport')}
+                            value={detailedReport || undefined}
+                            onChange={(val) => setDetailedReport(prev => prev === val ? '' : val)}
+                            options={[
+                                { value: 'dept', label: 'По отделам' },
+                                { value: 'employee', label: 'По сотрудникам' },
+                            ]}
+                            className={styles.detailedDropdown}
+                            menuClassName={styles.detailedDropdownMenu}
+                        />
+                    </div>
+
+                    {detailedReport && (
+                        <div className={styles.detailedSection}>
+                            <table className={styles.table}>
+                                <thead>
+                                    <tr>
+                                        <th>{t('dashboard.efficiency.table.dept')}</th>
+                                        <th className={styles.productiveHdr}>{t('dashboard.efficiency.table.prod')}</th>
+                                        <th className={styles.neutralHdr}>Нейтрально</th>
+                                        <th className={styles.unproductiveHdr}>Непродуктивно</th>
+                                        <th className={styles.uncategorizedHdr}>Без категории</th>
+                                        <th>{t('dashboard.efficiency.table.idle')}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {depts.map((dept, i) => (
+                                        <tr key={i}>
+                                            <td className={styles.periodCol}>{dept.name}</td>
+                                            <td className={styles.productive}>{dept.productive}%</td>
+                                            <td className={styles.neutral}>{dept.neutral}%</td>
+                                            <td className={styles.unproductive}>{dept.unproductive}%</td>
+                                            <td className={styles.uncategorized}>{dept.uncategorized}%</td>
+                                            <td>{dept.idle}%</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
+    };
+
+    const renderDynamicsTab = () => (
+        <div className={styles.tabContent}>
+            <div className={styles.tabSplit}>
+                <div className={styles.mainContentArea}>
+                    <div className={styles.chartWrapper}>
+                        <div className={styles.chartGrid}>
+                            <div className={styles.yAxisLabels}>
+                                <span>0 мин</span>
+                                <span>10 мин</span>
+                                <span>20 мин</span>
+                                <span>30 мин</span>
+                                <span>40 мин</span>
+                                <span>50 мин</span>
+                            </div>
+                            {displayedDynamics.map((d: any, i: number) => (
+                                <div key={i} className={styles.chartBar}>
+                                    <div className={styles.segment} style={{ height: `${d.productive}%`, backgroundColor: '#8DE4DB' }} />
+                                    <div className={styles.segment} style={{ height: `${d.neutral}%`, backgroundColor: '#FFCC00' }} />
+                                    <div className={styles.segment} style={{ height: `${d.unproductive}%`, backgroundColor: '#FF0000' }} />
+                                    <div className={styles.segment} style={{ height: `${d.uncategorized}%`, backgroundColor: '#D1D5DB' }} />
                                 </div>
+                            ))}
+                        </div>
+                        <div className={styles.xAxisLabels}>
+                            <div className={styles.xAxisSpacer} />
+                            {displayedDynamics.map((d: any, i: number) => (
+                                <div key={i} className={styles.xAxisLabel}>{d.label}</div>
                             ))}
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    );
 
-    const renderEfficiencyTab = () => (
-        <div className={styles.tabContent}>
-            <div className={styles.tabSplit}>
-                {renderDeptSidebar()}
-                <div className={styles.mainContentArea}>
-                    <div className={styles.section}>
-                        <h2>{t('dashboard.efficiency.departments')}</h2>
-                        <div className={styles.efficiencyMainContent}>
-                            <div className={styles.legendContainer}>
-                                <div className={styles.legend}>
-                                    <div className={styles.legendItem}><span style={{ backgroundColor: 'var(--color-productive)' }} />{t('dashboard.efficiency.legend.productive')}</div>
-                                    <div className={styles.legendItem}><span style={{ backgroundColor: 'var(--color-neutral)' }} />{t('dashboard.efficiency.legend.neutral')}</div>
-                                    <div className={styles.legendItem}><span style={{ backgroundColor: 'var(--color-unproductive)' }} />{t('dashboard.efficiency.legend.unproductive')}</div>
-                                    <div className={styles.legendItem}><span style={{ backgroundColor: 'var(--color-uncategorized)' }} />{t('dashboard.efficiency.legend.uncategorized')}</div>
-                                    <div className={styles.legendItem}><span style={{ backgroundColor: 'var(--color-idle)' }} />{t('dashboard.efficiency.legend.idle')}</div>
-                                </div>
-                                <button
-                                    className={styles.detailedBtn}
-                                    onClick={() => setIsDetailedOpen(!isDetailedOpen)}
-                                >
-                                    {t('dashboard.efficiency.detailedReport')}
-                                </button>
-                            </div>
-
-                            <div className={styles.histograms}>
-                                {dashboardData?.efficiencyDept.map((dept, i) => (
-                                    <div key={i} className={styles.histoCol}>
-                                        <div className={styles.verticalStackedBar}>
-                                            <div className={styles.vSegment} style={{ height: `${dept.productive}%`, backgroundColor: 'var(--color-productive)' }} />
-                                            <div className={styles.vSegment} style={{ height: `${dept.neutral}%`, backgroundColor: 'var(--color-neutral)' }} />
-                                            <div className={styles.vSegment} style={{ height: `${dept.unproductive}%`, backgroundColor: 'var(--color-unproductive)' }} />
-                                            <div className={styles.vSegment} style={{ height: `${dept.uncategorized}%`, backgroundColor: 'var(--color-uncategorized)' }} />
-                                            <div className={styles.vSegment} style={{ height: `${dept.idle}%`, backgroundColor: 'var(--color-idle)' }} />
-                                        </div>
-                                        <span className={styles.histoLabel}>{dept.name}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {isDetailedOpen && (
-                            <div className={styles.detailedSection}>
-                                <table className={styles.table}>
-                                    <thead>
-                                        <tr>
-                                            <th>{t('dashboard.efficiency.table.dept')}</th>
-                                            <th>{t('dashboard.efficiency.table.prod')}</th>
-                                            <th>{t('dashboard.efficiency.table.idle')}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {dashboardData?.efficiencyDept.map((dept, i) => (
-                                            <tr key={i}>
-                                                <td>{dept.name}</td>
-                                                <td>{dept.productive}%</td>
-                                                <td>{dept.idle}%</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-
-    const renderDynamicsTab = () => (
-        <div className={styles.tabContent}>
-            <div className={styles.dynamicsHeader}>
-                <div className={styles.chartTopControls}>
-                    <div
-                        className={classNames(styles.typeOption, { [styles.active]: chartType === 'web' })}
-                        onClick={() => setChartType('web')}
-                    >
-                        {t('dashboard.filters.types.web')}
-                    </div>
-                    <div
-                        className={classNames(styles.typeOption, { [styles.active]: chartType === 'apps' })}
-                        onClick={() => setChartType('apps')}
-                    >
-                        {t('dashboard.filters.types.apps')}
-                    </div>
-                    <div
-                        className={classNames(styles.typeOption, styles.accent, { [styles.active]: chartType === 'all' })}
-                        onClick={() => setChartType('all')}
-                    >
-                        {t('dashboard.filters.types.total')}
-                    </div>
-                </div>
-
-                <div className={styles.infoBanner}>
-                    <div className={styles.infoIcon}>i</div>
-                    Данные в отчете по динамике усреднены
-                </div>
-            </div>
-
-            <div className={styles.tabSplit}>
-                {renderDeptSidebar()}
-
-                <div className={styles.mainContentArea}>
-                    <div className={styles.chartGrid}>
-                        <div className={styles.yAxisLabels}>
-                            <span>0 сек</span>
-                            <span>10 сек</span>
-                            <span>20 сек</span>
-                            <span>30 сек</span>
-                            <span>40 сек</span>
-                            <span>50 сек</span>
-                        </div>
+            <div className={styles.dynamicsTableCard}>
+                <table className={styles.table}>
+                    <thead>
+                        <tr>
+                            <th>Период</th>
+                            <th className={styles.unproductiveHdr}>Непродуктивно</th>
+                            <th className={styles.uncategorizedHdr}>Без категории</th>
+                            <th className={styles.neutralHdr}>Нейтрально</th>
+                            <th className={styles.productiveHdr}>Продуктивно</th>
+                            <th>Общая активность</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         {displayedDynamics.map((d: any, i: number) => (
-                            <div key={i} className={styles.chartBar}>
-                                <div className={styles.segment} style={{ height: `${d.productive}%`, backgroundColor: 'var(--color-productive)' }} />
-                                <div className={styles.segment} style={{ height: `${d.neutral}%`, backgroundColor: 'var(--color-neutral)' }} />
-                                <div className={styles.segment} style={{ height: `${d.unproductive}%`, backgroundColor: 'var(--color-unproductive)' }} />
-                                <div className={styles.segment} style={{ height: `${d.uncategorized}%`, backgroundColor: 'var(--color-uncategorized)' }} />
-                                <span className={styles.label}>{d.label}</span>
-                            </div>
+                            <tr key={i}>
+                                <td className={styles.periodCol}>{d.label} - {d.label.replace('00', '59')}</td>
+                                <td className={styles.unproductive}>00:00:00</td>
+                                <td className={styles.uncategorized}>00:00:00</td>
+                                <td className={styles.neutral}>00:00:00</td>
+                                <td className={styles.productive}>00:00:00</td>
+                                <td className={styles.total}>{d.total}</td>
+                            </tr>
                         ))}
-                    </div>
-
-                    <div className={styles.tableSection}>
-                        <table className={styles.table}>
-                            <thead>
-                                <tr>
-                                    <th>Период</th>
-                                    <th className={styles.unproductiveHdr}>Непродуктивно</th>
-                                    <th className={styles.uncategorizedHdr}>Без категории</th>
-                                    <th className={styles.neutralHdr}>Нейтрально</th>
-                                    <th className={styles.productiveHdr}>Продуктивно</th>
-                                    <th>Общая активность</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {displayedDynamics.map((d: any, i: number) => (
-                                    <tr key={i}>
-                                        <td className={styles.periodCol}>{d.label} - {d.label.replace('00', '59')}</td>
-                                        <td className={styles.unproductive}>00:00:00</td>
-                                        <td className={styles.uncategorized}>00:00:00</td>
-                                        <td className={styles.neutral}>00:00:00</td>
-                                        <td className={styles.productive}>00:00:00</td>
-                                        <td className={styles.total}>{d.total}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                    </tbody>
+                </table>
             </div>
         </div>
     );
@@ -408,76 +464,29 @@ export const DashboardReportsPage: React.FC = () => {
                     onClick={handleExport}
                     disabled={isExporting}
                 >
-                    <IoDownloadOutline />
                     {isExporting ? t('dashboard.common.loading') : t('dashboard.common.exportXls')}
+                    <AttachmentIcon className={styles.exportIcon} />
                 </button>
             </header>
 
-            <div className={styles.filtersBar}>
-                <div className={styles.filterGroup}>
-                    <select 
-                        className={styles.select}
-                        value={period}
-                        onChange={(e) => setPeriod(e.target.value as any)}
-                    >
-                        <option value="week">{t('dashboard.filters.periods.week')}</option>
-                        <option value="day">{t('dashboard.filters.periods.day')}</option>
-                        <option value="month">{t('dashboard.filters.periods.month')}</option>
-                    </select>
-                    <div className={styles.dateNav}>
-                        <button onClick={() => adjustDate(-1)}><IoChevronBackOutline /></button>
-                        <label className={styles.datePickerWrapper}>
-                            <span>{periodLabel}</span>
-                            <input 
-                                type="date"
-                                className={styles.hiddenDateInput}
-                                value={currentDate.toISOString().split('T')[0]}
-                                onChange={(e) => {
-                                    if(e.target.value) setCurrentDate(new Date(e.target.value));
-                                }}
-                            />
-                        </label>
-                        <button onClick={() => adjustDate(1)}><IoChevronForwardOutline /></button>
-                    </div>
-                </div>
-                <div className={styles.filterGroup}>
-                    <select 
-                        className={styles.select}
-                        value={selectedEmployee}
-                        onChange={(e) => setSelectedEmployee(e.target.value)}
-                    >
-                        <option value="all">{t('dashboard.filters.allEmployees', 'Все сотрудники')}</option>
-                        {dashboardData?.employees.map(e => <option key={e} value={e}>{e}</option>)}
-                    </select>
-                    <select 
-                        className={styles.select}
-                        value={chartType}
-                        onChange={(e) => setChartType(e.target.value as any)}
-                    >
-                        <option value="all">{t('dashboard.filters.types.all')}</option>
-                        <option value="web">{t('dashboard.filters.types.web')}</option>
-                        <option value="apps">{t('dashboard.filters.types.apps')}</option>
-                    </select>
-                    {activeTab === 'dynamics' && (
-                        <select
-                            className={styles.select}
-                            value={groupBy}
-                            onChange={(e) => setGroupBy(e.target.value as any)}
-                        >
-                            <option value="day">{t('dashboard.dynamics.day')}</option>
-                            <option value="week">{t('dashboard.dynamics.week')}</option>
-                        </select>
-                    )}
-                    <label className={styles.checkboxLabel}>
-                        <input 
-                            type="checkbox" 
-                            checked={onlyWorkTime}
-                            onChange={(e) => setOnlyWorkTime(e.target.checked)}
-                        />
-                        {t('dashboard.filters.onlyWorkTime')}
-                    </label>
-                </div>
-            </div>
+            <DashboardReportsFilter
+                period={period}
+                onPeriodChange={setPeriod}
+                periodLabel={periodLabel}
+                onAdjustDate={adjustDate}
+                onDateChange={setCurrentDate}
+                currentDate={currentDate}
+                selectedEmployee={selectedEmployee}
+                onEmployeeChange={setSelectedEmployee}
+                employees={dashboardData?.employees ?? []}
+                chartType={chartType}
+                onChartTypeChange={setChartType}
+                groupBy={groupBy}
+                onGroupByChange={setGroupBy}
+                onlyWorkTime={onlyWorkTime}
+                onOnlyWorkTimeChange={setOnlyWorkTime}
+                showGroupBy={false}
+            />
 
             <div className={styles.tabsBar}>
                 {(['time', 'efficiency', 'dynamics'] as TabType[]).map(tab => (

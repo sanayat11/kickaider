@@ -2,40 +2,46 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  width: 100%;
   width: 579px;
 
-  label {
-    font-size: 14px;
-    font-weight: 600;
-    color: #ffffff;
-    margin-bottom: -4px;
+  --input-bg: rgba(255, 255, 255, 0.06);
+  --primary-100: rgba(255, 255, 255, 0.16);
+  --text-primary: #ffffff;
+  --text-black: #ffffff;
+  --text-secondary: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.6);
+  --input-placeholder: rgba(255, 255, 255, 0.4);
+  --bg-hover: rgba(255, 255, 255, 0.1);
+  --grey-50: #ffffff;
+  --grey-200: rgba(255, 255, 255, 0.2);
+}
+
+.loginInput {
+  :global(label span) {
+    font-weight: 600 !important;
+    font-size: 14px !important;
   }
 
-  input {
-    height: 48px;
-    padding: 0 16px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    background: rgba(255, 255, 255, 0.06);
-    color: #ffffff;
-    outline: none;
-    transition: 0.2s ease;
+  :global(input) {
+    height: 48px !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+    color: #ffffff !important;
 
     &::placeholder {
-      color: rgba(255, 255, 255, 0.4);
+      color: rgba(255, 255, 255, 0.4) !important;
     }
 
+    &:focus,
     &:focus-visible {
-      border-color: #6a78ff;
-      box-shadow: 0 0 0 2px rgba(106, 120, 255, 0.22);
+      border-color: #6a78ff !important;
+      box-shadow: 0 0 0 2px rgba(106, 120, 255, 0.22) !important;
     }
+  }
 
-    &:disabled {
-      opacity: 0.5;
-      pointer-events: none;
-      cursor: not-allowed;
-    }
+  :global(button svg) {
+    color: rgba(255, 255, 255, 0.6) !important;
   }
 }
 

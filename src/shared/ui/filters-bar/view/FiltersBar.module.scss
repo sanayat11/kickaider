@@ -1,28 +1,217 @@
-.filtersBar {
-    padding: 16px 24px;
-    background: #fff;
-    border: 1px solid #edf1f7;
+.root {
+  width: 100%;
+  min-height: 84px;
+  display: flex;
+  align-items: stretch;
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 84px;
+  padding: 0 28px;
+  position: relative;
+}
+
+.withDivider::after {
+  content: '';
+  position: absolute;
+  top: 16px;
+  right: 0;
+  width: 1px;
+  height: calc(100% - 32px);
+  background: #dfe3f4;
+}
+
+.iconButton {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  color: #3344a9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.fieldLabel {
+  font-size: 16px;
+  font-weight: 600;
+  color: #3344a9;
+  white-space: nowrap;
+}
+
+.selectField,
+.dateNav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  min-width: 100%;
+}
+
+.selectValue {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.nativeSelect {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: #3344a9;
+  font-size: 16px;
+  font-weight: 600;
+  padding-right: 28px;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.selectIcon {
+  position: absolute;
+  right: 0;
+  color: #3344a9;
+  pointer-events: none;
+}
+
+.dateNavInner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.navButton {
+  border: none;
+  background: transparent;
+  color: #3344a9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.dateValue {
+  font-size: 16px;
+  font-weight: 600;
+  color: #3344a9;
+  white-space: nowrap;
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  position: relative;
+}
+
+.checkboxText {
+  font-size: 16px;
+  font-weight: 600;
+  color: #3344a9;
+  white-space: nowrap;
+}
+
+.checkboxInput {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.checkboxMark {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #5b6df8;
+  border-radius: 6px;
+  display: inline-block;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.checkboxInput:checked + .checkboxMark::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 3px;
+  background: #5b6df8;
+}
+
+.searchField {
+  min-width: 260px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #d9dff3;
+  border-radius: 12px;
+  padding: 0 16px;
+  background: #fff;
+}
+
+.searchIcon {
+  color: #3344a9;
+  flex-shrink: 0;
+}
+
+.searchInput {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: #3344a9;
+  font-size: 16px;
+  font-weight: 500;
+
+  &::placeholder {
+    color: #6d78b0;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.segmentedWrap {
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .root {
+    flex-wrap: wrap;
     border-radius: 16px;
-    display: flex;
-    align-items: flex-end;
-    gap: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-    flex-wrap: wrap;
+  }
+
+  .item {
+    min-height: 72px;
+    width: 50%;
+    justify-content: flex-start;
+  }
+
+  .withDivider::after {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .item {
     width: 100%;
-}
+    padding: 16px 20px;
+    min-height: auto;
+  }
 
-.leftSection {
-    display: flex;
-    align-items: flex-end;
-    gap: 16px;
-    flex: 1;
-    flex-wrap: wrap;
-}
+  .selectField,
+  .dateNav {
+    justify-content: space-between;
+  }
 
-.rightSection {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 4px;
-    /* offset to align with select inputs vertically */
+  .searchField {
+    min-width: 100%;
+  }
 }

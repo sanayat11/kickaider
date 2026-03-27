@@ -1,0 +1,172 @@
+.pagination {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.pages {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.item {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 12px;
+  // border: 1px solid #b9c4ff;
+  background: transparent;
+  color: #5166ee;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    opacity 0.2s ease;
+  font-weight: 500;
+  line-height: 1;
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(81, 102, 238, 0.18);
+  }
+}
+
+.page {
+  font-size: 18px;
+}
+
+.icon {
+  font-size: 0;
+   border: 1px solid #b9c4ff;
+}
+
+.default {
+  &:hover:not(:disabled) {
+    background: #EDEFFE;
+  }
+}
+
+.active {
+  background: #5166ee;
+  border-color: #5166ee;
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    background: #5166ee;
+    border-color: #5166ee;
+  }
+}
+
+.disabled {
+  color: #d7dcef;
+  border-color: #e4e8f6;
+  cursor: not-allowed;
+  background: transparent;
+}
+
+.dots {
+  min-width: 20px;
+  text-align: center;
+  color: #98a2c3;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.simpleRoot {
+  display: inline-flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.info {
+  color: #2b3990;
+  font-size: 18px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.barRoot {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.pageSizeBlock {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.pageSizeLabel {
+  color: #8b93bd;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.selectWrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  height: 44px;
+  min-width: 72px;
+  padding: 0 40px 0 16px;
+  border-radius: 12px;
+  border: 1px solid #b9c4ff;
+  background: transparent;
+  color: #2b3990;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(81, 102, 238, 0.18);
+  }
+}
+
+.selectIcon {
+  position: absolute;
+  right: 12px;
+  pointer-events: none;
+  color: #5166ee;
+}
+
+@media (max-width: 768px) {
+  .barRoot {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .simpleRoot {
+    gap: 20px;
+  }
+
+  .info,
+  .pageSizeLabel,
+  .select {
+    font-size: 16px;
+  }
+
+  .item {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    border-radius: 10px;
+  }
+}

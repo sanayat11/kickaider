@@ -3,17 +3,20 @@ import styles from "./MemberBlock.module.scss";
 import img1 from "@/shared/assets/images/imgMember.png";
 import img2 from "@/shared/assets/images/imgMember2.png";
 import img3 from "@/shared/assets/images/imgMember3.png";
+import { Typography } from "@/shared/ui";
 
 export const MemberBlock: React.FC = () => {
   const { t } = useTranslation();
   return (
     <section id="members" className={styles.team}>
       <div className={styles.container}>
-        <h2 className={styles.title}>{t("members.title")}</h2>
+        <Typography variant="h2" context='landing' weight="bold" className={styles.title}>
+          {t("members.title")}
+        </Typography>
 
-        <p className={styles.subtitle}>
+        <Typography variant="h5" context='landing' weight="regular" className={styles.subtitle}>
           {t("members.subtitle")}
-        </p>
+        </Typography>
 
         <div className={styles.grid}>
           <div className={styles.card}>

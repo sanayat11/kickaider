@@ -1,9 +1,9 @@
-import React from "react";
+import type { FC } from "react";
 import styles from "./Footer.module.scss";
 import logo from "@/shared/assets/images/logo.svg";
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 
-export const Footer: React.FC = () => {
+export const Footer:FC = () => {
   return (
     <footer className={styles.footer}>
       <div className={styles.wrapper}>

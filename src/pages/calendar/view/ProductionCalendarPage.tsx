@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  IoChevronBackOutline,
-  IoChevronForwardOutline,
   IoCalendarOutline,
   IoCloseCircleOutline,
   IoAirplaneOutline,
@@ -11,10 +9,11 @@ import {
   IoFlashOutline,
 } from 'react-icons/io5';
 import classNames from 'classnames';
+
 import styles from './ProductionCalendarPage.module.scss';
 import dashboardStyles from '@/pages/dashboard/view/DashboardPage.module.scss';
 import { Select } from '@/shared/ui/select/view/Select';
-import { FiltersBar } from '@/shared/ui/filters-bar/view/FiltersBar';
+import { FilterBar } from '@/shared/ui';
 import { productionCalendarMockApi } from '@/shared/api/mock/productionCalendar.mock';
 import type { CalendarStatus, CalendarStatusType } from '@/shared/api/mock/productionCalendar.mock';
 import { activityMockApi } from '@/shared/api/mock/activity.mock';
@@ -22,45 +21,20 @@ import type { Employee } from '@/shared/api/mock/activity.mock';
 import { CompanyScheduleCard } from '@/widgets/companyScheduleCard/view/CompanyScheduleCard';
 import { EmployeeScheduleCard } from '@/widgets/employeeScheduleCard/view/EmployeeScheduleCard';
 
-export const Example = () => {
-  return (
-    <div style={{ display: 'grid', gap: 24 }}>
-      <CompanyScheduleCard
-        departmentName="IT отдел"
-        statusText="Наследует от компании 09:00-18:00"
-      />
-
-      <CompanyScheduleCard
-        departmentName="IT отдел"
-        statusText="Наследует от компании 09:00-18:00"
-        useCompanySchedule
-      />
-
-      <EmployeeScheduleCard
-        name="Асель Надырбекова Айтбековна"
-        department="Отдел продаж"
-        statusText="Свой график"
-      />
-
-      <EmployeeScheduleCard
-        name="Асель Надырбекова Айтбековна"
-        department="Отдел продаж"
-        statusText="Наследует график компании"
-        useCompanySchedule
-      />
-    </div>
-  );
-};
-
 const getDaysInMonth = (year: number, month: number) => {
   const date = new Date(year, month, 1);
-  const days = [];
+  const days: Array<{
+    day: number;
+    month: number;
+    year: number;
+    isCurrentMonth: boolean;
+  }> = [];
 
   let firstDayIndex = date.getDay() - 1;
   if (firstDayIndex === -1) firstDayIndex = 6;
 
   const prevMonthLastDate = new Date(year, month, 0).getDate();
-  for (let i = firstDayIndex; i > 0; i--) {
+  for (let i = firstDayIndex; i > 0; i -= 1) {
     days.push({
       day: prevMonthLastDate - i + 1,
       month: month - 1,
@@ -70,13 +44,13 @@ const getDaysInMonth = (year: number, month: number) => {
   }
 
   const lastDate = new Date(year, month + 1, 0).getDate();
-  for (let i = 1; i <= lastDate; i++) {
+  for (let i = 1; i <= lastDate; i += 1) {
     days.push({ day: i, month, year, isCurrentMonth: true });
   }
 
   const totalSlots = 42;
   const nextMonthDays = totalSlots - days.length;
-  for (let i = 1; i <= nextMonthDays; i++) {
+  for (let i = 1; i <= nextMonthDays; i += 1) {
     days.push({ day: i, month: month + 1, year, isCurrentMonth: false });
   }
 
@@ -85,6 +59,7 @@ const getDaysInMonth = (year: number, month: number) => {
 
 export const ProductionCalendarPage: React.FC = () => {
   const { t, i18n } = useTranslation();
+
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<'all' | string>('all');
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -92,10 +67,15 @@ export const ProductionCalendarPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isMassAssignOpen, setIsMassAssignOpen] = useState(false);
 
-  const [rangeForm, setRangeForm] = useState({
+  const [rangeForm, setRangeForm] = useState<{
+    from: string;
+    to: string;
+    status: CalendarStatusType;
+    employeeId: string;
+  }>({
     from: new Date().toISOString().split('T')[0],
     to: new Date().toISOString().split('T')[0],
-    status: 'vacation' as CalendarStatusType,
+    status: 'vacation',
     employeeId: 'all',
   });
 
@@ -108,7 +88,7 @@ export const ProductionCalendarPage: React.FC = () => {
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
-  const monthStr = `${year}-${(month + 1).toString().padStart(2, '0')}`;
+  const monthStr = `${year}-${String(month + 1).padStart(2, '0')}`;
 
   const loadInitialData = async () => {
     try {
@@ -116,9 +96,14 @@ export const ProductionCalendarPage: React.FC = () => {
         date: new Date().toISOString().split('T')[0],
         departments: [],
       });
+
       setEmployees(empList);
+
       if (empList.length > 0 && rangeForm.employeeId === 'all') {
-        setRangeForm((prev) => ({ ...prev, employeeId: empList[0].id }));
+        setRangeForm((prev) => ({
+          ...prev,
+          employeeId: empList[0].id,
+        }));
       }
     } catch (err) {
       console.error(err);
@@ -141,10 +126,11 @@ export const ProductionCalendarPage: React.FC = () => {
   };
 
   useEffect(() => {
-    loadInitialData();
+    void loadInitialData();
   }, []);
+
   useEffect(() => {
-    loadStatuses();
+    void loadStatuses();
   }, [monthStr, selectedEmployeeId]);
 
   const days = useMemo(() => getDaysInMonth(year, month), [year, month]);
@@ -172,9 +158,10 @@ export const ProductionCalendarPage: React.FC = () => {
       } else {
         await productionCalendarMockApi.setCalendarStatus({ employeeId, date, status });
       }
+
       setActivePopover(null);
       setAssignTarget(null);
-      loadStatuses();
+      await loadStatuses();
     } catch (err) {
       console.error(err);
     }
@@ -186,21 +173,28 @@ export const ProductionCalendarPage: React.FC = () => {
 
     try {
       setLoading(true);
+
       await productionCalendarMockApi.setCalendarRange({
         employeeId: empId,
         from: rangeForm.from,
         to: rangeForm.to,
         status: rangeForm.status,
       });
+
       setIsMassAssignOpen(false);
-      loadStatuses();
+      await loadStatuses();
     } catch (err) {
       console.error(err);
       setLoading(false);
     }
   };
 
-  const statusOptions: { value: CalendarStatusType; label: string; icon: any; color: string }[] = [
+  const statusOptions: Array<{
+    value: CalendarStatusType;
+    label: string;
+    icon: React.ComponentType<{ className?: string }>;
+    color: string;
+  }> = [
     {
       value: 'vacation',
       label: t('settings.calendar.status.vacation'),
@@ -251,39 +245,50 @@ export const ProductionCalendarPage: React.FC = () => {
         </div>
       </header>
 
-      <FiltersBar className={styles.controlsCard}>
-        <div className={styles.controlsRow}>
-          <div className={styles.leftGroup}>
-            <div className={styles.monthNav}>
-              <button className={styles.navBtn} onClick={() => handleMonthNav(-1)}>
-                <IoChevronBackOutline />
-              </button>
-              <span className={styles.currentMonth}>{monthName}</span>
-              <button className={styles.navBtn} onClick={() => handleMonthNav(1)}>
-                <IoChevronForwardOutline />
-              </button>
-            </div>
-
-            <Select
-              label={t('settings.calendar.employee')}
-              value={selectedEmployeeId}
-              onChange={setSelectedEmployeeId}
-              options={[
+      <div className={styles.topControls}>
+        <FilterBar
+          className={styles.controlsCard}
+          items={[
+            {
+              id: 'calendar-icon',
+              type: 'icon',
+              icon: <IoCalendarOutline size={22} />,
+              label: t('settings.calendar.title'),
+            },
+            {
+              id: 'month-nav',
+              type: 'date-nav',
+              label: t('reports.workTime.filters.period'),
+              value: monthName,
+              onPrev: () => handleMonthNav(-1),
+              onNext: () => handleMonthNav(1),
+            },
+            {
+              id: 'employee-select',
+              type: 'select',
+              label: t('settings.calendar.employee'),
+              value: selectedEmployeeId,
+              options: [
                 { value: 'all', label: t('settings.calendar.allEmployees') },
-                ...employees.map((e) => ({ value: e.id, label: e.fullName })),
-              ]}
-            />
-          </div>
+                ...employees.map((e) => ({
+                  value: e.id,
+                  label: e.fullName,
+                })),
+              ],
+              onChange: (value) => setSelectedEmployeeId(value),
+            },
+          ]}
+        />
 
-          <button
-            className={styles.massAssignBtn}
-            onClick={() => setIsMassAssignOpen(!isMassAssignOpen)}
-          >
-            <IoCalendarOutline />
-            <span>{t('settings.calendar.massAssign')}</span>
-          </button>
-        </div>
-      </FiltersBar>
+        <button
+          type="button"
+          className={styles.massAssignBtn}
+          onClick={() => setIsMassAssignOpen((prev) => !prev)}
+        >
+          <IoCalendarOutline />
+          <span>{t('settings.calendar.massAssign')}</span>
+        </button>
+      </div>
 
       <section className={styles.legendContainer}>
         <div className={styles.legend}>
@@ -305,10 +310,14 @@ export const ProductionCalendarPage: React.FC = () => {
                 <Select
                   value={rangeForm.employeeId}
                   onChange={(val) => setRangeForm((prev) => ({ ...prev, employeeId: val }))}
-                  options={employees.map((e) => ({ value: e.id, label: e.fullName }))}
+                  options={employees.map((e) => ({
+                    value: e.id,
+                    label: e.fullName,
+                  }))}
                 />
               </div>
             )}
+
             <div className={styles.formGroup}>
               <label>{t('settings.calendar.from')}</label>
               <input
@@ -317,6 +326,7 @@ export const ProductionCalendarPage: React.FC = () => {
                 onChange={(e) => setRangeForm((prev) => ({ ...prev, from: e.target.value }))}
               />
             </div>
+
             <div className={styles.formGroup}>
               <label>{t('settings.calendar.to')}</label>
               <input
@@ -325,18 +335,38 @@ export const ProductionCalendarPage: React.FC = () => {
                 onChange={(e) => setRangeForm((prev) => ({ ...prev, to: e.target.value }))}
               />
             </div>
+
             <div className={styles.formGroup}>
               <label>{t('settings.calendar.status.vacation')}</label>
               <Select
                 value={rangeForm.status}
-                onChange={(val) => setRangeForm((prev) => ({ ...prev, status: val as any }))}
-                options={statusOptions.map((s) => ({ value: s.value, label: s.label }))}
+                onChange={(val) =>
+                  setRangeForm((prev) => ({
+                    ...prev,
+                    status: val as CalendarStatusType,
+                  }))
+                }
+                options={statusOptions.map((s) => ({
+                  value: s.value,
+                  label: s.label,
+                }))}
               />
             </div>
-            <button className={styles.applyBtn} onClick={handleMassAssign} disabled={loading}>
+
+            <button
+              type="button"
+              className={styles.applyBtn}
+              onClick={handleMassAssign}
+              disabled={loading}
+            >
               {t('settings.calendar.apply')}
             </button>
-            <button className={styles.cancelBtn} onClick={() => setIsMassAssignOpen(false)}>
+
+            <button
+              type="button"
+              className={styles.cancelBtn}
+              onClick={() => setIsMassAssignOpen(false)}
+            >
               {t('common.cancel') || 'Отменить'}
             </button>
           </div>
@@ -354,7 +384,11 @@ export const ProductionCalendarPage: React.FC = () => {
           {loading
             ? renderSkeleton()
             : days.map((day, idx) => {
-                const dateStr = `${day.year}-${(day.month + 1).toString().padStart(2, '0')}-${day.day.toString().padStart(2, '0')}`;
+                const normalizedMonth = day.month < 0 ? 11 : day.month > 11 ? 0 : day.month;
+                const normalizedYear =
+                  day.month < 0 ? day.year - 1 : day.month > 11 ? day.year + 1 : day.year;
+
+                const dateStr = `${normalizedYear}-${String(normalizedMonth + 1).padStart(2, '0')}-${String(day.day).padStart(2, '0')}`;
                 const isToday = dateStr === new Date().toISOString().split('T')[0];
                 const dayStatus = statuses.find((s) => s.date === dateStr);
 
@@ -368,6 +402,7 @@ export const ProductionCalendarPage: React.FC = () => {
                     onClick={() => handleCellClick(dateStr)}
                   >
                     <span className={styles.dateNum}>{day.day}</span>
+
                     {dayStatus && (
                       <div className={classNames(styles.statusIndicator, styles[dayStatus.status])}>
                         <div className={styles.statusDotSmall} />
@@ -375,13 +410,15 @@ export const ProductionCalendarPage: React.FC = () => {
                       </div>
                     )}
 
-                    {activePopover?.date === dateStr && (
+                    {activePopover?.date === dateStr && selectedEmployeeId !== 'all' && (
                       <div className={styles.popover} onClick={(e) => e.stopPropagation()}>
                         <div className={styles.popoverTitle}>{dateStr}</div>
+
                         <div className={styles.popoverList}>
                           {statusOptions.map((opt) => (
                             <button
                               key={opt.value}
+                              type="button"
                               className={styles.popoverBtn}
                               onClick={() => setStatus(opt.value, selectedEmployeeId, dateStr)}
                             >
@@ -389,7 +426,9 @@ export const ProductionCalendarPage: React.FC = () => {
                               {opt.label}
                             </button>
                           ))}
+
                           <button
+                            type="button"
                             className={classNames(styles.popoverBtn, styles.reset)}
                             onClick={() => setStatus('reset', selectedEmployeeId, dateStr)}
                           >
@@ -410,20 +449,38 @@ export const ProductionCalendarPage: React.FC = () => {
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
             <h3>{t('settings.calendar.selectEmployee')}</h3>
             <p>{assignTarget.date}</p>
+
             <Select
               label={t('settings.calendar.employee')}
-              value={assignTarget.employeeId || employees[0]?.id}
-              onChange={(val) => setAssignTarget((prev) => ({ ...prev!, employeeId: val }))}
-              options={employees.map((e) => ({ value: e.id, label: e.fullName }))}
+              value={assignTarget.employeeId || employees[0]?.id || ''}
+              onChange={(val) =>
+                setAssignTarget((prev) => ({
+                  ...(prev as { date: string; employeeId?: string }),
+                  employeeId: val,
+                }))
+              }
+              options={employees.map((e) => ({
+                value: e.id,
+                label: e.fullName,
+              }))}
             />
+
             <div className={styles.modalActions}>
-              <button className={styles.secondaryBtn} onClick={() => setAssignTarget(null)}>
+              <button
+                type="button"
+                className={styles.secondaryBtn}
+                onClick={() => setAssignTarget(null)}
+              >
                 {t('common.cancel') || 'Отмена'}
               </button>
+
               <button
+                type="button"
                 className={styles.primaryBtn}
                 onClick={() => {
                   const empId = assignTarget.employeeId || employees[0]?.id;
+                  if (!empId) return;
+
                   setAssignTarget(null);
                   setActivePopover({ date: assignTarget.date, x: 0, y: 0 });
                   setSelectedEmployeeId(empId);
@@ -435,6 +492,7 @@ export const ProductionCalendarPage: React.FC = () => {
           </div>
         </div>
       )}
+
       <div style={{ display: 'grid', gap: 24 }}>
         <CompanyScheduleCard
           departmentName="IT отдел"

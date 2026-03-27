@@ -13,11 +13,11 @@ export const TeamBlock: FC = () => {
             </div>
 
             <div className={styles.content}>
-                <Typography variant="h2" weight="bold" className={styles.title}>
+                <Typography context='landing' variant="h2" weight="bold" className={styles.title}>
                     {t('aboutCompany.title')}
                 </Typography>
                 <div className={styles.descriptionWrapper}>
-                    <Typography variant="h5" className={styles.description}>
+                    <Typography context='landing'variant="h5" className={styles.description}>
                         {t('aboutCompany.text')}
                     </Typography>
                 </div>

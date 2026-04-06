@@ -3,189 +3,179 @@
   min-height: 84px;
   display: flex;
   align-items: stretch;
-  background: #fff;
-  border-radius: 16px;
-  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e8ebf8;
+  border-radius: 12px;
+  box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.04), 0px 4px 12px rgba(16, 24, 40, 0.06);
+  overflow: visible;
+  box-sizing: border-box;
 }
 
 .item {
+  position: relative;
+  height: 84px;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 84px;
-  padding: 0 28px;
-  position: relative;
+  padding: 0 20px;
+  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .withDivider::after {
   content: '';
   position: absolute;
-  top: 16px;
+  top: 0;
   right: 0;
   width: 1px;
-  height: calc(100% - 32px);
+  height: 100%;
   background: #dfe3f4;
 }
 
-.iconButton {
-  width: 24px;
-  height: 24px;
-  border: none;
-  background: transparent;
-  color: #3344a9;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
+.iconItem {
+  width: 84px;
+  padding: 0;
+  flex-shrink: 0;
 }
 
-.fieldLabel {
-  font-size: 16px;
-  font-weight: 600;
-  color: #3344a9;
-  white-space: nowrap;
+.selectItem {
+  width: 200px;
+  padding: 0 16px;
+  flex-shrink: 0;
 }
 
-.selectField,
-.dateNav {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  min-width: 100%;
+.date-navItem {
+  min-width: 180px;
+  flex: 1;
 }
 
-.selectValue {
-  position: relative;
-  display: flex;
-  align-items: center;
+.checkboxItem {
+  min-width: 220px;
+  padding: 0 20px;
+  flex: 1;
 }
 
-.nativeSelect {
-  appearance: none;
-  border: none;
-  background: transparent;
-  color: #3344a9;
-  font-size: 16px;
-  font-weight: 600;
-  padding-right: 28px;
-  cursor: pointer;
-
-  &:focus {
-    outline: none;
-  }
+.checkboxItemInner {
+  width: 100%;
 }
 
-.selectIcon {
-  position: absolute;
-  right: 0;
-  color: #3344a9;
-  pointer-events: none;
+.checkboxItemInner [class*="label"] {
+  color: #2b3587 !important;
 }
 
-.dateNavInner {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.searchItem {
+  min-width: 260px;
+  padding: 0 16px;
+  flex: 1;
 }
 
+.segmentedItem {
+  min-width: 220px;
+  padding: 0 16px;
+  flex: 1;
+}
+
+.iconButton,
 .navButton {
   border: none;
   background: transparent;
-  color: #3344a9;
+  color: #2B3587;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-}
-
-.dateValue {
-  font-size: 16px;
-  font-weight: 600;
-  color: #3344a9;
-  white-space: nowrap;
-}
-
-.checkboxRow {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  cursor: pointer;
-  position: relative;
-}
-
-.checkboxText {
-  font-size: 16px;
-  font-weight: 600;
-  color: #3344a9;
-  white-space: nowrap;
-}
-
-.checkboxInput {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.checkboxMark {
-  width: 24px;
-  height: 24px;
-  border: 2px solid #5b6df8;
-  border-radius: 6px;
-  display: inline-block;
-  position: relative;
+  padding: 0;
   flex-shrink: 0;
 }
 
-.checkboxInput:checked + .checkboxMark::after {
-  content: '';
-  position: absolute;
-  inset: 4px;
-  border-radius: 3px;
-  background: #5b6df8;
+.iconButton {
+  width: 20px;
+  height: 20px;
 }
 
-.searchField {
-  min-width: 260px;
-  height: 44px;
+.navButton {
+  width: 20px;
+  height: 20px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #2b3587;
+  white-space: nowrap;
+}
+
+.dateNav {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 12px;
-  border: 1px solid #d9dff3;
-  border-radius: 12px;
-  padding: 0 16px;
-  background: #fff;
-}
-
-.searchIcon {
-  color: #3344a9;
-  flex-shrink: 0;
-}
-
-.searchInput {
+  justify-content: space-between;
   width: 100%;
+  height: 100%;
+  padding: 0 16px;
+}
+
+
+.internalDivider {
+  width: 1px;
+  height: 100%;
+  background: #dfe3f4;
+}
+
+.dateControls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dateButton {
   border: none;
   background: transparent;
-  color: #3344a9;
-  font-size: 16px;
-  font-weight: 500;
+  color: #2B3587;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  white-space: nowrap;
+  padding: 0;
+}
 
-  &::placeholder {
-    color: #6d78b0;
-  }
-
-  &:focus {
-    outline: none;
-  }
+.calendarPopover {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
 }
 
 .segmentedWrap {
   width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.searchInputWrap {
+  width: 100%;
+  min-width: 220px;
+}
+
+.searchInputWrap :global(input) {
+  height: 44px;
+}
+
+.searchInputWrap :global(.fieldInner) {
+  height: 44px;
+}
+
+.icon {
+  color: #2B3587;
+  flex-shrink: 0;
 }
 
 @media (max-width: 1024px) {
   .root {
     flex-wrap: wrap;
-    border-radius: 16px;
   }
 
   .item {
@@ -206,12 +196,13 @@
     min-height: auto;
   }
 
-  .selectField,
-  .dateNav {
-    justify-content: space-between;
+  .calendarPopover {
+    left: 0;
+    transform: none;
   }
 
-  .searchField {
-    min-width: 100%;
+  .dateNav {
+    width: 100%;
+    justify-content: space-between;
   }
 }

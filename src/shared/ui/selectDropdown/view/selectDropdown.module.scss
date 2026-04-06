@@ -36,10 +36,10 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  border: 1px solid #c7cffd;
-  border-radius: 12px;
-  background: #ffffff;
-  color: #2f3e8c;
+  border: none;
+  background: transparent;
+  color: #2b3587;
+  font-weight: 600;
   cursor: pointer;
   outline: none;
   transition:
@@ -55,7 +55,6 @@
   }
 
   &:focus-visible {
-    border-color: #5a68ff;
     box-shadow: 0 0 0 3px rgba(90, 104, 255, 0.14);
     color: #3b4bdb;
   }
@@ -67,7 +66,6 @@
 }
 
 .triggerOpen {
-  border-color: #5a68ff;
   box-shadow: 0 0 0 3px rgba(90, 104, 255, 0.08);
 }
 

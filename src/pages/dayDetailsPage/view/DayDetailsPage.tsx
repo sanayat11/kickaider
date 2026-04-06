@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import { IoChevronBackOutline, IoChevronForwardOutline } from 'react-icons/io5';
 import { AttachmentIcon } from '@/shared/assets/icons';
 import styles from './DayDetailsPage.module.scss';
 import { DayDetailsChart } from '../../dayDetailsChart/view/DayDetailsChart';
 import type { DayActivityData } from '../../dayDetailsChart/view/DayDetailsChart';
 import { BASE_EMPLOYEES } from '@/shared/api/mock/employees.mock';
 import { DayDetailsFilter } from './DayDetailsFilter';
+import { Pagination } from '@/shared/ui';
 
 const mockData1: DayActivityData = {
     employeeName: 'Сауле Абдыкадырова Sakewa',
@@ -113,16 +113,14 @@ export const DayDetailsPage: React.FC = () => {
 
     const [period, setPeriod] = useState('');
 
-    // Map the passed employee name to the options. It handles partial name matching used in mock dropdown.
     const getInitialEmployee = () => {
         if (!passedEmployee) return 'All';
         const found = BASE_EMPLOYEES.find(e => e.name === passedEmployee);
         return found ? found.name : 'All';
     };
     const [selectedEmployee, setSelectedEmployee] = useState(getInitialEmployee());
-    const [currentDate, setCurrentDate] = useState('2026-02-21');
+    const [currentDate, setCurrentDate] = useState(new Date(2026, 1, 21));
 
-    // Pagination state
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -141,9 +139,6 @@ export const DayDetailsPage: React.FC = () => {
 
         if (selectedEmployee !== 'All') {
             activeData = activeData.filter(d => d.employeeName === selectedEmployee);
-
-            // If the filtered array is empty (meaning we don't have hardcoded mock data for this specific new employee)
-            // We'll generate a dummy set based on mockData1 so the chart isn't empty and the filtering still "works" visually.
             if (activeData.length === 0) {
                 activeData = [
                     { ...mockData1, employeeName: selectedEmployee, department: BASE_EMPLOYEES.find(e => e.name === selectedEmployee)?.department || 'IT' },
@@ -152,7 +147,6 @@ export const DayDetailsPage: React.FC = () => {
             }
         }
 
-        // Generate repeated data to demonstrate pagination when there are few real mock items
         let fullData = [...activeData];
         if (fullData.length > 0 && fullData.length < 15 && !period && selectedEmployee === 'All') {
             for(let i=0; i<30; i++) {
@@ -164,20 +158,11 @@ export const DayDetailsPage: React.FC = () => {
         const safeCurrentPage = Math.min(currentPage, totalPages);
         const currentItems = fullData.slice((safeCurrentPage - 1) * itemsPerPage, safeCurrentPage * itemsPerPage);
 
-        const handlePageChange = (direction: 'next' | 'prev') => {
-            if (direction === 'prev' && safeCurrentPage > 1) {
-                setCurrentPage(prev => prev - 1);
-            }
-            if (direction === 'next' && safeCurrentPage < totalPages) {
-                setCurrentPage(prev => prev + 1);
-            }
-        };
-
         return (
             <>
                 <div className={styles.generatedContent}>
                     {currentItems.map((data, idx) => (
-                        <DayDetailsChart key={idx} data={{ ...data, date: !period ? new Date(currentDate).toLocaleDateString('ru-RU') : data.date }} />
+                        <DayDetailsChart key={idx} data={{ ...data, date: !period ? currentDate.toLocaleDateString('ru-RU') : data.date }} />
                     ))}
                     {currentItems.length === 0 && (
                         <div style={{ textAlign: 'center', padding: '40px', color: '#8a91b4' }}>
@@ -187,40 +172,17 @@ export const DayDetailsPage: React.FC = () => {
                 </div>
 
                 {fullData.length > 0 && (
-                    <div className={styles.pagination}>
-                        <div className={styles.pageInfo}>
-                            {t('reports.rating.showEntries')}:
-                            <select
-                                className={styles.perPageSelect}
-                                value={itemsPerPage}
-                                onChange={(e) => { setItemsPerPage(Number(e.target.value)); setCurrentPage(1); }}
-                            >
-                                <option value={10}>10</option>
-                                <option value={20}>20</option>
-                                <option value={50}>50</option>
-                            </select>
-                        </div>
-                        <div className={styles.pageControls}>
-                            <button
-                                className={styles.pageBtn}
-                                onClick={() => handlePageChange('prev')}
-                                disabled={safeCurrentPage === 1}
-                                style={{ opacity: safeCurrentPage === 1 ? 0.5 : 1, cursor: safeCurrentPage === 1 ? 'not-allowed' : 'pointer' }}
-                            >
-                                <IoChevronBackOutline />
-                            </button>
-                            <span className={styles.pageCurrent}>{safeCurrentPage}</span>
-                            <span className={styles.pageTotal}>{t('reports.rating.of')} {totalPages}</span>
-                            <button
-                                className={styles.pageBtn}
-                                onClick={() => handlePageChange('next')}
-                                disabled={safeCurrentPage === totalPages}
-                                style={{ opacity: safeCurrentPage === totalPages ? 0.5 : 1, cursor: safeCurrentPage === totalPages ? 'not-allowed' : 'pointer' }}
-                            >
-                                <IoChevronForwardOutline />
-                            </button>
-                        </div>
-                    </div>
+                    <Pagination
+                        variant="bar"
+                        currentPage={safeCurrentPage}
+                        totalPages={totalPages}
+                        onPageChange={setCurrentPage}
+                        pageSize={itemsPerPage}
+                        onPageSizeChange={(size) => { setItemsPerPage(size); setCurrentPage(1); }}
+                        pageSizeLabel={t('reports.rating.showEntries')}
+                        infoText={(_, total) => `${t('reports.rating.of', 'из')} ${total}`}
+                        className={styles.paginationBlock}
+                    />
                 )}
             </>
         );
@@ -228,7 +190,6 @@ export const DayDetailsPage: React.FC = () => {
 
     return (
         <div className={styles.container}>
-            {/* Page Header */}
             <div className={styles.pageHeader}>
                 <div className={styles.headerText}>
                     <h1>{t('dayDetails.title')}</h1>
@@ -240,17 +201,17 @@ export const DayDetailsPage: React.FC = () => {
                 </button>
             </div>
 
-            {/* Filter Bar */}
-            <DayDetailsFilter
-                period={period}
-                onPeriodChange={setPeriod}
-                currentDate={currentDate}
-                onDateChange={(date) => { setCurrentDate(date); setCurrentPage(1); }}
-                selectedEmployee={selectedEmployee}
-                onEmployeeChange={setSelectedEmployee}
-            />
+            <div className={styles.filtersSection}>
+                <DayDetailsFilter
+                    period={period}
+                    onPeriodChange={setPeriod}
+                    currentDate={currentDate}
+                    onDateChange={(date) => { setCurrentDate(date); setCurrentPage(1); }}
+                    selectedEmployee={selectedEmployee}
+                    onEmployeeChange={setSelectedEmployee}
+                />
+            </div>
 
-            {/* Main Content */}
             <main className={styles.main}>
                 {renderCharts()}
             </main>

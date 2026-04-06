@@ -19,9 +19,11 @@ export type FilterSelectItem = FilterBarItemBase & {
 
 export type FilterDateNavItem = FilterBarItemBase & {
   type: 'date-nav';
-  value: string;
+  value: string | Date;
+  displayValue?: string;
   onPrev?: () => void;
   onNext?: () => void;
+  onChange?: (value: string) => void;
 };
 
 export type FilterCheckboxItem = FilterBarItemBase & {

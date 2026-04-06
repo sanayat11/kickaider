@@ -44,6 +44,16 @@ const ChevronRight = () => (
   </svg>
 );
 
+const isSameDate = (first: Date | null, second: Date | null) => {
+  if (!first || !second) return false;
+
+  return (
+    first.getFullYear() === second.getFullYear() &&
+    first.getMonth() === second.getMonth() &&
+    first.getDate() === second.getDate()
+  );
+};
+
 const buildCalendarDays = (year: number, month: number) => {
   const firstDay = new Date(year, month, 1);
   const firstWeekDay = (firstDay.getDay() + 6) % 7;
@@ -54,13 +64,16 @@ const buildCalendarDays = (year: number, month: number) => {
     key: string;
     value: number;
     currentMonth: boolean;
+    date: Date;
   }> = [];
 
   for (let i = firstWeekDay - 1; i >= 0; i -= 1) {
+    const dayValue = prevMonthDays - i;
     days.push({
-      key: `prev-${prevMonthDays - i}`,
-      value: prevMonthDays - i,
+      key: `prev-${dayValue}`,
+      value: dayValue,
       currentMonth: false,
+      date: new Date(year, month - 1, dayValue),
     });
   }
 
@@ -69,6 +82,7 @@ const buildCalendarDays = (year: number, month: number) => {
       key: `current-${day}`,
       value: day,
       currentMonth: true,
+      date: new Date(year, month, day),
     });
   }
 
@@ -78,14 +92,21 @@ const buildCalendarDays = (year: number, month: number) => {
       key: `next-${nextDay}`,
       value: nextDay,
       currentMonth: false,
+      date: new Date(year, month + 1, nextDay),
     });
   }
 
   return days;
 };
 
-const MonthPicker: FC = () => {
-  const [currentDate, setCurrentDate] = useState(new Date(2021, 5, 1));
+const MonthPicker: FC<{
+  value?: Date | null;
+  onChange?: (date: Date) => void;
+}> = ({ value, onChange }) => {
+  const initialDate = value ?? new Date();
+  const [currentDate, setCurrentDate] = useState(
+    new Date(initialDate.getFullYear(), initialDate.getMonth(), 1),
+  );
 
   const year = currentDate.getFullYear();
   const monthLabel = currentDate.toLocaleString('en-US', {
@@ -116,8 +137,13 @@ const MonthPicker: FC = () => {
       </div>
 
       <div className={styles.monthGrid}>
-        {MONTHS.map((month) => (
-          <button key={month} type="button" className={styles.monthCell}>
+        {MONTHS.map((month, index) => (
+          <button
+            key={month}
+            type="button"
+            className={styles.monthCell}
+            onClick={() => onChange?.(new Date(year, index, 1))}
+          >
             {month}
           </button>
         ))}
@@ -126,9 +152,15 @@ const MonthPicker: FC = () => {
   );
 };
 
-const DayCalendar: FC<{ range?: boolean }> = ({ range = false }) => {
-  const [currentDate, setCurrentDate] = useState(new Date(2021, 5, 1));
-  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+const DayCalendar: FC<{
+  range?: boolean;
+  value?: Date | null;
+  onChange?: (date: Date) => void;
+}> = ({ range = false, value, onChange }) => {
+  const initialDate = value ?? new Date();
+  const [currentDate, setCurrentDate] = useState(
+    new Date(initialDate.getFullYear(), initialDate.getMonth(), 1),
+  );
 
   const days = useMemo(
     () => buildCalendarDays(currentDate.getFullYear(), currentDate.getMonth()),
@@ -149,9 +181,7 @@ const DayCalendar: FC<{ range?: boolean }> = ({ range = false }) => {
           type="button"
           className={styles.navButton}
           onClick={() =>
-            setCurrentDate(
-              new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1),
-            )
+            setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))
           }
         >
           <ChevronLeft />
@@ -163,9 +193,7 @@ const DayCalendar: FC<{ range?: boolean }> = ({ range = false }) => {
           type="button"
           className={styles.navButton}
           onClick={() =>
-            setCurrentDate(
-              new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1),
-            )
+            setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))
           }
         >
           <ChevronRight />
@@ -182,7 +210,7 @@ const DayCalendar: FC<{ range?: boolean }> = ({ range = false }) => {
 
       <div className={styles.daysGrid}>
         {days.map((day, index) => {
-          const isSelected = !range && selectedDay === day.value && day.currentMonth;
+          const isSelected = !range && isSameDate(value ?? null, day.date);
 
           const isRangeStart = range && index === 0;
           const isRangeEnd = range && index === 6;
@@ -206,8 +234,8 @@ const DayCalendar: FC<{ range?: boolean }> = ({ range = false }) => {
                   [styles.rangeEnd]: isRangeEnd,
                 })}
                 onClick={() => {
-                  if (!range && day.currentMonth) {
-                    setSelectedDay(day.value);
+                  if (!range) {
+                    onChange?.(day.date);
                   }
                 }}
               >
@@ -221,14 +249,14 @@ const DayCalendar: FC<{ range?: boolean }> = ({ range = false }) => {
   );
 };
 
-export const Calendar: FC<CalendarProps> = ({ variant = 'day' }) => {
+export const Calendar: FC<CalendarProps> = ({ variant = 'day', value, onChange }) => {
   if (variant === 'month') {
-    return <MonthPicker />;
+    return <MonthPicker value={value} onChange={onChange} />;
   }
 
   if (variant === 'range') {
-    return <DayCalendar range />;
+    return <DayCalendar range value={value} onChange={onChange} />;
   }
 
-  return <DayCalendar />;
+  return <DayCalendar value={value} onChange={onChange} />;
 };

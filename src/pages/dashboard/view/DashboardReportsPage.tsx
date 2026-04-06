@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import {
-    IoSwapVerticalOutline,
     IoTimeOutline,
     IoTrendingUpOutline,
 } from 'react-icons/io5';
@@ -469,24 +468,26 @@ export const DashboardReportsPage: React.FC = () => {
                 </button>
             </header>
 
-            <DashboardReportsFilter
-                period={period}
-                onPeriodChange={setPeriod}
-                periodLabel={periodLabel}
-                onAdjustDate={adjustDate}
-                onDateChange={setCurrentDate}
-                currentDate={currentDate}
-                selectedEmployee={selectedEmployee}
-                onEmployeeChange={setSelectedEmployee}
-                employees={dashboardData?.employees ?? []}
-                chartType={chartType}
-                onChartTypeChange={setChartType}
-                groupBy={groupBy}
-                onGroupByChange={setGroupBy}
-                onlyWorkTime={onlyWorkTime}
-                onOnlyWorkTimeChange={setOnlyWorkTime}
-                showGroupBy={false}
-            />
+            <div className={styles.filtersSection}>
+                <DashboardReportsFilter
+                    period={period}
+                    onPeriodChange={setPeriod}
+                    periodLabel={periodLabel}
+                    onAdjustDate={adjustDate}
+                    onDateChange={setCurrentDate}
+                    currentDate={currentDate}
+                    selectedEmployee={selectedEmployee}
+                    onEmployeeChange={setSelectedEmployee}
+                    employees={dashboardData?.employees ?? []}
+                    chartType={chartType}
+                    onChartTypeChange={setChartType}
+                    groupBy={groupBy}
+                    onGroupByChange={setGroupBy}
+                    onlyWorkTime={onlyWorkTime}
+                    onOnlyWorkTimeChange={setOnlyWorkTime}
+                    showGroupBy={false}
+                />
+            </div>
 
             <div className={styles.tabsBar}>
                 {(['time', 'efficiency', 'dynamics'] as TabType[]).map(tab => (

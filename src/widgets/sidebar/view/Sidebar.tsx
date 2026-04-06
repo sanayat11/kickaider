@@ -129,15 +129,7 @@ export const Sidebar: React.FC = () => {
           id="reports"
           icon={IoDocumentTextOutline}
           label={t('sidebar.reports')}
-          hasSubmenu
           isOpen={openMenus.includes('reports')}
-          active={
-            location.pathname === paths.DASHBOARD_REPORTS ||
-            location.pathname === paths.DASHBOARD_DAY_DETAILS ||
-            location.pathname === paths.DASHBOARD_EMPLOYEE_RATING ||
-            location.pathname === paths.WORK_TIME ||
-            location.pathname.startsWith(paths.ACTIVITY)
-          }
           onClick={() => handleItemClick('reports', true)}
         >
           <SidebarItem
@@ -185,15 +177,7 @@ export const Sidebar: React.FC = () => {
           id="settings"
           icon={IoSettingsOutline}
           label={t('sidebar.settings')}
-          hasSubmenu
           isOpen={openMenus.includes('settings')}
-          active={
-            location.pathname === paths.SETTINGS ||
-            location.pathname === paths.DASHBOARD_WORK_SCHEDULES ||
-            location.pathname === paths.DASHBOARD_ORG_STRUCTURE ||
-            location.pathname === paths.CATEGORIZATION ||
-            location.pathname.startsWith(paths.CALENDAR)
-          }
           onClick={() => handleItemClick('settings', true)}
         >
           <SidebarItem

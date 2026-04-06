@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import {
-    IoSwapVerticalOutline,
     IoTimeOutline,
     IoTrendingUpOutline,
 } from 'react-icons/io5';
@@ -47,8 +46,8 @@ const CHART_COLORS = {
 };
 
 const DonutChart: React.FC<{
-    productive: number; neutral: number; unproductive: number; uncategorized: number; idle: number;
-}> = ({ productive, neutral, unproductive, uncategorized, idle }) => {
+    productive: number; neutral: number; unproductive: number; uncategorized: number;
+}> = ({ productive, neutral, unproductive, uncategorized }) => {
     const size = 90;
     const cx = 45, cy = 45, R = 38, r = 24;
     const segs = [
@@ -92,7 +91,7 @@ export const DashboardReportsPage: React.FC = () => {
     const [period, setPeriod] = useState<'day' | 'week' | 'month'>('week');
     const [currentDate, setCurrentDate] = useState<Date>(new Date(2026, 1, 15)); // 15 Feb 2026
 
-    const [selectedDept, setSelectedDept] = useState<string>('all');
+    const [selectedDept] = useState<string>('all');
     const [selectedEmployee, setSelectedEmployee] = useState<string>('all');
     const [onlyWorkTime, setOnlyWorkTime] = useState(false);
 
@@ -336,7 +335,6 @@ export const DashboardReportsPage: React.FC = () => {
                                     neutral={dept.neutral}
                                     unproductive={dept.unproductive}
                                     uncategorized={dept.uncategorized}
-                                    idle={dept.idle}
                                 />
                                 <span className={styles.donutLabel}>{dept.name}</span>
                             </div>

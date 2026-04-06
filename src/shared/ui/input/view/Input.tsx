@@ -36,7 +36,7 @@ export const Input = <T extends FieldValues>({
       {label && (
         <label htmlFor={name}>
           <Typography
-            variant="body"
+            variant="h5"
             color="black"
             weight="regular"
             className={styles.label}
@@ -86,7 +86,7 @@ export const Input = <T extends FieldValues>({
       </div>
 
       {error && (
-        <Typography variant="body" weight="regular">
+        <Typography variant="h5" weight="regular">
           {error}
         </Typography>
       )}

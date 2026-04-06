@@ -1,8 +1,6 @@
-import LupaIcon from './lupa.svg?react';
 import ArrowGraphUpIcon from './arrowGraphUp.svg?react';
 import ArrowUpIcon from './arrowUp.svg?react';
 import AttachmentIcon from './attachment.svg?react';
-import CalendarIcon from './calendar.svg?react';
 import ClockIcon from './clock.svg?react';
 import DocumentIcon from './document.svg?react';
 import EditIcon from './edit.svg?react';
@@ -18,11 +16,9 @@ import TimeZoneIcon from './timeZone.svg?react';
 import TrashIcon from './trash.svg?react';
 
 export {
-  LupaIcon,
   ArrowGraphUpIcon,
   ArrowUpIcon,
   AttachmentIcon,
-  CalendarIcon,
   ClockIcon,
   DocumentIcon,
   EditIcon,

@@ -13,7 +13,7 @@ import { AuthPage } from '@/pages/auth';
 import { ActivityPage } from '@/pages/activity';
 import { ActivityDetailsPage } from '@/pages/activityDetail';
 import { CategorizationPage } from '@/pages/categorization';
-import { ProductionCalendarPage } from '@/pages/calendar';
+import { ProductionCalendarPage } from '@/pages/calendar/view/ProductionCalendarPage';
 import { SettingsPage } from '@/pages/settings';
 
 export const Router = createBrowserRouter([

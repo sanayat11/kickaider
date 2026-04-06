@@ -1,4 +1,4 @@
-import { useMemo, useState, type FC } from 'react';
+import { useEffect, useMemo, useState, type FC } from 'react';
 import classNames from 'classnames';
 import styles from './Calendar.module.scss';
 import type { CalendarProps } from '../types/Calendar';
@@ -54,6 +54,7 @@ const buildCalendarDays = (year: number, month: number) => {
     key: string;
     value: number;
     currentMonth: boolean;
+    monthOffset: -1 | 0 | 1;
   }> = [];
 
   for (let i = firstWeekDay - 1; i >= 0; i -= 1) {
@@ -61,6 +62,7 @@ const buildCalendarDays = (year: number, month: number) => {
       key: `prev-${prevMonthDays - i}`,
       value: prevMonthDays - i,
       currentMonth: false,
+      monthOffset: -1,
     });
   }
 
@@ -69,6 +71,7 @@ const buildCalendarDays = (year: number, month: number) => {
       key: `current-${day}`,
       value: day,
       currentMonth: true,
+      monthOffset: 0,
     });
   }
 
@@ -78,14 +81,24 @@ const buildCalendarDays = (year: number, month: number) => {
       key: `next-${nextDay}`,
       value: nextDay,
       currentMonth: false,
+      monthOffset: 1,
     });
   }
 
   return days;
 };
 
-const MonthPicker: FC = () => {
-  const [currentDate, setCurrentDate] = useState(new Date(2021, 5, 1));
+const MonthPicker: FC<Pick<CalendarProps, 'value' | 'className'>> = ({
+  value,
+  className,
+}) => {
+  const [currentDate, setCurrentDate] = useState(value ?? new Date());
+
+  useEffect(() => {
+    if (value) {
+      setCurrentDate(value);
+    }
+  }, [value]);
 
   const year = currentDate.getFullYear();
   const monthLabel = currentDate.toLocaleString('en-US', {
@@ -94,7 +107,7 @@ const MonthPicker: FC = () => {
   });
 
   return (
-    <div className={styles.calendar}>
+    <div className={classNames(styles.calendar, className)}>
       <div className={styles.header}>
         <button
           type="button"
@@ -126,16 +139,26 @@ const MonthPicker: FC = () => {
   );
 };
 
-const DayCalendar: FC<{ range?: boolean }> = ({ range = false }) => {
-  const [currentDate, setCurrentDate] = useState(new Date(2021, 5, 1));
-  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+const DayCalendar: FC<Pick<CalendarProps, 'value' | 'onSelectDate' | 'className'>> = ({
+  value,
+  onSelectDate,
+  className,
+}) => {
+  const initialDate = value ?? new Date();
+  const [currentDate, setCurrentDate] = useState(
+    new Date(initialDate.getFullYear(), initialDate.getMonth(), 1),
+  );
 
   const days = useMemo(
     () => buildCalendarDays(currentDate.getFullYear(), currentDate.getMonth()),
     [currentDate],
   );
 
-  const [rangeStart, rangeEnd] = range ? [30, 6] : [null, null];
+  useEffect(() => {
+    if (value) {
+      setCurrentDate(new Date(value.getFullYear(), value.getMonth(), 1));
+    }
+  }, [value]);
 
   const monthLabel = currentDate.toLocaleString('en-US', {
     month: 'long',
@@ -143,7 +166,7 @@ const DayCalendar: FC<{ range?: boolean }> = ({ range = false }) => {
   });
 
   return (
-    <div className={styles.calendar}>
+    <div className={classNames(styles.calendar, className)}>
       <div className={styles.header}>
         <button
           type="button"
@@ -181,37 +204,33 @@ const DayCalendar: FC<{ range?: boolean }> = ({ range = false }) => {
       </div>
 
       <div className={styles.daysGrid}>
-        {days.map((day, index) => {
-          const isSelected = !range && selectedDay === day.value && day.currentMonth;
-
-          const isRangeStart = range && index === 0;
-          const isRangeEnd = range && index === 6;
-          const isRangeMiddle = range && index > 0 && index < 6;
+        {days.map((day) => {
+          const selected =
+            !!value &&
+            day.currentMonth &&
+            value.getFullYear() === currentDate.getFullYear() &&
+            value.getMonth() === currentDate.getMonth() &&
+            value.getDate() === day.value;
 
           return (
-            <div
-              key={day.key}
-              className={classNames(styles.dayCell, {
-                [styles.rangeMiddle]: isRangeMiddle,
-                [styles.rangeStartWrap]: isRangeStart,
-                [styles.rangeEndWrap]: isRangeEnd,
-              })}
-            >
+            <div key={day.key} className={styles.dayCell}>
               <button
                 type="button"
                 className={classNames(styles.dayButton, {
                   [styles.dayOutside]: !day.currentMonth,
-                  [styles.daySelected]: isSelected,
-                  [styles.rangeStart]: isRangeStart,
-                  [styles.rangeEnd]: isRangeEnd,
+                  [styles.daySelected]: selected,
                 })}
                 onClick={() => {
-                  if (!range && day.currentMonth) {
-                    setSelectedDay(day.value);
-                  }
+                  const nextDate = new Date(
+                    currentDate.getFullYear(),
+                    currentDate.getMonth() + day.monthOffset,
+                    day.value,
+                  );
+
+                  onSelectDate?.(nextDate);
                 }}
               >
-                {range && isRangeStart ? rangeStart : range && isRangeEnd ? rangeEnd : day.value}
+                {day.value}
               </button>
             </div>
           );
@@ -221,14 +240,19 @@ const DayCalendar: FC<{ range?: boolean }> = ({ range = false }) => {
   );
 };
 
-export const Calendar: FC<CalendarProps> = ({ variant = 'day' }) => {
+export const Calendar: FC<CalendarProps> = ({
+  variant = 'day',
+  value,
+  onSelectDate,
+  className,
+}) => {
   if (variant === 'month') {
-    return <MonthPicker />;
+    return <MonthPicker value={value} className={className} />;
   }
 
   if (variant === 'range') {
-    return <DayCalendar range />;
+    return <DayCalendar value={value} onSelectDate={onSelectDate} className={className} />;
   }
 
-  return <DayCalendar />;
+  return <DayCalendar value={value} onSelectDate={onSelectDate} className={className} />;
 };

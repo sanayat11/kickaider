@@ -2,7 +2,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  height: 36px; 
+  height: 36px;
   padding: 0 12px;
   font-size: 12px;
   font-weight: 600;
@@ -27,8 +27,9 @@
 }
 
 .filter {
-  width: 94px;
-  height: 30px; 
+  min-width: 94px;
+  height: 30px;
+  border-radius: 4px;
 }
 
 .label {
@@ -55,18 +56,18 @@
 }
 
 .yellow {
-  background: var(--warning) ;
-  color: #FFCC0050;
+  background: #FFCC0050;
+  color: var(--warning);
 }
 
 .green {
-  background: var(--success);
-  color: #8DE4DB50;
+  background: #8DE4DB50;
+  color: var(--success);
 }
 
 .blue {
-  background: var(--accent-primary-hover);
-  color: #3745AF50;
+  background: #3745AF50;
+  color: var(--accent-primary-hover);
 }
 
 .gray {

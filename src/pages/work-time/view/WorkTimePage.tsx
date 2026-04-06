@@ -77,7 +77,7 @@ export const WorkTimePage: React.FC = () => {
       'firstActivity',
       'lastActivity',
       'lateness',
-      'latenessCount'
+      'latenessCount',
     ]),
   );
 
@@ -100,8 +100,6 @@ export const WorkTimePage: React.FC = () => {
     ],
     [t],
   );
-
-
 
   const kpiData = useMemo(
     () => [
@@ -232,8 +230,6 @@ export const WorkTimePage: React.FC = () => {
 
     setSortConfig({ key, direction });
   };
-
-
 
   const handleExport = () => {
     const csvContent =

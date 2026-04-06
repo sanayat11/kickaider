@@ -130,7 +130,7 @@ export const FilterBar: FC<FilterBarProps> = ({ items, className }) => {
                 <Calendar
                   variant="day"
                   value={selectedDate}
-                  onChange={(date) => {
+                  onSelectDate={(date) => {
                     item.onChange?.(formatDate(date));
                     setOpenedCalendarId(null);
                   }}

@@ -14,6 +14,7 @@ export const LoginForm = () => {
   const onSubmit = (data: unknown) => {
     console.log(data);
   };
+  
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
@@ -31,6 +32,7 @@ export const LoginForm = () => {
         name="password"
         label="Пароль"
         placeholder="Input password"
+
         type="password"
         control={control}
         error={errors.password?.message}

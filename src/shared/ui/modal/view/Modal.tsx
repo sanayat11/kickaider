@@ -66,10 +66,10 @@ export const Modal: FC<ModalProps> = ({
         aria-modal="true"
       >
         {(title || closable) && (
-          <div className={styles.header}>
-            <div className={styles.titleWrap}>
+          <div className={classNames(styles.header, 'shared-ui-modal-header')}>
+            <div className={classNames(styles.titleWrap, 'shared-ui-modal-title-wrap')}>
               {title ? (
-                <Typography variant="h3" weight="bold" className={styles.title}>
+                <Typography variant="h3" weight="bold" className={classNames(styles.title, 'shared-ui-modal-title')}>
                   {title}
                 </Typography>
               ) : null}
@@ -78,7 +78,7 @@ export const Modal: FC<ModalProps> = ({
             {closable && (
               <button
                 type="button"
-                className={styles.closeButton}
+                className={classNames(styles.closeButton, 'shared-ui-modal-close-button')}
                 onClick={onClose}
                 aria-label="Закрыть"
               >

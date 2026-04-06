@@ -7,7 +7,11 @@ export const DashboardPage: React.FC = () => {
     return (
         <div className={styles.pageWrapper}>
             <Sidebar />
-            <Outlet />
+            <div className={styles.container}>
+                <main className={styles.main}>
+                    <Outlet />
+                </main>
+            </div>
         </div>
     );
 };

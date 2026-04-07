@@ -6,7 +6,7 @@
 }
 
 .kpiCard {
-  height: 128px;
+  max-height: 128px;
   width: 100%;
   background: #ffffff;
   border: 1px solid #e6e9f5;
@@ -23,17 +23,12 @@
 
 
 .label {
-  font-size: 16px;
-  font-weight: 600;
   color: #8b90a7; 
-  line-height: 1;
+  margin-bottom: 16px;
 }
 
 .value {
-  font-size: 28px; // ближе к макету
-  font-weight: 700;
   color: #2f3a8f;
-  line-height: 1.2;
 }
 
 /* skeleton */

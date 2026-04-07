@@ -5,12 +5,13 @@
   gap: 24px;
   background-color: var(--grey-50, #f9fafb);
   min-height: 100vh;
-  overflow-y: auto;
+  // overflow-y: auto;
   flex: 1;
   scroll-behavior: smooth;
-  max-width: 1400px;
+  // max-width: 1400px;
+  width: 1146px;
   margin: 0 auto;
   min-width: 0;
-  width: 100%;
+  // width: 100%;
   box-sizing: border-box;
 }

@@ -23,7 +23,7 @@ export const WorkTimeStats: React.FC<WorkTimeStatsProps> = ({ items, loading = f
           ))
         : items.map((item, index) => (
             <div key={index} className={styles.kpiCard}>
-              <Typography variant="h5" color="primary" context='dashboard' weight='bold'className={styles.label}>
+              <Typography variant="h5" color="primary" context='dashboard' weight='semiBold'className={styles.label}>
                 {item.label}
               </Typography>
               <Typography variant="h1" color="primary" context='dashboard' weight='bold' className={styles.value}>

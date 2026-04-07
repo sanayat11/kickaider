@@ -75,7 +75,7 @@ export const ActivityPage: React.FC = () => {
     // Derived paginated data
     // Add copies to simulate large dataset if needed, like in DayDetailsPage
     const fullData = useMemo(() => {
-        let data = [...employees];
+        const data = [...employees];
         if (data.length > 0 && data.length < 15 && selectedDepts.includes('Company') && !searchQuery) {
             for(let i=0; i<30; i++) {
                 data.push({...data[i % employees.length], id: `${data[i % employees.length].id}_${i}`, fullName: `${data[i % employees.length].fullName} (Копия ${i + 1})`});

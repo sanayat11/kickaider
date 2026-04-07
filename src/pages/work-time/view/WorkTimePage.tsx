@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MdFilterList } from 'react-icons/md';
 
@@ -21,9 +21,9 @@ export interface TableRow {
 }
 
 const EMPLOYEES = [
-  'Иван Иванов',
-  'Петр Петров',
-  'Анна Сидорова',
+  'Санаят',
+  'Эльдар',
+  '',
   'Елена Козлова',
   'Дмитрий Волков',
 ];
@@ -178,48 +178,60 @@ export const WorkTimePage: React.FC = () => {
 
   const totalPages = Math.ceil(rows.length / pageSize);
 
-  const handlePageResetWithLoader = () => {
+  const handlePageResetWithLoader = useCallback(() => {
     setLoading(true);
     setCurrentPage(1);
 
     window.setTimeout(() => {
       setLoading(false);
     }, 300);
-  };
+  }, []);
 
-  const handlePrevDate = () => {
+  const handlePrevDate = useCallback(() => {
     const nextDate = new Date(selectedDate);
     nextDate.setDate(nextDate.getDate() - 1);
     setSelectedDate(nextDate);
     handlePageResetWithLoader();
-  };
+  }, [selectedDate, handlePageResetWithLoader]);
 
-  const handleNextDate = () => {
+  const handleNextDate = useCallback(() => {
     const nextDate = new Date(selectedDate);
     nextDate.setDate(nextDate.getDate() + 1);
     setSelectedDate(nextDate);
     handlePageResetWithLoader();
-  };
+  }, [selectedDate, handlePageResetWithLoader]);
 
-  const handleDateChange = (date: Date) => {
-    setSelectedDate(date);
-    handlePageResetWithLoader();
-  };
+  const handleDateChange = useCallback(
+    (date: Date) => {
+      setSelectedDate(date);
+      handlePageResetWithLoader();
+    },
+    [handlePageResetWithLoader],
+  );
 
-  const handleEmployeeChange = (value: string) => {
-    setEmployee(value);
-    handlePageResetWithLoader();
-  };
+  const handleEmployeeChange = useCallback(
+    (value: string) => {
+      setEmployee(value);
+      handlePageResetWithLoader();
+    },
+    [handlePageResetWithLoader],
+  );
 
-  const handleContentTypeChange = (value: string) => {
-    setContentType(value);
-    handlePageResetWithLoader();
-  };
+  const handleContentTypeChange = useCallback(
+    (value: string) => {
+      setContentType(value);
+      handlePageResetWithLoader();
+    },
+    [handlePageResetWithLoader],
+  );
 
-  const handleOnlyWorkingHoursChange = (checked: boolean) => {
-    setOnlyWorkingHours(checked);
-    handlePageResetWithLoader();
-  };
+  const handleOnlyWorkingHoursChange = useCallback(
+    (checked: boolean) => {
+      setOnlyWorkingHours(checked);
+      handlePageResetWithLoader();
+    },
+    [handlePageResetWithLoader],
+  );
 
   const handleSort = (key: keyof TableRow) => {
     let direction: 'asc' | 'desc' = 'asc';

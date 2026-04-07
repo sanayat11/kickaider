@@ -1,0 +1,77 @@
+.row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 72px minmax(220px, 1.4fr) minmax(220px, 1.2fr) minmax(280px, 2fr) 140px;
+  align-items: center;
+  gap: 16px;
+  min-height: 64px;
+  padding: 0 12px;
+  border: 0;
+  border-bottom: 1px solid var(--grey-200);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.row:hover {
+  background: var(--grey-50);
+}
+
+.rank,
+.hostname,
+.time,
+.name {
+  color: var(--text-color-2);
+}
+
+.nameCell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-50);
+  color: var(--primary-700);
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.progressCell {
+  width: 100%;
+}
+.rowWrap {
+  position: relative;
+}
+
+.row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 72px minmax(220px, 1.4fr) minmax(220px, 1.2fr) minmax(280px, 2fr) 140px;
+  align-items: center;
+  gap: 16px;
+  min-height: 64px;
+  padding: 0 12px;
+  border: 0;
+  border-bottom: 1px solid var(--grey-200);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.nameCell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}

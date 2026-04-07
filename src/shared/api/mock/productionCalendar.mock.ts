@@ -56,7 +56,7 @@ export const productionCalendarMockApi = {
         const toDate = new Date(params.to);
 
         // Filter out existing in range
-        let updated = statuses.filter(s => {
+        const updated = statuses.filter(s => {
             if (s.employeeId !== params.employeeId) return true;
             const d = new Date(s.date);
             return d < fromDate || d > toDate;

@@ -1,0 +1,36 @@
+.card {
+  background: var(--bg-color);
+  border: 1px solid var(--grey-200);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(33, 41, 103, 0.04);
+}
+
+.head {
+  display: grid;
+  grid-template-columns: 72px minmax(220px, 1.4fr) minmax(220px, 1.2fr) minmax(280px, 2fr) 140px;
+  align-items: center;
+  gap: 16px;
+  min-height: 56px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--grey-200);
+}
+
+.headCell {
+  color: var(--text-primary-800);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+}
+
+.emptyState {
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--text-color);
+}
+
+.paginationWrap {
+  padding: 16px 20px;
+}

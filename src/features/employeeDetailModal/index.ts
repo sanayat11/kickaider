@@ -1,0 +1,1 @@
+export {EmployeeDetailsPopover} from './view/EmployeeDetailModal';

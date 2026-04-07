@@ -147,7 +147,7 @@ export const DayDetailsPage: React.FC = () => {
             }
         }
 
-        let fullData = [...activeData];
+        const fullData = [...activeData];
         if (fullData.length > 0 && fullData.length < 15 && !period && selectedEmployee === 'All') {
             for(let i=0; i<30; i++) {
                 fullData.push({...fullData[i % activeData.length], employeeName: `${fullData[i % activeData.length].employeeName} (Копия ${i + 1})`});

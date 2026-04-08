@@ -106,6 +106,7 @@ export const CalendarToolbar = ({
             onChange={(val) => setSelectedEmployeeId(val)}
             options={dropdownOptions}
             className={styles.employeeDropdown}
+            variant='ghost'
           />
         </div>
       </div>

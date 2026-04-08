@@ -1,9 +1,19 @@
-import type {KeyboardEvent} from 'react';
-import {  useEffect, useMemo, useRef, useState } from 'react';
+import type { KeyboardEvent } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import styles from './selectDropdown.module.scss';
 import type { SelectDropdownOption, SelectDropdownProps } from '../types/selectDropdown';
 
-
+const ChevronIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <path
+      d="M4.5 6.5L8 10L11.5 6.5"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
 
 function getOptionByValue(
   options: SelectDropdownOption[],
@@ -28,6 +38,7 @@ export const SelectDropdown = ({
   placeholder = 'Select',
   disabled = false,
   size = 'md',
+  variant = 'bordered',
   leftIcon,
   className,
   menuClassName,
@@ -155,7 +166,10 @@ export const SelectDropdown = ({
   };
 
   return (
-    <div ref={rootRef} className={[styles.root, styles[size], className ?? ''].join(' ')}>
+    <div
+      ref={rootRef}
+      className={[styles.root, styles[size], styles[variant], className ?? ''].join(' ')}
+    >
       <button
         ref={buttonRef}
         type="button"
@@ -180,6 +194,9 @@ export const SelectDropdown = ({
           </span>
         </span>
 
+        <span className={[styles.chevron, isOpen ? styles.chevronOpen : ''].join(' ')}>
+          <ChevronIcon />
+        </span>
       </button>
 
       {isOpen && (

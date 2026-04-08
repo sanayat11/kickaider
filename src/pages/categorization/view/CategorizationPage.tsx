@@ -37,124 +37,132 @@ export const CategorizationPage: React.FC = () => {
     const [rowToReset, setRowToReset] = useState<string | null>(null);
 
     return (
-        <div className={classNames(styles.categorizationPage)}>
-            <header className={styles.header}>
-                <div className={styles.titleSection}>
-                    <Typography variant="h1" weight="bold">Категоризация приложений</Typography>
-                    <Typography variant="h4" weight="regular">
-                        Общий аналитический обзор по компании или сотруднику
-                    </Typography>
-                </div>
-                <button 
-                  className={styles.resetBtn} 
-                  onClick={() => setIsResetAllModalOpen(true)}
+        <div className={styles.wrapper}>
+            <div className={classNames(styles.categorizationPage)}>
+                <header className={styles.header}>
+                    <div className={styles.titleSection}>
+                        <Typography variant="h1" weight="bold" context='dashboard' className={styles.pageTitle}>
+                            Категоризация приложений
+                        </Typography>
+
+                        <Typography variant="h4" weight="regular" context='dashboard' className={styles.pageSubtitle}>
+                            Общий аналитический обзор по компании или сотруднику
+                        </Typography>
+                    </div>
+
+                    <button
+                        className={styles.resetBtn}
+                        onClick={() => setIsResetAllModalOpen(true)}
+                    >
+                        Сбросить
+                    </button>
+                </header>
+
+                <section className={styles.controlsCard}>
+                    <CategorizationFilters
+                        search={search}
+                        setSearch={setSearch}
+                        filter={filter}
+                        setFilter={setFilter}
+                    />
+
+                    <div className={styles.tableWrap}>
+                        {loading ? (
+                            <CategorizationSkeleton />
+                        ) : rows.length === 0 ? (
+                            <CategorizationEmpty />
+                        ) : (
+                            <CategorizationTable>
+                                {rows.map((row) => (
+                                    <CategorizationRow
+                                        key={row.id}
+                                        row={row}
+                                        isUpdating={updatingIds.includes(row.id)}
+                                        onCategoryChange={handleCategoryChange}
+                                        onReset={setRowToReset}
+                                    />
+                                ))}
+                            </CategorizationTable>
+                        )}
+                    </div>
+
+                    <CategorizationPagination
+                        page={page}
+                        pageSize={pageSize}
+                        totalPages={totalPages}
+                        setPage={setPage}
+                        setPageSize={setPageSize}
+                    />
+                </section>
+
+                <Modal
+                    open={isResetAllModalOpen}
+                    onClose={() => setIsResetAllModalOpen(false)}
+                    title="Сбросить все правила?"
+                    size="sm"
+                    className={styles.modalCustom}
                 >
-                  Сбросить
-                </button>
-            </header>
+                    <div className={styles.modalBody}>
 
-            <section className={styles.controlsCard}>
-                <CategorizationFilters 
-                    search={search}
-                    setSearch={setSearch}
-                    filter={filter}
-                    setFilter={setFilter}
-                />
-                
-                {loading ? (
-                    <CategorizationSkeleton />
-                ) : rows.length === 0 ? (
-                    <CategorizationEmpty />
-                ) : (
-                    <CategorizationTable>
-                        {rows.map(row => (
-                            <CategorizationRow 
-                                key={row.id}
-                                row={row}
-                                isUpdating={updatingIds.includes(row.id)}
-                                onCategoryChange={handleCategoryChange}
-                                onReset={setRowToReset}
-                            />
-                        ))}
-                    </CategorizationTable>
-                )}
+                        <div className={styles.modalActions}>
+                            <Button
+                                variant="primary"
+                                className={styles.modalBtn}
+                                size='large'
+                                onClick={() => {
+                                    handleResetAll();
+                                    setIsResetAllModalOpen(false);
+                                }}
+                            >
+                                Сбросить
+                            </Button>
 
-                <CategorizationPagination 
-                    page={page}
-                    pageSize={pageSize}
-                    totalPages={totalPages}
-                    setPage={setPage}
-                    setPageSize={setPageSize}
-                />
-            </section>
-
-            {/* CONFIRM RESET ALL MODAL */}
-            <Modal
-                open={isResetAllModalOpen}
-                onClose={() => setIsResetAllModalOpen(false)}
-                title="Сбросить все правила?"
-                size="sm"
-                className={styles.modalCustom}
-            >
-                <div className={styles.modalBody}>
-                    <Typography variant="h5" color="secondary" weight="regular">
-                        Это действие вернет все приложения к их стандартным категориям.
-                    </Typography>
-                    <div className={styles.modalActions}>
-                        <Button 
-                            variant="primary" 
-                            className={styles.modalBtn}
-                            onClick={() => {
-                                handleResetAll();
-                                setIsResetAllModalOpen(false);
-                            }}
-                        >
-                            Сбросить
-                        </Button>
-                        <Button 
-                            variant="outline" 
-                            className={styles.modalBtn}
-                            onClick={() => setIsResetAllModalOpen(false)}
-                        >
-                            Отмена
-                        </Button>
+                            <Button
+                                variant="outline"
+                                size='large'
+                                className={styles.modalBtn}
+                                onClick={() => setIsResetAllModalOpen(false)}
+                            >
+                                Отмена
+                            </Button>
+                        </div>
                     </div>
-                </div>
-            </Modal>
+                </Modal>
 
-            {/* CONFIRM INDIVIDUAL RESET MODAL */}
-            <Modal
-                open={!!rowToReset}
-                onClose={() => setRowToReset(null)}
-                title="Удалить файл?"
-                size="sm"
-                className={styles.modalCustom}
-            >
-                <div className={styles.modalBody}>
-                    <Typography variant="h5" color="secondary" weight="regular">
-                        Вы уверены, что хотите сбросить категорию для этого приложения?
-                    </Typography>
-                    <div className={styles.modalActions}>
-                        <Button 
-                            variant="primary" 
-                            className={styles.modalBtn}
-                            onClick={() => {
-                                if (rowToReset) handleReset(rowToReset);
-                                setRowToReset(null);
-                            }}
-                        >
-                            Удалить
-                        </Button>
-                        <Button 
-                            variant="outline" 
-                            className={styles.modalBtn}
-                            onClick={() => setRowToReset(null)}
-                        >
-                            Отмена
-                        </Button>
+                <Modal
+                    open={!!rowToReset}
+                    onClose={() => setRowToReset(null)}
+                    title="Удалить файл?"
+                    size='sm'
+                    className={styles.modalCustom}
+                >
+                    <div className={styles.modalBody}>
+
+                        <div className={styles.modalActions}>
+                            <Button
+                                variant="primary"
+                                size='large'
+                                className={styles.modalBtn}
+                                onClick={() => {
+                                    if (rowToReset) handleReset(rowToReset);
+                                    setRowToReset(null);
+                                }}
+                            >
+                                Удалить
+                            </Button>
+
+                            <Button
+                                variant="outline"
+                                size='large'
+                                className={styles.modalBtn}
+                                onClick={() => setRowToReset(null)}
+                            >
+                                Отмена
+                            </Button>
+                        </div>
                     </div>
-                </div>
-            </Modal>
+                </Modal>
+            </div>
         </div>
     );
 };

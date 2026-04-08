@@ -36,10 +36,10 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  border: none;
-  background: transparent;
-  color: #2b3587;
-  font-weight: 600;
+  border: 1.5px solid #c7cffd;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #2f3e8c;
   cursor: pointer;
   outline: none;
   transition:
@@ -55,6 +55,7 @@
   }
 
   &:focus-visible {
+    border-color: #5a68ff;
     box-shadow: 0 0 0 3px rgba(90, 104, 255, 0.14);
     color: #3b4bdb;
   }
@@ -66,6 +67,7 @@
 }
 
 .triggerOpen {
+  border-color: #5a68ff;
   box-shadow: 0 0 0 3px rgba(90, 104, 255, 0.08);
 }
 
@@ -147,6 +149,7 @@
 }
 
 .trigger:hover:not(:disabled) {
+
   .icon,
   .value,
   .chevron {
@@ -159,6 +162,7 @@
 }
 
 .trigger:focus-visible {
+
   .icon,
   .value,
   .chevron {
@@ -290,5 +294,25 @@
   .icon,
   .optionLabel {
     color: #d2d7eb;
+  }
+}
+
+.ghost {
+  .trigger {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+
+    &:hover:not(:disabled),
+    &:focus-visible,
+    &:active:not(:disabled) {
+      border: none;
+      box-shadow: none;
+    }
+  }
+
+  .triggerOpen {
+    border: none;
+    box-shadow: none;
   }
 }

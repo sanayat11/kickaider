@@ -20,11 +20,14 @@ export const Input = <T extends FieldValues>({
   icon,
 }: InputTypes<T> & { icon?: React.ReactNode }) => {
   const [showPassword, setShowPassword] = useState(false);
-  const isPwdType = type === 'password';
-  const inputType = isPwdType && showPassword ? 'text' : type;
+
+  const isPasswordType = type === 'password';
+  const inputType = isPasswordType && showPassword ? 'text' : type;
 
   const handleToggle = () => {
-    if (!disabled) setShowPassword((prev) => !prev);
+    if (!disabled) {
+      setShowPassword((prev) => !prev);
+    }
   };
 
   return (
@@ -34,7 +37,7 @@ export const Input = <T extends FieldValues>({
       })}
     >
       {label && (
-        <label htmlFor={name}>
+        <label htmlFor={name} className={styles.label}>
           <Typography
             variant="h5"
             color="black"
@@ -60,15 +63,16 @@ export const Input = <T extends FieldValues>({
               placeholder={placeholder}
               type={inputType}
               className={cn(styles.inputBase, {
+                [styles.withIcon]: !!icon,
+                [styles.withRightIcon]: isPasswordType,
                 [styles.inputError]: !!error,
                 [styles.inputFilled]: !!field.value,
-                [styles.withIcon]: !!icon,
               })}
             />
           )}
         />
 
-        {isPwdType && (
+        {isPasswordType && (
           <button
             type="button"
             className={styles.eyeToggle}
@@ -76,17 +80,13 @@ export const Input = <T extends FieldValues>({
             disabled={disabled}
             aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}
           >
-            {showPassword ? (
-              <IoEyeOutline className={styles.icon} />
-            ) : (
-              <FaRegEyeSlash className={styles.icon} color="white" />
-            )}
+            {showPassword ? <IoEyeOutline /> : <FaRegEyeSlash />}
           </button>
         )}
       </div>
 
       {error && (
-        <Typography variant="h5" weight="regular">
+        <Typography variant="h5" weight="regular" className={styles.errorText}>
           {error}
         </Typography>
       )}

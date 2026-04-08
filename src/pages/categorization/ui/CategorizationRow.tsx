@@ -1,9 +1,10 @@
 import type { FC } from 'react';
-import { Chip } from '@/shared/ui/chipButton/view/ChipButton';
-import { IoGlobeOutline, IoCubeOutline, IoTrashOutline } from 'react-icons/io5';
+import { IoGlobeOutline, IoLaptopOutline, IoTrashOutline } from 'react-icons/io5';
 import classNames from 'classnames';
 import styles from '../view/CategorizationPage.module.scss';
 import type { CategorizationRow as RowType, Category } from '@/shared/api/mock/categorization.mock';
+import { SelectDropdown } from '@/shared/ui/selectDropdown/view/selectDropdown';
+import { Chip } from '@/shared/ui/chipButton/view/ChipButton';
 
 interface CategorizationRowProps {
   row: RowType;
@@ -12,12 +13,11 @@ interface CategorizationRowProps {
   onReset: (id: string) => void;
 }
 
-const CATEGORY_MAP: Record<Category, { label: string; tone: 'green' | 'red' | 'yellow' | 'blue' }> = {
-  productive: { label: 'Продуктивно', tone: 'green' },
-  unproductive: { label: 'Непродуктивно', tone: 'red' },
-  neutral: { label: 'Нейтрально', tone: 'yellow' },
-  uncategorized: { label: 'Некатегоризировано', tone: 'blue' },
-};
+const CATEGORY_OPTIONS = [
+  { label: <Chip tone="green" variant="filter" className={styles.categoryChip}>Продуктивно</Chip>, value: 'productive' },
+  { label: <Chip tone="red" variant="filter" className={styles.categoryChip}>Непродуктивно</Chip>, value: 'unproductive' },
+  { label: <Chip tone="yellow" variant="filter" className={styles.categoryChip}>Нейтрально</Chip>, value: 'neutral' },
+];
 
 export const CategorizationRow: FC<CategorizationRowProps> = ({
   row,
@@ -25,17 +25,19 @@ export const CategorizationRow: FC<CategorizationRowProps> = ({
   onCategoryChange,
   onReset,
 }) => {
-  const status = CATEGORY_MAP[row.category];
-
   return (
     <div className={classNames(styles.row, { [styles.rowUpdating]: isUpdating })}>
       <div className={styles.colName}>
         <div className={styles.appIconWrapper}>
-            {row.type === 'web' ? <IoGlobeOutline className={styles.rowIcon} /> : <IoCubeOutline className={styles.rowIcon} />}
+          {row.type === 'web' ? (
+            <IoGlobeOutline className={styles.rowIcon} />
+          ) : (
+            <IoLaptopOutline className={styles.rowIcon} />
+          )}
         </div>
+
         <div className={styles.appInfo}>
           <div className={styles.appName}>{row.name}</div>
-          <div className={styles.appSub}>{row.type === 'web' ? 'Website' : 'Application'}</div>
         </div>
       </div>
 
@@ -50,31 +52,22 @@ export const CategorizationRow: FC<CategorizationRowProps> = ({
       </div>
 
       <div className={styles.colStatus}>
-        <div 
-          className={styles.statusChipWrapper}
-          onClick={() => {
-              const next: Record<Category, Category> = {
-                  productive: 'unproductive',
-                  unproductive: 'neutral',
-                  neutral: 'productive',
-                  uncategorized: 'productive'
-              };
-              onCategoryChange(row.id, next[row.category]);
-          }}
-        >
-          <Chip 
-            tone={status.tone} 
-            variant="filter" 
-            className={styles.statusChip}
-          >
-            {status.label}
-          </Chip>
+        <div className={styles.statusSelectWrapper}>
+          <SelectDropdown
+            value={row.category}
+            onChange={(val) => onCategoryChange(row.id, val as Category)}
+            options={CATEGORY_OPTIONS}
+            size="sm"
+            variant="ghost"
+            showChevron={false}
+            className={classNames(styles.categorySelect, styles[row.category])}
+          />
         </div>
       </div>
 
       <div className={styles.colAction}>
-        <button 
-          className={styles.trashBtn} 
+        <button
+          className={styles.trashBtn}
           onClick={() => onReset(row.id)}
           title="Сбросить статус"
         >

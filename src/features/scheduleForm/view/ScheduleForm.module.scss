@@ -158,5 +158,16 @@
 /* ================= BUTTON ================= */
 
 .saveButton {
+  margin-top: 8px;
+  padding: 0 32px;
+  height: 48px;
+  border-radius: 12px;
+  font-weight: 600;
   align-self: flex-start;
+
+  &:hover:not(:disabled) {
+    background: #7a86e2;
+    border-color: #7a86e2;
+    color: #ffffff;
+  }
 }

@@ -28,6 +28,7 @@ type ScheduleFormProps = {
     lunch: string;
     days: string[];
   }) => void;
+  hideToggle?: boolean;
 };
 
 export const ScheduleForm: FC<ScheduleFormProps> = ({
@@ -38,6 +39,7 @@ export const ScheduleForm: FC<ScheduleFormProps> = ({
   initialDays = ['mon', 'tue', 'wed', 'thu', 'fri'],
   disabled = false,
   onSubmit,
+  hideToggle = false,
 }) => {
   const [useCompanySchedule, setUseCompanySchedule] = useState(initialUseCompanySchedule);
   const [startTime, setStartTime] = useState(initialStartTime);
@@ -65,23 +67,25 @@ export const ScheduleForm: FC<ScheduleFormProps> = ({
 
   return (
     <div className={classNames(styles.form, { [styles.disabled]: disabled })}>
-      <label className={styles.switchRow}>
-        <button
-          type="button"
-          className={classNames(styles.switch, {
-            [styles.switchOn]: useCompanySchedule,
-          })}
-          onClick={() => !disabled && setUseCompanySchedule((prev) => !prev)}
-          aria-pressed={useCompanySchedule}
-          disabled={disabled}
-        >
-          <span className={styles.switchThumb} />
-        </button>
+      {!hideToggle && (
+        <label className={styles.switchRow}>
+          <button
+            type="button"
+            className={classNames(styles.switch, {
+              [styles.switchOn]: useCompanySchedule,
+            })}
+            onClick={() => !disabled && setUseCompanySchedule((prev) => !prev)}
+            aria-pressed={useCompanySchedule}
+            disabled={disabled}
+          >
+            <span className={styles.switchThumb} />
+          </button>
 
-        <Typography variant="h4" color='gray' weight='regular' className={styles.switchLabel}>
-          Использовать график компании
-        </Typography>
-      </label>
+          <Typography variant="h4" color='gray' weight='regular' className={styles.switchLabel}>
+            Использовать график компании
+          </Typography>
+        </label>
+      )}
 
       <div
         className={classNames(styles.formContent, {

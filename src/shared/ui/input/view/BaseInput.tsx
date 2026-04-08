@@ -36,17 +36,19 @@ export const BaseInput = ({
         <input
           id={inputId}
           disabled={disabled}
-          className={cn(styles.inputBase, {
-            [styles.inputError]: !!error,
-            [styles.inputSuccess]: success && !error,
-          })}
+          className={cn(
+            styles.inputBase,
+            {
+              [styles.withIcon]: !!icon,
+              [styles.inputError]: !!error,
+              [styles.inputSuccess]: success && !error,
+            },
+          )}
           {...rest}
         />
       </div>
 
-      {error && (
-        <span className={styles.errorText}>{error}</span>
-      )}
+      {error && <span className={styles.errorText}>{error}</span>}
     </div>
   );
 };

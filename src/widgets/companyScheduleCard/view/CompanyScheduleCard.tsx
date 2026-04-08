@@ -9,6 +9,17 @@ type CompanyScheduleCardProps = {
   statusText: string;
   defaultOpen?: boolean;
   useCompanySchedule?: boolean;
+  initialStartTime?: string;
+  initialEndTime?: string;
+  initialLunch?: string;
+  initialDays?: string[];
+  onSubmit?: (values: {
+    useCompanySchedule: boolean;
+    startTime: string;
+    endTime: string;
+    lunch: string;
+    days: string[];
+  }) => void;
 };
 
 export const CompanyScheduleCard: FC<CompanyScheduleCardProps> = ({
@@ -16,6 +27,11 @@ export const CompanyScheduleCard: FC<CompanyScheduleCardProps> = ({
   statusText,
   defaultOpen = true,
   useCompanySchedule = false,
+  initialStartTime,
+  initialEndTime,
+  initialLunch,
+  initialDays,
+  onSubmit,
 }) => {
   return (
     <CollapsibleCard
@@ -31,7 +47,14 @@ export const CompanyScheduleCard: FC<CompanyScheduleCardProps> = ({
         </Typography>
       }
     >
-      <ScheduleForm initialUseCompanySchedule={useCompanySchedule} />
+      <ScheduleForm
+        initialUseCompanySchedule={useCompanySchedule}
+        initialStartTime={initialStartTime}
+        initialEndTime={initialEndTime}
+        initialLunch={initialLunch}
+        initialDays={initialDays}
+        onSubmit={onSubmit}
+      />
     </CollapsibleCard>
   );
 };

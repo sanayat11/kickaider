@@ -1,0 +1,22 @@
+.section {
+  width: 100%;
+}
+
+.panel {
+  background: #ffffff;
+  border: 1px solid #e9edf8;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.emptyResults {
+  padding: 28px 20px;
+  text-align: center;
+  color: #7e86b9;
+  font-size: 14px;
+}

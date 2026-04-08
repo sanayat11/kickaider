@@ -1,0 +1,18 @@
+.bar {
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+    margin-bottom: 20px;
+}
+
+.searchWrapper {
+    flex: 1;
+}
+
+.filterWrapper {
+    width: 200px;
+}
+
+.filterDropdown {
+    width: 100%;
+}

@@ -73,6 +73,8 @@ export const FilterBar: FC<FilterBarProps> = ({ items, className }) => {
             options={item.options}
             placeholder={item.placeholder}
             onChange={item.onChange}
+            variant='ghost'
+            showChevron={false}
           />
         );
 

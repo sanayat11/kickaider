@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { Select } from '@/shared/ui/select/view/Select';
+import { SelectDropdown } from '@/shared/ui/selectDropdown/view/selectDropdown';
 import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
 import classNames from 'classnames';
 import styles from '../view/CategorizationPage.module.scss';
@@ -23,7 +23,8 @@ export const CategorizationPagination: FC<CategorizationPaginationProps> = ({
     <div className={styles.pagination}>
       <div className={styles.pageSizeSelector}>
         <span className={styles.paginationLabel}>Показать по</span>
-        <Select
+
+        <SelectDropdown
           value={pageSize.toString()}
           onChange={(val) => {
             setPageSize(Number(val));
@@ -35,6 +36,7 @@ export const CategorizationPagination: FC<CategorizationPaginationProps> = ({
             { label: '50', value: '50' },
           ]}
           className={styles.pSelect}
+          size="sm"
         />
       </div>
 
@@ -46,13 +48,15 @@ export const CategorizationPagination: FC<CategorizationPaginationProps> = ({
         >
           <IoChevronBack />
         </button>
-        
+
         <span className={styles.pageIndicator}>
           Страница {page} из {Math.max(1, totalPages)}
         </span>
 
         <button
-          className={classNames(styles.pBtn, { [styles.disabled]: page >= totalPages })}
+          className={classNames(styles.pBtn, {
+            [styles.disabled]: page >= totalPages,
+          })}
           onClick={() => setPage(Math.min(totalPages, page + 1))}
           disabled={page >= totalPages}
         >

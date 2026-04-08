@@ -20,13 +20,7 @@ export interface TableRow {
   latenessCount: number;
 }
 
-const EMPLOYEES = [
-  'Санаят',
-  'Эльдар',
-  '',
-  'Елена Козлова',
-  'Дмитрий Волков',
-];
+const EMPLOYEES = ['Елена Козлова', 'Дмитрий Волков'];
 
 const DEPARTMENTS = ['IT', 'Sales', 'Marketing', 'HR', 'Support'];
 

@@ -14,10 +14,8 @@ export const CategorizationTable: FC<CategorizationTableProps> = ({ children }) 
         <div className={styles.hColStatus}>Status</div>
         <div className={styles.hColAction} />
       </header>
-      
-      <div className={styles.tableBody}>
-        {children}
-      </div>
+
+      <div className={styles.tableBody}>{children}</div>
     </div>
   );
 };

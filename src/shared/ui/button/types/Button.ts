@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, CSSProperties } from 'react';
 import type { To } from 'react-router-dom';
 
 export type ButtonVariant =
@@ -45,4 +45,5 @@ export interface ButtonProps {
   className?: string;
   children?: ReactNode;
   onClick?: () => void;
+  style?: CSSProperties;
 }

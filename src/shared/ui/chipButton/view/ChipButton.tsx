@@ -10,9 +10,13 @@ export const Chip: FC<ChipProps> = ({
   selected,
   disabled,
   className,
+  onClick,
 }) => {
   return (
-    <div
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
       className={classNames(
         styles.chip,
         styles[tone],
@@ -25,6 +29,6 @@ export const Chip: FC<ChipProps> = ({
       )}
     >
       <span className={styles.label}>{children}</span>
-    </div>
+    </button>
   );
 };

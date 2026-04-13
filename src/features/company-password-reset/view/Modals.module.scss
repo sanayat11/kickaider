@@ -1,0 +1,45 @@
+.footerRow {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+}
+
+.footerBtn {
+  flex: 1;
+}
+
+.formGroup {
+  margin-bottom: 16px;
+}
+
+.label {
+  display: block;
+  font-size: 13px;
+  color: #8a91b4;
+  margin-bottom: 6px;
+}
+
+.fullWidthSelect {
+  width: 100%;
+  min-width: 560px;
+}
+
+.confirmMessage {
+  text-align: center;
+  font-weight: 700;
+  font-size: 16px;
+  color: #4e5bd9;
+  margin-bottom: 24px;
+}
+
+.dangerBtn {
+  background: #ff0d0d !important;
+  color: white !important;
+  &:hover { opacity: 0.9; }
+}
+
+.successBtn {
+  background: #83d2cc !important;
+  color: white !important;
+  &:hover { opacity: 0.9; }
+}

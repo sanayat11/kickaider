@@ -6,6 +6,9 @@ export type TypographyVariant =
   | 'h3'
   | 'h4'
   | 'h5'
+  | 'body1'
+  | 'body2'
+  | 'caption'
 
 export type TypographyWeight = 'regular' | 'medium' | 'bold' | 'semiBold';
 

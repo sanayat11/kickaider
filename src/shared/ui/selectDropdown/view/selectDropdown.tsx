@@ -39,9 +39,11 @@ export const SelectDropdown = ({
   disabled = false,
   size = 'md',
   variant = 'bordered',
+  showChevron = true,
   leftIcon,
   className,
   menuClassName,
+  optionClassName,
   onChange,
 }: SelectDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -194,9 +196,11 @@ export const SelectDropdown = ({
           </span>
         </span>
 
-        <span className={[styles.chevron, isOpen ? styles.chevronOpen : ''].join(' ')}>
-          <ChevronIcon />
-        </span>
+        {showChevron && (
+          <span className={[styles.chevron, isOpen ? styles.chevronOpen : ''].join(' ')}>
+            <ChevronIcon />
+          </span>
+        )}
       </button>
 
       {isOpen && (
@@ -219,6 +223,7 @@ export const SelectDropdown = ({
                     isSelected ? styles.optionSelected : '',
                     isHovered ? styles.optionHovered : '',
                     option.disabled ? styles.optionDisabled : '',
+                    optionClassName ?? '',
                   ].join(' ')}
                   disabled={option.disabled}
                   onMouseEnter={() => setHoveredIndex(index)}

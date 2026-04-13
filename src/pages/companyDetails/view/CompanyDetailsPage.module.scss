@@ -1,0 +1,92 @@
+.page {
+  padding: 32px 40px;
+  min-height: 100vh;
+}
+
+.header {
+  margin-bottom: 24px;
+}
+
+.backBtn {
+  margin-left: -8px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 6px 24px rgba(16, 24, 40, 0.04);
+  border: 1px solid #edf1f7;
+  overflow: hidden;
+  padding: 24px 32px;
+}
+
+.companyTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 32px;
+  background: #f8f9ff;
+  border-bottom: 1px solid #edf1f7;
+
+  .title {
+    color: #1a1f4d;
+    font-size: 20px;
+    font-weight: 700;
+  }
+}
+
+.tableContainer {
+  overflow-x: auto;
+  border: 1px solid #edf1f7;
+  border-radius: 0 0 12px 12px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+
+  th {
+    padding: 16px 32px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #4e5bd9;
+    border-bottom: 1px solid #edf1f7;
+    background: #ffffff;
+    text-transform: uppercase;
+  }
+
+  td {
+    padding: 16px 32px;
+    border-bottom: 1px dashed #edf1f7;
+    vertical-align: middle;
+    font-size: 14px;
+    color: #8a91b4;
+  }
+}
+
+.alignRight {
+  text-align: right !important;
+  padding-right: 32px !important;
+}
+
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+
+  &.active {
+    background: #e3fcf7;
+    color: #10b981;
+  }
+  
+  &.suspended {
+    background: #ffebe9;
+    color: #ff4d4f;
+  }
+}

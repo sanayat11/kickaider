@@ -115,6 +115,8 @@ export const Sidebar: React.FC = () => {
     }
   };
 
+  const isSuperAdmin = true; // TODO: Replace with actual role context. Requirement: "чтоб в дальнейше можно было распределить по ролям и убрать его"
+
   return (
     <aside className={styles.sidebar}>
       <div className={styles.header}>
@@ -125,6 +127,25 @@ export const Sidebar: React.FC = () => {
       </div>
 
       <nav className={styles.nav}>
+        {isSuperAdmin && (
+          <>
+            <SidebarItem
+              id="companies"
+              icon={IoDocumentTextOutline}
+              label={t('sidebar.companies', 'Список компаний')}
+              active={location.pathname.startsWith(paths.COMPANIES)}
+              onClick={() => handleItemClick('companies', false, paths.COMPANIES)}
+            />
+            <SidebarItem
+              id="create_operator"
+              icon={IoDocumentTextOutline}
+              label={t('sidebar.createOperator', 'Создать оператора')}
+              active={location.pathname.startsWith(paths.CREATE_OPERATOR)}
+              onClick={() => handleItemClick('create_operator', false, paths.CREATE_OPERATOR)}
+            />
+          </>
+        )}
+
         <SidebarItem
           id="reports"
           icon={IoDocumentTextOutline}

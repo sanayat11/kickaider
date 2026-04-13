@@ -1,0 +1,53 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.actionBar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.searchBox {
+  flex: 1;
+  max-width: 600px;
+  
+  :global(.shared-ui-input-root) {
+    width: 100%;
+    
+    input {
+      height: 44px;
+      border-radius: 12px !important;
+      border: 1px solid #dfe3f5 !important;
+      font-size: 14px;
+      
+      &:focus {
+        border-color: #5b67f3 !important;
+        box-shadow: 0 0 0 3px rgba(91, 103, 243, 0.08);
+      }
+    }
+  }
+}
+
+.addBtn {
+  :global(.shared-ui-button-root) {
+    height: 44px;
+    border-radius: 12px !important;
+    padding: 0 20px !important;
+    background-color: #5b67f3 !important;
+    font-weight: 600 !important;
+    
+    &:hover {
+      background-color: #4b57e3 !important;
+    }
+  }
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}

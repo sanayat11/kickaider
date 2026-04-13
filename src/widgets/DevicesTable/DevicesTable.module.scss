@@ -1,0 +1,66 @@
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+
+  thead {
+    th {
+      text-align: left;
+      padding: 16px 24px;
+      background: #f0f2ff;
+      color: #1a1f4d;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    th:first-child {
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+    }
+
+    th:last-child {
+      border-top-right-radius: 10px;
+      border-bottom-right-radius: 10px;
+      text-align: right;
+    }
+  }
+
+  tbody {
+    tr {
+      height: 64px;
+      &:hover {
+        background-color: #fcfdff;
+      }
+    }
+
+    td {
+      padding: 0 24px;
+      border-bottom: 1px solid #f5f6fa;
+      vertical-align: middle;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+  }
+}
+
+.hostname {
+  color: #1a1f4d !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+}
+
+.actionsCol {
+  width: 160px;
+  text-align: right;
+}
+
+.assignBtn {
+  min-width: 100px;
+}
+
+.lastSeen {
+  color: #8a91b4 !important;
+  font-size: 14px !important;
+}

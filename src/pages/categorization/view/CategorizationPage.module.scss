@@ -1,6 +1,5 @@
 .wrapper {
   width: 100%;
-  padding: 0 40px;
 }
 
 @keyframes fadeIn {
@@ -37,7 +36,7 @@
   font-size: 12px !important;
   line-height: 1.4;
   font-weight: 400 !important;
-  color: #7f88b7 !important;
+  
 }
 
 .resetBtn {
@@ -117,7 +116,6 @@
 .tableCard {
   width: 100%;
   border-radius: 14px;
-  overflow: hidden;
   border: 1px solid #edf1fb;
 }
 
@@ -132,6 +130,8 @@
   color: #32408f;
   font-size: 13px;
   font-weight: 600;
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
 }
 
 .hColStatus {
@@ -146,9 +146,12 @@
   display: flex;
   flex-direction: column;
   background: #fff;
+  border-bottom-left-radius: 14px;
+  border-bottom-right-radius: 14px;
 }
 
 .row {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(260px, 1.7fr) minmax(220px, 1.4fr) 150px 44px;
   align-items: center;
@@ -156,19 +159,22 @@
   padding: 0 16px;
   border-bottom: 1px solid #edf1fb;
   transition: background 0.2s ease;
+  z-index: 1;
+
+  &:hover {
+    background: #fafcff;
+    z-index: 2;
+  }
+
+  &:focus-within {
+    z-index: 10;
+  }
 }
 
 .row:last-child {
   border-bottom: none;
-}
-
-.row:hover {
-  background: #fafcff;
-}
-
-.rowUpdating {
-  opacity: 0.55;
-  pointer-events: none;
+  border-bottom-left-radius: 14px;
+  border-bottom-right-radius: 14px;
 }
 
 .colName {

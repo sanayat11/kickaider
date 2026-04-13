@@ -4,6 +4,7 @@ import AttachmentIcon from './attachment.svg?react';
 import ClockIcon from './clock.svg?react';
 import DocumentIcon from './document.svg?react';
 import EditIcon from './edit.svg?react';
+import EditSimpleIcon from './editSimple.svg?react';
 import FilterIcon from './filter.svg?react';
 import GraphUpIcon from './graph-up.svg?react';
 import GroupIcon from './group.svg?react';
@@ -14,6 +15,7 @@ import SettingsIcon from './settings.svg?react';
 import StatUpIcon from './statUp.svg?react';
 import TimeZoneIcon from './timeZone.svg?react';
 import TrashIcon from './trash.svg?react';
+import TrashSimpleIcon from './trashSimple.svg?react';
 
 export {
   ArrowGraphUpIcon,
@@ -22,6 +24,7 @@ export {
   ClockIcon,
   DocumentIcon,
   EditIcon,
+  EditSimpleIcon,
   FilterIcon,
   GraphUpIcon,
   GroupIcon,
@@ -32,4 +35,5 @@ export {
   StatUpIcon,
   TimeZoneIcon,
   TrashIcon,
+  TrashSimpleIcon,
 };

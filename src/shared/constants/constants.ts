@@ -12,5 +12,8 @@ export const paths = {
   CATEGORIZATION: '/categorization',
   CALENDAR: '/calendar',
   SETTINGS: '/settings',
+  COMPANIES: '/companies',
+  COMPANY_DETAILS: '/companies/:companyId',
+  CREATE_OPERATOR: '/create-operator',
   AUTH: '/auth',
 };

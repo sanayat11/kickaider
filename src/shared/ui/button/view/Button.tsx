@@ -22,6 +22,7 @@ export const Button: FC<ButtonProps> = ({
   className,
   children,
   onClick,
+  style,
 }) => {
   const isExternal = typeof to === 'string' && to.startsWith('http');
 
@@ -56,6 +57,7 @@ export const Button: FC<ButtonProps> = ({
           rel={rel}
           className={classes}
           aria-disabled={disabled}
+          style={style}
           onClick={(e) => {
             if (disabled) e.preventDefault();
           }}
@@ -85,6 +87,7 @@ export const Button: FC<ButtonProps> = ({
       className={classes}
       disabled={disabled}
       onClick={disabled ? undefined : onClick}
+      style={style}
     >
       {content}
     </button>

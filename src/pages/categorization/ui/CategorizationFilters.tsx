@@ -37,7 +37,7 @@ export const CategorizationFilters: FC<CategorizationFiltersProps> = ({
 
           <SelectDropdown
             value={filter}
-            variant="ghost"
+            variant="bordered"
             onChange={(val) => setFilter(val as FilterType)}
             options={[
               { label: 'По времени', value: 'all' },

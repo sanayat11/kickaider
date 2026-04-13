@@ -1,0 +1,110 @@
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+/* ===== BODY ===== */
+tbody {
+  tr {
+    height: 64px;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: #fcfdff;
+    }
+  }
+
+  td {
+    padding: 0 24px;
+    border-bottom: 1px solid #f5f6fa;
+    vertical-align: middle;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+/* ===== COLUMNS ===== */
+.nameCol {
+  width: 45%;
+}
+
+.posCol {
+  width: 35%;
+}
+
+.actionsCol {
+  width: 20%;
+  text-align: right;
+}
+
+/* ===== NAME CELL ===== */
+.nameCell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  background: #e0e4fe;
+  color: #4e5bd9;
+  font-weight: 600;
+}
+
+.nameText {
+  color: #1a1f4d !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+}
+
+/* ===== POSITION ===== */
+.posText {
+  color: #3b3f5c !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+}
+
+/* ===== ACTIONS ===== */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+}
+
+.editBtn,
+.deleteBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  padding: 0 !important;
+}
+
+.editBtn {
+  color: #4e5bd9 !important;
+  &:hover {
+    background: rgba(78, 91, 217, 0.1) !important;
+  }
+}
+
+.deleteBtn {
+  color: #ff4d4f !important;
+  &:hover {
+    background: rgba(255, 77, 79, 0.1) !important;
+  }
+}
+
+.editIcon,
+.trashIcon {
+  width: 18px;
+  height: 18px;
+}

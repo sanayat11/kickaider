@@ -225,25 +225,29 @@
 
 .ghost {
   background: transparent;
-  border-color: transparent;
+  border: none; 
 }
 
 .ghost.blue,
 .ghost.primary {
   color: var(--accent-primary);
+  border: none; 
 
   &:hover {
-    background: var(--primary-50);
+    color: var(--accent-primary-hover); 
+    background: transparent; 
   }
 
   &:active {
-    background: var(--primary-100);
+    color: var(--accent-primary-active);
+    background: transparent;
   }
 
   &:disabled,
   &.disabled {
     color: var(--grey-400);
     background: transparent;
+    border: none;
   }
 }
 

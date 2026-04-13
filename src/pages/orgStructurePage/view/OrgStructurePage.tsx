@@ -1,525 +1,245 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import classNames from 'classnames';
+import { OrganizationHeader } from '@/widgets/OrganizationHeader';
+import { OrganizationTabs } from '@/widgets/OrganizationTabs';
+import { EmployeesSection } from '@/widgets/EmployeesSection';
+import { DevicesSection } from '@/widgets/DevicesSection';
+import { DepartmentAccordion } from '@/widgets/DepartmentAccordion';
+import { DevicesTable } from '@/widgets/DevicesTable';
+import { CreateDepartmentModal } from '@/features/create-department';
+import { EditDepartmentModal } from '@/features/edit-department';
+import { BindDeviceModal } from '@/features/bind-device';
+import { DeleteConfirmModal } from '@/features/deleteModal/view/DeleteModal';
+
+import type { Department, UnassignedDevice, OrgTab } from '../model/types';
+import { initialDepartments, initialUnassigned } from '../model/mockData';
+
 import styles from './OrgStructurePage.module.scss';
-import { IoChevronDownOutline, IoSearchOutline, IoTrashOutline, IoPencilOutline, IoAddOutline, IoCloseOutline, IoDesktopOutline, IoPeopleOutline } from 'react-icons/io5';
-import { BaseInput } from '@/shared/ui/input/view/BaseInput';
 
-// --- Types ---
-interface Employee {
-    id: string;
-    name: string;
-    position: string;
-}
+export const OrgStructurePage = () => {
+  const { t } = useTranslation();
 
-interface Department {
-    id: string;
-    name: string;
-    employees: Employee[];
-}
+  const [activeTab, setActiveTab] = useState<OrgTab>('employees');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [departments, setDepartments] = useState<Department[]>(initialDepartments);
+  const [unassignedDevices, setUnassignedDevices] = useState<UnassignedDevice[]>(initialUnassigned);
 
-interface UnassignedDevice {
-    id: string;
-    hostname: string;
-    lastSeen: string;
-}
+  const [isCreateDeptOpen, setIsCreateDeptOpen] = useState(false);
+  const [selectedDept, setSelectedDept] = useState<Department | null>(null);
+  const [selectedDevice, setSelectedDevice] = useState<UnassignedDevice | null>(null);
 
-// --- Mock Data ---
-const initialDepartments: Department[] = [
-    {
-        id: 'd1',
-        name: 'IT Отдел',
-        employees: [
-            { id: 'e1', name: 'Иванов Иван', position: 'Frontend Developer' },
-            { id: 'e2', name: 'Сауле Абдыкадырова Sakewa', position: 'Backend Developer' },
-        ],
-    },
-    {
-        id: 'd2',
-        name: 'HR Отдел',
-        employees: [
-            { id: 'e3', name: 'Смирнова Анна', position: 'HR Manager' },
-        ],
-    },
-];
+  const [deptToDelete, setDeptToDelete] = useState<Department | null>(null);
+  const [employeeToDelete, setEmployeeToDelete] = useState<{
+    empId: string;
+    deptId: string;
+    empName?: string;
+  } | null>(null);
 
-const initialUnassigned: UnassignedDevice[] = [
-    { id: 'u1', hostname: 'DESKTOP-NEW123', lastSeen: '10 минут назад' },
-    { id: 'u2', hostname: 'LAPTOP-GUEST01', lastSeen: '2 часа назад' },
-];
+  const filteredDepartments = useMemo(() => {
+    if (!searchQuery.trim()) return departments;
 
-export const OrgStructurePage: React.FC = () => {
-    const { t } = useTranslation();
-    const [activeTab, setActiveTab] = useState<'employees' | 'devices'>('employees');
+    const query = searchQuery.toLowerCase();
 
-    const [departments, setDepartments] = useState<Department[]>(initialDepartments);
-    const [unassignedDevices, setUnassignedDevices] = useState<UnassignedDevice[]>(initialUnassigned);
+    return departments
+      .map((dept) => {
+        const filteredEmployees = dept.employees.filter(
+          (emp) =>
+            emp.name.toLowerCase().includes(query) ||
+            emp.position.toLowerCase().includes(query),
+        );
 
-    // Accordion state
-    const [expandedDepts, setExpandedDepts] = useState<Record<string, boolean>>({
-        'd1': true,
-        'd2': true
-    });
+        const isDeptMatch = dept.name.toLowerCase().includes(query);
 
-    const [searchQuery, setSearchQuery] = useState('');
-
-    const toggleDept = (id: string) => {
-        setExpandedDepts(prev => ({ ...prev, [id]: !prev[id] }));
-    };
-
-    // --- Modal States ---
-    const [isDeptModalOpen, setDeptModalOpen] = useState(false);
-    const [deptModalMode, setDeptModalMode] = useState<'create' | 'edit'>('create');
-    const [editingDeptId, setEditingDeptId] = useState<string | null>(null);
-    const [deptFormName, setDeptFormName] = useState('');
-
-    const [isEmpModalOpen, setEmpModalOpen] = useState(false);
-    const [editingEmpId, setEditingEmpId] = useState<string | null>(null);
-    const [empFormName, setEmpFormName] = useState('');
-    const [empFormPosition, setEmpFormPosition] = useState('');
-    const [empFormDeptId, setEmpFormDeptId] = useState('');
-
-    const [isBindModalOpen, setBindModalOpen] = useState(false);
-    const [bindingDeviceId, setBindingDeviceId] = useState<string | null>(null);
-
-    // --- Actions ---
-    const openCreateDeptModal = () => {
-        setDeptModalMode('create');
-        setDeptFormName('');
-        setDeptModalOpen(true);
-    };
-
-    const filteredDepartments = useMemo(() => {
-        if (!searchQuery.trim()) return departments;
-
-        const lowerQuery = searchQuery.toLowerCase();
-
-        return departments.map(dept => {
-            if (dept.name.toLowerCase().includes(lowerQuery)) {
-                return dept; // Keep whole department, maybe expand it?
-            }
-
-            const matchingEmployees = dept.employees.filter(emp =>
-                emp.name.toLowerCase().includes(lowerQuery) ||
-                emp.position.toLowerCase().includes(lowerQuery)
-            );
-
-            if (matchingEmployees.length > 0) {
-                return { ...dept, employees: matchingEmployees };
-            }
-
-            return null;
-        }).filter(Boolean) as Department[];
-    }, [departments, searchQuery]);
-
-    const openEditDeptModal = (dept: Department) => {
-        setDeptModalMode('edit');
-        setEditingDeptId(dept.id);
-        setDeptFormName(dept.name);
-        setDeptModalOpen(true);
-    };
-
-    const handleSaveDept = () => {
-        if (!deptFormName.trim()) return;
-
-        if (deptModalMode === 'create') {
-            const newDept: Department = {
-                id: `d${Date.now()}`,
-                name: deptFormName,
-                employees: []
-            };
-            setDepartments([...departments, newDept]);
-            setExpandedDepts(prev => ({ ...prev, [newDept.id]: true }));
-        } else if (deptModalMode === 'edit' && editingDeptId) {
-            setDepartments(departments.map(d => d.id === editingDeptId ? { ...d, name: deptFormName } : d));
+        if (isDeptMatch) {
+          return dept;
         }
-        setDeptModalOpen(false);
+
+        if (filteredEmployees.length > 0) {
+          return { ...dept, employees: filteredEmployees };
+        }
+
+        return null;
+      })
+      .filter(Boolean) as Department[];
+  }, [departments, searchQuery]);
+
+  const handleCreateDept = (name: string) => {
+    const newDept: Department = {
+      id: Date.now().toString(),
+      name,
+      employees: [],
     };
 
-    const handleDeleteDept = (id: string) => {
-        // Optional: show confirmation here
-        setDepartments(departments.filter(d => d.id !== id));
-    };
+    setDepartments((prev) => [...prev, newDept]);
+  };
 
-    const openEditEmpModal = (emp: Employee, deptId: string) => {
-        setEditingEmpId(emp.id);
-        setEmpFormName(emp.name);
-        setEmpFormPosition(emp.position);
-        setEmpFormDeptId(deptId);
-        setEmpModalOpen(true);
-    };
+  const handleEditDept = (name: string) => {
+    if (!selectedDept) return;
 
-    const handleSaveEmp = () => {
-        if (!empFormName.trim() || !editingEmpId) return;
+    setDepartments((prev) =>
+      prev.map((dept) =>
+        dept.id === selectedDept.id ? { ...dept, name } : dept,
+      ),
+    );
+  };
 
-        // Find old department and remove
-        let oldDeptId = '';
-        departments.forEach(d => {
-            if (d.employees.some(e => e.id === editingEmpId)) oldDeptId = d.id;
-        });
+  const handleDeleteDeptConfirm = () => {
+    if (!deptToDelete) return;
 
-        const empClone = departments.find(d => d.id === oldDeptId)?.employees.find(e => e.id === editingEmpId);
-        if (!empClone) return;
+    setDepartments((prev) => prev.filter((dept) => dept.id !== deptToDelete.id));
+    setDeptToDelete(null);
+  };
 
-        const updatedEmp = { ...empClone, name: empFormName, position: empFormPosition };
+  const handleDeleteEmployeeConfirm = () => {
+    if (!employeeToDelete) return;
 
-        setDepartments(departments.map(d => {
-            if (d.id === oldDeptId && d.id !== empFormDeptId) {
-                // Removing from old dept
-                return { ...d, employees: d.employees.filter(e => e.id !== editingEmpId) };
+    setDepartments((prev) =>
+      prev.map((dept) =>
+        dept.id === employeeToDelete.deptId
+          ? {
+              ...dept,
+              employees: dept.employees.filter(
+                (emp) => emp.id !== employeeToDelete.empId,
+              ),
             }
-            if (d.id === empFormDeptId && d.id !== oldDeptId) {
-                // Adding to new dept
-                return { ...d, employees: [...d.employees, updatedEmp] };
+          : dept,
+      ),
+    );
+
+    setEmployeeToDelete(null);
+  };
+
+  const handleBindDevice = (data: {
+    employeeName: string;
+    position: string;
+    deptId: string;
+    deviceId?: string;
+  }) => {
+    setUnassignedDevices((prev) =>
+      prev.filter((device) => device.id !== data.deviceId),
+    );
+
+    setDepartments((prev) =>
+      prev.map((dept) =>
+        dept.id === data.deptId
+          ? {
+              ...dept,
+              employees: [
+                ...dept.employees,
+                {
+                  id: Date.now().toString(),
+                  name: data.employeeName,
+                  position: data.position,
+                },
+              ],
             }
-            if (d.id === oldDeptId && d.id === empFormDeptId) {
-                // Just updating within the same dept
-                return { ...d, employees: d.employees.map(e => e.id === editingEmpId ? updatedEmp : e) };
-            }
-            return d;
-        }));
+          : dept,
+      ),
+    );
+  };
 
-        setEmpModalOpen(false);
-    };
+  return (
+    <div className={styles.container}>
+      <OrganizationHeader
+        title={t('settings.organization.title')}
+        subtitle={
+          t('settings.organization.subtitle') ||
+          'Общий аналитический обзор по компании или сотруднику'
+        }
+      />
 
-    const handleDeleteEmp = (empId: string, deptId: string) => {
-        setDepartments(departments.map(d => {
-            if (d.id === deptId) {
-                return { ...d, employees: d.employees.filter(e => e.id !== empId) };
-            }
-            return d;
-        }));
-    };
+      <main className={styles.main}>
+        <div className={styles.card}>
+          <OrganizationTabs
+            activeTab={activeTab}
+            onChange={setActiveTab}
+            unassignedCount={unassignedDevices.length}
+          />
 
-    const openBindModal = (device: UnassignedDevice) => {
-        setBindingDeviceId(device.id);
-        setEmpFormName('');
-        setEmpFormPosition('');
-        setEmpFormDeptId(departments.length > 0 ? departments[0].id : '');
-        setBindModalOpen(true);
-    };
+          <div className={styles.tabsBody}>
+            {activeTab === 'employees' ? (
+              <EmployeesSection
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                onAddDept={() => setIsCreateDeptOpen(true)}
+              >
+                {filteredDepartments.map((dept) => (
+                  <DepartmentAccordion
+                    key={dept.id}
+                    department={dept}
+                    defaultExpanded={!!searchQuery}
+                    onEditDept={(department) => setSelectedDept(department)}
+                    onDeleteDept={(deptId) => {
+                      const department =
+                        departments.find((item) => item.id === deptId) ?? null;
+                      setDeptToDelete(department);
+                    }}
+                    onEditEmployee={(emp) => {
+                      console.log('Edit employee', emp);
+                    }}
+                    onDeleteEmployee={(empId, deptId) => {
+                      const department = departments.find((d) => d.id === deptId);
+                      const employee = department?.employees.find((e) => e.id === empId);
 
-    const handleBindDevice = () => {
-        if (!empFormName.trim() || !empFormDeptId || !bindingDeviceId) return;
-
-        const newEmp: Employee = {
-            id: `e${Date.now()}`,
-            name: empFormName,
-            position: empFormPosition || 'Сотрудник',
-        };
-
-        // Add to department
-        setDepartments(departments.map(d => d.id === empFormDeptId ? { ...d, employees: [...d.employees, newEmp] } : d));
-
-        // Remove from unassigned
-        setUnassignedDevices(unassignedDevices.filter(d => d.id !== bindingDeviceId));
-
-        setBindModalOpen(false);
-    };
-
-
-    // --- Renderers ---
-    const renderEmployeesTab = () => (
-        <div className={styles.tabContent}>
-            <div className={styles.actionBar}>
-                <div className={styles.searchBox}>
-                    <BaseInput
-                        type="text"
-                        placeholder={t('settings.organization.employees.search')}
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        icon={<IoSearchOutline />}
-                    />
-                </div>
-                <button className={styles.primaryBtn} onClick={openCreateDeptModal}>
-                    <IoAddOutline size={18} />
-                    {t('settings.organization.employees.addDept')}
-                </button>
-            </div>
-
-            <div className={styles.departmentsList}>
-                {filteredDepartments.map(dept => (
-                    <div key={dept.id} className={classNames(styles.deptAccordion, { [styles.expanded]: expandedDepts[dept.id] || searchQuery.trim().length > 0 })}>
-                        <div className={styles.deptHeader}>
-                            <div className={styles.deptInfo} onClick={() => toggleDept(dept.id)}>
-                                <IoChevronDownOutline className={styles.arrowIcon} />
-                                <h3>{dept.name}</h3>
-                                <span className={styles.badge}>{dept.employees.length} {t('settings.organization.employees.ppl')}</span>
-                            </div>
-                            <div className={styles.deptActions}>
-                                <button className={styles.iconBtn} onClick={() => openEditDeptModal(dept)} title={t('settings.organization.employees.editDept')}>
-                                    <IoPencilOutline size={16} />
-                                </button>
-                                <button className={classNames(styles.iconBtn, styles.dangerBtn)} onClick={() => handleDeleteDept(dept.id)} title={t('settings.organization.employees.deleteDept')}>
-                                    <IoTrashOutline size={16} />
-                                </button>
-                            </div>
-                        </div>
-
-                        {(expandedDepts[dept.id] || searchQuery.trim().length > 0) && (
-                            <div className={styles.deptBody}>
-                                {dept.employees.length === 0 ? (
-                                    <div className={styles.emptyStateContainer}>{t('settings.organization.employees.emptyDept')}</div>
-                                ) : (
-                                    <table className={styles.empTable}>
-                                        <thead>
-                                            <tr>
-                                                <th>{t('settings.organization.employees.table.fullName')}</th>
-                                                <th>{t('settings.organization.employees.table.position')}</th>
-                                                <th className={styles.actionsCol}>{t('settings.organization.employees.table.actions')}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {dept.employees.map(emp => (
-                                                <tr key={emp.id}>
-                                                    <td>
-                                                        <div className={styles.empNameCol}>
-                                                            <div className={styles.avatar}>{emp.name.substring(0, 2).toUpperCase()}</div>
-                                                            {emp.name}
-                                                        </div>
-                                                    </td>
-                                                    <td className={styles.positionText}>{emp.position}</td>
-                                                    <td className={styles.actionsCol}>
-                                                        <button className={styles.iconBtn} onClick={() => openEditEmpModal(emp, dept.id)}>
-                                                            <IoPencilOutline size={16} />
-                                                        </button>
-                                                        <button className={classNames(styles.iconBtn, styles.dangerBtn)} onClick={() => handleDeleteEmp(emp.id, dept.id)}>
-                                                            <IoTrashOutline size={16} />
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                )}
-                            </div>
-                        )}
-                    </div>
+                      setEmployeeToDelete({
+                        empId,
+                        deptId,
+                        empName: employee?.name,
+                      });
+                    }}
+                  />
                 ))}
-
-                {filteredDepartments.length === 0 && (
-                    <div className={styles.emptyResults}>{t('settings.organization.employees.noResults')}</div>
-                )}
-            </div>
-        </div>
-    );
-
-    const renderDevicesTab = () => (
-        <div className={styles.tabContent}>
-            <div className={styles.cardHeader}>
-                <h3>{t('settings.organization.devices.title')}</h3>
-                <p>{t('settings.organization.devices.subtitle')}</p>
-            </div>
-
-            <div className={styles.deviceList}>
-                {unassignedDevices.length === 0 ? (
-                    <div className={styles.emptyResults}>{t('settings.organization.devices.allAssigned')}</div>
-                ) : (
-                    <table className={styles.empTable}>
-                        <thead>
-                            <tr>
-                                <th>{t('settings.organization.devices.table.hostname')}</th>
-                                <th>{t('settings.organization.devices.table.lastSeen')}</th>
-                                <th className={styles.actionsCol}>{t('settings.organization.employees.table.actions')}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {unassignedDevices.map(device => (
-                                <tr key={device.id}>
-                                    <td>
-                                        <div className={styles.hostNameCol}>
-                                            <IoDesktopOutline className={styles.desktopIcon} size={18} />
-                                            {device.hostname}
-                                        </div>
-                                    </td>
-                                    <td className={styles.positionText}>{device.lastSeen}</td>
-                                    <td className={styles.actionsCol}>
-                                        <button className={styles.primaryBtnSm} onClick={() => openBindModal(device)}>
-                                            {t('settings.organization.devices.assignBtn')}
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                )}
-            </div>
-        </div>
-    );
-
-    return (
-        <div className={styles.container}>
-            <div className={styles.headerArea}>
-                <h2>{t('settings.organization.title')}</h2>
-                <p>{t('settings.organization.subtitle')}</p>
-            </div>
-
-            <main className={styles.main}>
-                <div className={styles.card}>
-                    <div className={styles.tabsHeader}>
-                        <button
-                            className={classNames(styles.tabBtn, { [styles.active]: activeTab === 'employees' })}
-                            onClick={() => setActiveTab('employees')}
-                        >
-                            <IoPeopleOutline size={18} />
-                            {t('settings.organization.tabs.employees')}
-                        </button>
-                        <button
-                            className={classNames(styles.tabBtn, { [styles.active]: activeTab === 'devices' })}
-                            onClick={() => setActiveTab('devices')}
-                        >
-                            <IoDesktopOutline size={18} />
-                            {t('settings.organization.tabs.devices')}
-                            {unassignedDevices.length > 0 && <span className={styles.tabBadge}>{unassignedDevices.length}</span>}
-                        </button>
-                    </div>
-
-                    <div className={styles.tabsBody}>
-                        {activeTab === 'employees' && renderEmployeesTab()}
-                        {activeTab === 'devices' && renderDevicesTab()}
-                    </div>
-                </div>
-            </main>
-
-            {/* --- Modals --- */}
-
-            {/* Department Modal */}
-            {isDeptModalOpen && (
-                <div className={styles.modalOverlay}>
-                    <div className={styles.modalContent}>
-                        <div className={styles.modalHeader}>
-                            <h3>{deptModalMode === 'create' ? t('settings.organization.modals.dept.create') : t('settings.organization.modals.dept.edit')}</h3>
-                            <button className={styles.closeBtn} onClick={() => setDeptModalOpen(false)}>
-                                <IoCloseOutline size={24} />
-                            </button>
-                        </div>
-                        <div className={styles.modalBody}>
-                            <div className={styles.inputGroup}>
-                                <BaseInput
-                                    label={t('settings.organization.modals.dept.name')}
-                                    type="text"
-                                    value={deptFormName}
-                                    onChange={(e) => setDeptFormName(e.target.value)}
-                                    placeholder={t('settings.organization.modals.dept.placeholder')}
-                                    autoFocus
-                                />
-                            </div>
-                        </div>
-                        <div className={styles.modalFooter}>
-                            <button className={styles.ghostBtn} onClick={() => setDeptModalOpen(false)}>{t('common.cancel')}</button>
-                            <button className={styles.primaryBtn} onClick={handleSaveDept} disabled={!deptFormName.trim()}>
-                                {t('common.save')}
-                            </button>
-                        </div>
-                    </div>
-                </div>
+              </EmployeesSection>
+            ) : (
+              <DevicesSection>
+                <DevicesTable
+                  devices={unassignedDevices}
+                  onAssign={(device) => setSelectedDevice(device)}
+                />
+              </DevicesSection>
             )}
-
-            {/* Employee Edit Modal */}
-            {isEmpModalOpen && (
-                <div className={styles.modalOverlay}>
-                    <div className={styles.modalContent}>
-                        <div className={styles.modalHeader}>
-                            <h3>{t('settings.organization.modals.emp.edit')}</h3>
-                            <button className={styles.closeBtn} onClick={() => setEmpModalOpen(false)}>
-                                <IoCloseOutline size={24} />
-                            </button>
-                        </div>
-                        <div className={styles.modalBody}>
-                            <div className={styles.inputGroup}>
-                                <BaseInput
-                                    label="ФИО Сотрудника"
-                                    type="text"
-                                    value={empFormName}
-                                    onChange={(e) => setEmpFormName(e.target.value)}
-                                />
-                            </div>
-                            <div className={styles.inputGroup}>
-                                <BaseInput
-                                    label="Должность"
-                                    type="text"
-                                    value={empFormPosition}
-                                    onChange={(e) => setEmpFormPosition(e.target.value)}
-                                />
-                            </div>
-                            <div className={styles.inputGroup}>
-                                <label>Отдел</label>
-                                <select
-                                    value={empFormDeptId}
-                                    onChange={(e) => setEmpFormDeptId(e.target.value)}
-                                >
-                                    {departments.map(d => (
-                                        <option key={d.id} value={d.id}>{d.name}</option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
-                        <div className={styles.modalFooter}>
-                            <button className={styles.ghostBtn} onClick={() => setEmpModalOpen(false)}>{t('common.cancel')}</button>
-                            <button className={styles.primaryBtn} onClick={handleSaveEmp} disabled={!empFormName.trim()}>
-                                {t('common.save')}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Bind Device Modal */}
-            {isBindModalOpen && (
-                <div className={styles.modalOverlay}>
-                    <div className={styles.modalContent}>
-                        <div className={styles.modalHeader}>
-                            <h3>Привязать устройство</h3>
-                            <button className={styles.closeBtn} onClick={() => setBindModalOpen(false)}>
-                                <IoCloseOutline size={24} />
-                            </button>
-                        </div>
-                        <div className={styles.modalBody}>
-                            <p className={styles.modalDesc}>
-                                {t('settings.organization.modals.bind.desc1')}<strong>{unassignedDevices.find(d => d.id === bindingDeviceId)?.hostname}</strong>{t('settings.organization.modals.bind.desc2')}
-                            </p>
-                            <div className={styles.inputGroup}>
-                                <BaseInput
-                                    label={t('settings.organization.modals.emp.name')}
-                                    type="text"
-                                    value={empFormName}
-                                    onChange={(e) => setEmpFormName(e.target.value)}
-                                    placeholder={t('settings.organization.modals.emp.namePlaceholder')}
-                                    autoFocus
-                                />
-                            </div>
-                            <div className={styles.inputGroup}>
-                                <BaseInput
-                                    label={t('settings.organization.modals.emp.position')}
-                                    type="text"
-                                    value={empFormPosition}
-                                    onChange={(e) => setEmpFormPosition(e.target.value)}
-                                    placeholder={t('settings.organization.modals.emp.positionPlaceholder')}
-                                />
-                            </div>
-                            <div className={styles.inputGroup}>
-                                <label>{t('settings.organization.modals.emp.dept')}</label>
-                                <select
-                                    value={empFormDeptId}
-                                    onChange={(e) => setEmpFormDeptId(e.target.value)}
-                                >
-                                    {departments.map(d => (
-                                        <option key={d.id} value={d.id}>{d.name}</option>
-                                    ))}
-                                    {departments.length === 0 && <option value="" disabled>{t('settings.organization.modals.emp.createDeptFirst')}</option>}
-                                </select>
-                            </div>
-                        </div>
-                        <div className={styles.modalFooter}>
-                            <button className={styles.ghostBtn} onClick={() => setBindModalOpen(false)}>{t('common.cancel')}</button>
-                            <button className={styles.primaryBtn} onClick={handleBindDevice} disabled={!empFormName.trim() || !empFormDeptId}>
-                                {t('settings.organization.modals.bind.assignBtn')}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
+          </div>
         </div>
-    );
+      </main>
+
+      <CreateDepartmentModal
+        open={isCreateDeptOpen}
+        onClose={() => setIsCreateDeptOpen(false)}
+        onSave={handleCreateDept}
+      />
+
+      <EditDepartmentModal
+        open={!!selectedDept}
+        onClose={() => setSelectedDept(null)}
+        department={selectedDept}
+        onSave={handleEditDept}
+      />
+
+      <BindDeviceModal
+        open={!!selectedDevice}
+        onClose={() => setSelectedDevice(null)}
+        device={selectedDevice}
+        departments={departments}
+        onSave={handleBindDevice}
+      />
+
+      <DeleteConfirmModal
+        open={!!deptToDelete}
+        onClose={() => setDeptToDelete(null)}
+        onConfirm={handleDeleteDeptConfirm}
+        title="Удалить отдел"
+        description={`Вы действительно хотите удалить отдел "${deptToDelete?.name ?? ''}"?`}
+        confirmText="Удалить"
+      />
+
+      <DeleteConfirmModal
+        open={!!employeeToDelete}
+        onClose={() => setEmployeeToDelete(null)}
+        onConfirm={handleDeleteEmployeeConfirm}
+        title="Удалить сотрудника"
+        description={`Вы действительно хотите удалить сотрудника "${employeeToDelete?.empName ?? ''}"?`}
+        confirmText="Удалить"
+      />
+    </div>
+  );
 };

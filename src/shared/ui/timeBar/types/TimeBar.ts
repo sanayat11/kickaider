@@ -16,4 +16,5 @@ export type TimeBarProps = {
   labels?: string[];
   className?: string;
   height?: 'sm' | 'md';
+  onSegmentClick?: (segmentId: string, event: React.MouseEvent) => void;
 };

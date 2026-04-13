@@ -15,6 +15,9 @@ import { ActivityDetailsPage } from '@/pages/activityDetail';
 import { CategorizationPage } from '@/pages/categorization';
 import { ProductionCalendarPage } from '@/pages/calendar/view/ProductionCalendarPage';
 import { SettingsPage } from '@/pages/settings';
+import { CompaniesPage } from '@/pages/companies/view/CompaniesPage';
+import { CompanyDetailsPage } from '@/pages/companyDetails/view/CompanyDetailsPage';
+import { CreateOperatorPage } from '@/pages/createOperator/view/CreateOperatorPage';
 
 export const Router = createBrowserRouter([
   {
@@ -111,6 +114,30 @@ export const Router = createBrowserRouter([
       {
         index: true,
         element: <SettingsPage />,
+      },
+    ],
+  },
+  {
+    path: paths.COMPANIES,
+    element: <DashboardPage />,
+    children: [
+      {
+        index: true,
+        element: <CompaniesPage />,
+      },
+      {
+        path: ':companyId',
+        element: <CompanyDetailsPage />,
+      },
+    ],
+  },
+  {
+    path: paths.CREATE_OPERATOR,
+    element: <DashboardPage />,
+    children: [
+      {
+        index: true,
+        element: <CreateOperatorPage />,
       },
     ],
   },

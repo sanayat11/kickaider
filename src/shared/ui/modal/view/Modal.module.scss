@@ -2,8 +2,8 @@
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: rgba(15, 23, 64, 0.32);
-  backdrop-filter: blur(2px);
+  background: rgba(15, 23, 64, 0.4);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -12,34 +12,25 @@
 
 .modal {
   width: 100%;
-  background: var(--bg-color);
-  border-radius: 12px;
-  box-shadow: 0 16px 40px rgba(16, 27, 86, 0.28);
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(16, 27, 86, 0.2);
   overflow: hidden;
-  animation: modalFadeIn 0.2s ease;
-  border: 1px solid rgba(226, 231, 251, 0.9);
+  animation: modalFadeIn 0.3s ease-out;
+  border: 1px solid #edf1f7;
 }
 
-.sm {
-  max-width: 340px;
-}
-
-.md {
-  max-width: 602px;
-}
-
-.lg {
-  max-width: 760px;
-}
+.sm { max-width: 400px; }
+.md { max-width: 540px; }
+.lg { max-width: 800px; }
 
 .header {
-  min-height: 52px;
-  padding: 20px 20px 12px;
+  padding: 24px 32px 16px;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  border-bottom: 1px solid #e8ebfa;
+  gap: 16px;
+  border-bottom: 1px solid #f5f6fa;
 }
 
 .titleWrap {
@@ -48,42 +39,48 @@
 }
 
 .title {
-  color: var(--primary-800);
+  color: #1a1f4d !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
 }
 
 .closeButton {
-  width: 20px;
-  height: 20px;
-  padding: 0;
-  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
   background: transparent;
-  color: #8f95ba;
-  display: inline-flex;
+  color: #8a91b4;
+  display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  flex-shrink: 0;
-  transition: color 0.2s ease, opacity 0.2s ease;
+  transition: all 0.2s ease;
 
   &:hover {
-    color: var(--primary-800);
+    background: #f5f6fa;
+    color: #1a1f4d;
   }
 }
 
 .body {
-  padding: 16px 20px 20px;
+  padding: 24px 32px;
 }
 
 .footer {
-  padding: 0 20px 20px;
+  padding: 0 32px 32px;
+  display: flex;
+  gap: 12px;
+  
+  :global(.shared-ui-button-root) {
+    flex: 1;
+  }
 }
 
 @keyframes modalFadeIn {
   from {
     opacity: 0;
-    transform: translateY(8px) scale(0.985);
+    transform: translateY(12px) scale(0.98);
   }
-
   to {
     opacity: 1;
     transform: translateY(0) scale(1);

@@ -8,6 +8,7 @@ interface BaseInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   icon?: React.ReactNode;
   success?: boolean;
   className?: string;
+  fullWidth?: boolean;
 }
 
 export const BaseInput = ({
@@ -16,6 +17,7 @@ export const BaseInput = ({
   icon,
   success,
   className,
+  fullWidth,
   disabled,
   id,
   ...rest
@@ -23,7 +25,7 @@ export const BaseInput = ({
   const inputId = id ?? rest.name;
 
   return (
-    <div className={cn(styles.wrapper, className)}>
+    <div className={cn(styles.wrapper, { [styles.fullWidth]: fullWidth }, className)}>
       {label && (
         <label htmlFor={inputId} className={styles.label}>
           {label}

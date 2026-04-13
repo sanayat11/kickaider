@@ -1,0 +1,26 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.subtitle {
+  color: #8e94b7 !important;
+}
+
+.instruction {
+  margin-bottom: 4px;
+}
+
+.content {
+  background: #fff;
+  border: 1px solid #edf0fb;
+  border-radius: 12px;
+  overflow: hidden;
+}

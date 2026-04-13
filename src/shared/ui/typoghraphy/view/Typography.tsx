@@ -21,6 +21,9 @@ export const Typography: FC<TypographyProps> = ({
     h3: 'h3',
     h4: 'h4',
     h5: 'h5',
+    body1: 'p',
+    body2: 'p',
+    caption: 'span',
   };
 
   const TagName = (as ?? Tags[variant] ?? 'span') as keyof JSX.IntrinsicElements;

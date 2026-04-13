@@ -1,0 +1,213 @@
+.page {
+  padding: 32px 40px;
+  min-height: 100vh;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 6px 24px rgba(16, 24, 40, 0.04);
+  border: 1px solid #edf1f7;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  width: 1146px;
+  margin-bottom: 32px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+
+  .titleBlock {
+    .title {
+
+      color: var(--primary-900);
+      margin: 0 0 4px 0;
+    }
+    .subtitle {
+      color: #8a91b4;
+      margin: 0;
+    }
+  }
+}
+
+.controlsWrapper {
+  margin-bottom: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.segmentedControl {
+  width: 1146px;
+  margin-bottom: 32px;
+}
+
+.segmentedWrap {
+  width: 100%;
+  min-width: 1146px;
+}
+
+.searchInp {
+  width: 100%;
+  min-width: 868px;
+}
+
+.searchRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  width: 1146px;
+}
+
+.searchWrap {
+  flex: 1;
+}
+
+.createBtn {
+  min-width: 254px;
+  height: 44px;
+  border-radius: 12px;
+}
+
+/* Table */
+.tableContainer {
+  overflow-x: auto;
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+
+    th {
+      padding: 16px 32px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--primary-800);
+      border-bottom: 1px solid #edf1f7;
+      background: #ffffff;
+    }
+
+    td {
+      padding: 16px 32px;
+      border-bottom: 1px dashed #edf1f7;
+      vertical-align: middle;
+      font-size: 14px;
+      color: var(--text-color-2);
+    }
+    
+    .primaryText {
+      color: var(--text-color-2);
+      font-weight: 400;
+      font-size: 14px;
+    }
+
+    tbody tr:hover {
+      background: #fcfdff;
+    }
+  }
+}
+
+.alignRight {
+  text-align: right !important;
+  padding-right: 32px !important; // Match the card's standard horizontal padding
+}
+
+.statusSelect {
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  min-height: auto !important;
+  width: auto !important;
+  display: inline-flex !important;
+  
+  &:hover {
+    background: transparent !important;
+  }
+
+  // Target the internal trigger button from SelectDropdown
+  & > button {
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    width: auto !important;
+    min-height: auto !important;
+    box-shadow: none !important;
+
+    &:hover {
+      background: transparent !important;
+    }
+  }
+
+  > div {
+    padding: 0 !important;
+  }
+}
+
+.statusMenu {
+  background: #ffffff !important;
+  border-radius: 20px !important;
+  border: none !important;
+  box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.1) !important;
+  padding: 12px !important;
+  width: auto !important;
+  min-width: 140px;
+  top: calc(100% + 4px) !important;
+
+  &::before {
+    display: none;
+  }
+  button, 
+  [class*="option"] {
+    background: transparent !important;
+    color: inherit !important;
+    box-shadow: none !important;
+    outline: none !important;
+    
+    &:hover, 
+    &:focus, 
+    &:active {
+      background: transparent !important;
+      color: inherit !important;
+      box-shadow: none !important;
+    }
+  }
+}
+
+.statusOption {
+  padding: 4px 0 !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  display: flex !important;
+  justify-content: center !important;
+  
+  & > button {
+    background: transparent !important;
+    padding: 0 !important;
+    justify-content: center !important;
+  }
+
+  // Refine Chip look in the menu
+  div[class*="chip"] {
+    width: 120px;
+    justify-content: center;
+    border-radius: 8px;
+    height: 32px;
+    transition: transform 0.2s ease, filter 0.2s ease;
+    
+    & > span {
+      text-align: center;
+    }
+  }
+
+  &:hover {
+    div[class*="chip"] {
+      transform: scale(1.05);
+      filter: brightness(1.1);
+    }
+  }
+}
+
+

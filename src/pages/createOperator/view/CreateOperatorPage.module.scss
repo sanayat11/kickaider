@@ -1,0 +1,75 @@
+.page {
+  padding: 32px 40px;
+  min-height: 100vh;
+}
+
+.header {
+  margin-bottom: 24px;
+}
+
+.backBtn {
+  margin-left: -8px;
+  margin-bottom: 8px;
+}
+
+.pageTitle {
+  margin-bottom: 32px;
+  margin-left: 5px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 6px 24px rgba(16, 24, 40, 0.04);
+  border: 1px solid #edf1f7;
+  overflow: hidden;
+  max-width: 1146px;
+}
+
+.cardTitleRow {
+  padding: 24px 32px;
+  background: #f8f9ff;
+  border-bottom: 1px solid #edf1f7;
+
+  .cardTitle {
+    color: var(--primary-900);
+    font-size: 20px;
+    font-weight: 700;
+  }
+}
+
+.cardContent {
+  padding: 32px;
+}
+
+.formGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.formGroup {
+  .label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #8a91b4;
+    margin-bottom: 8px;
+  }
+
+  .inputField {
+    width: 100%;
+    // max-width: 500px;
+  }
+}
+
+.footer {
+  display: flex;
+  gap: 16px;
+  margin-top: 40px;
+
+
+}
+.btn {
+  width: 1000px;
+}

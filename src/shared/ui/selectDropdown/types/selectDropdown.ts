@@ -21,5 +21,6 @@ export interface SelectDropdownProps {
   leftIcon?: ReactNode;
   className?: string;
   menuClassName?: string;
+  optionClassName?: string;
   onChange?: (value: string) => void;
 }

@@ -13,10 +13,10 @@ export const ActivityHeader: FC = () => {
           Общий аналитический обзор по компании или сотруднику
         </Typography>
       </div>
-      <Button 
-        variant="primary" 
-        size="large" 
-        rightIcon={<FiLink />} 
+      <Button
+        variant="primary"
+        size="large"
+        rightIcon={<FiLink />}
         style={{ backgroundColor: '#4e5bd9', borderRadius: '10px' }}
       >
         Экспорт XLS

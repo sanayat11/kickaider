@@ -45,7 +45,7 @@ export const DetailsTableFull: FC<DetailsTableFullProps> = ({ events }) => {
             <td>
               <div 
                 className={styles.screenshotThumb} 
-                style={{ backgroundImage: `url(/src/shared/assets/images/imgBoost2.png)` }}
+                style={{ backgroundImage: `url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIFExawxp46Gv-ZqiqQtFADbtBLjN9CRbQ5Q&s)` }}
               />
             </td>
           </tr>

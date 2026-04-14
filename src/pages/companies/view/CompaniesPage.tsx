@@ -20,8 +20,8 @@ const initialCompanies = [
 ];
 
 const COMPANY_STATUS_OPTIONS = [
-  { label: <Chip tone="red">Suspended</Chip>, value: 'Suspended' },
-  { label: <Chip tone="green">Active</Chip>, value: 'Active' }
+  { label: <Chip tone="red" isActionable={false}>Suspended</Chip>, value: 'Suspended' },
+  { label: <Chip tone="green" isActionable={false}>Active</Chip>, value: 'Active' }
 ];
 
 export const CompaniesPage = () => {

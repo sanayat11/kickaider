@@ -13,12 +13,12 @@ export const ConfirmDeleteModal: FC<ConfirmDeleteModalProps> = ({ open, onClose,
   return (
     <Modal open={open} onClose={onClose} size="sm" closable={false}>
       <div className={styles.confirmMessage}>
-        <span className={styles.titleBlue}>Удалить файлы ?</span>
+        Удалить файлы
       </div>
 
       <div className={styles.confirmRow}>
-        <Button variant="primary" className={styles.dangerBtn} onClick={onConfirm}>Удалить</Button>
-        <Button variant="outline" className={styles.btn} onClick={onClose}>Отмена</Button>
+        <Button variant="outline" className={styles.flexBtn} onClick={onClose}>Отмена</Button>
+        <Button variant="primary" className={styles.dangerFlexBtn} onClick={onConfirm}>Удалить</Button>
       </div>
     </Modal>
   );

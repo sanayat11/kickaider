@@ -7,9 +7,9 @@
     th {
       text-align: left;
       padding: 16px 24px;
-      background: #f0f2ff;
+      background: var(--primary-50, #EDEFFE);
       color: #1a1f4d;
-      font-weight: 600;
+      font-weight: 700;
       font-size: 13px;
     }
 
@@ -48,7 +48,7 @@
 .hostname {
   color: #1a1f4d !important;
   font-size: 14px !important;
-  font-weight: 700 !important;
+  font-weight: 600 !important;
 }
 
 .actionsCol {

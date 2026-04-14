@@ -39,14 +39,16 @@
   display: flex;
   gap: 16px;
   
-  .btn {
+  .flexBtn {
     flex: 1;
   }
 }
 
-.dangerBtn {
-  background: #ff0d0d !important;
+.dangerFlexBtn {
+  flex: 1;
+  background: #ff3b30 !important;
   color: white !important;
+  border-color: #ff3b30 !important;
   &:hover { opacity: 0.9; }
 }
 

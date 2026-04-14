@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import type { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './ActivityDetailsPopup.module.scss';
@@ -11,14 +12,14 @@ interface ActivityDetailsPopupProps {
   employee: Employee;
   date: string;
   onClose: () => void;
-  style?: React.CSSProperties;
+  coords: { top: number; left: number };
 }
 
 export const ActivityDetailsPopup: FC<ActivityDetailsPopupProps> = ({ 
   employee, 
   date, 
   onClose,
-  style 
+  coords 
 }) => {
   const navigate = useNavigate();
 
@@ -27,13 +28,20 @@ export const ActivityDetailsPopup: FC<ActivityDetailsPopupProps> = ({
     onClose();
   };
 
-  return (
-    <div className={styles.popup} style={style} onClick={(e) => e.stopPropagation()}>
+  return createPortal(
+    <div 
+      className={styles.popup} 
+      style={{ 
+        top: coords.top, 
+        left: coords.left - 48
+      }} 
+      onClick={(e) => e.stopPropagation()}
+    >
       <div className={styles.header}>
         <div className={styles.avatarWrapper}>
           <Avatar 
             initials={employee.fullName[0]} 
-            size="lg" 
+            size="md"
             status={employee.id === 'emp-1' ? 'online' : 'none'} 
           />
         </div>
@@ -63,6 +71,7 @@ export const ActivityDetailsPopup: FC<ActivityDetailsPopupProps> = ({
       >
         Показать подробнее
       </Button>
-    </div>
+    </div>,
+    document.body
   );
 };

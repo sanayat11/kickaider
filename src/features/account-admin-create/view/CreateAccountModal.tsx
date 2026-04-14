@@ -18,6 +18,7 @@ export const CreateAccountModal: FC<CreateAccountModalProps> = ({ open, onClose,
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleSave = () => {
+    
     onSubmit({ email, password });
     onClose();
   };

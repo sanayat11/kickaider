@@ -38,10 +38,10 @@ const Skeleton = ({ className }: { className?: string }) => (
 );
 
 const CHART_COLORS = {
-    productive: '#34c759',
-    neutral: '#F59E0B',
-    unproductive: '#ff3b30',
-    uncategorized: '#f2f2f7',
+    productive: '#8DE4DB',
+    neutral: '#FFCC00',
+    unproductive: '#FF0000',
+    uncategorized: '#D1D5DB',
     idle: '#e5e5ea',
 };
 

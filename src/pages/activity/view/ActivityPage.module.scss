@@ -16,6 +16,7 @@
       color: #1a1f4d;
       margin: 0 0 4px 0;
     }
+
     .subtitle {
       font-size: 14px;
       color: #8a91b4;
@@ -42,29 +43,50 @@
   gap: 24px;
   padding: 16px 22px;
   margin-top: 30px;
- margin-bottom: 30px;
+  margin-bottom: 30px;
 
   .legendItem {
     display: flex;
     align-items: center;
     gap: 8px;
-    
+
     .dot {
       width: 10px;
       height: 10px;
       border-radius: 2px;
     }
 
-    .state_productive { background: #83d2cc; } /* Equivalent to primary-success/teal */
-    .state_unproductive { background: #ff0d0d; } /* Equivalent to danger */
-    .state_idle { background: #f2c200; } /* Equivalent to warning */
-    .state_nodata { background: #3f4bb8; } /* Equivalent to primary */
-    .state_uncategorized { background: #d9dce3; } /* Equivalent to neutral */
+    .state_productive {
+      background: #83d2cc;
+    }
+
+    /* Equivalent to primary-success/teal */
+    .state_unproductive {
+      background: #ff0d0d;
+    }
+
+    /* Equivalent to danger */
+    .state_idle {
+      background: #f2c200;
+    }
+
+    /* Equivalent to warning */
+    .state_nodata {
+      background: #3f4bb8;
+    }
+
+    /* Equivalent to primary */
+    .state_uncategorized {
+      background: #d9dce3;
+    }
+
+    /* Equivalent to neutral */
   }
 }
 
 .tableContainer {
   overflow-x: auto;
+
   .table {
     width: 100%;
     border-collapse: collapse;
@@ -95,11 +117,12 @@
 
 .timelineHeaderCell {
   width: 40%;
+
   .axisWrapper {
     display: flex;
     flex-direction: column;
     gap: 6px;
-    
+
     .axis {
       display: flex;
       justify-content: space-between;
@@ -125,12 +148,12 @@
     flex-direction: column;
     gap: 2px;
   }
-  
+
   .name {
     color: #1a1f4d;
     font-weight: 600;
   }
-  
+
   .desktop {
     color: #8a91b4;
   }
@@ -149,7 +172,7 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid #edf1f7;
 }
 

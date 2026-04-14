@@ -295,11 +295,11 @@
   // Target the dropdown menu
   ul {
     border: 1px solid #d9e2ff !important;
-    padding: 10px !important;
+    padding: 0 !important; // Removed 10px padding 
     display: flex !important;
     flex-direction: column !important;
-    gap: 8px !important;
     border-radius: 14px !important;
+    overflow: hidden !important;
     background: #fff !important;
     box-shadow: 0 10px 30px rgba(31, 42, 93, 0.08) !important;
   }
@@ -307,9 +307,9 @@
   // Target dropdown options (now containing Chips)
   button[data-value] {
     width: 100% !important;
-    min-height: 36px !important;
-    height: 36px !important;
-    padding: 0 !important; // Let Chip fill
+    min-height: 48px !important;
+    height: 48px !important;
+    padding: 10px !important; // Restore padding here so chips don't touch edges
     background: transparent !important;
     border: none !important;
 
@@ -317,6 +317,15 @@
       background: transparent !important;
       transform: none !important;
       box-shadow: none !important;
+    }
+  }
+
+  // Adding the new border rule inside ul
+  ul > li {
+    border-bottom: 1px solid #edf1fb;
+
+    &:last-child {
+      border-bottom: none;
     }
   }
 }

@@ -1,9 +1,18 @@
-﻿import { useState, type FC } from 'react';
+import { useState, type FC } from 'react';
 import { Typography } from '@/shared/ui/typoghraphy/view/Typography';
 import { ScheduleForm } from '@/features/scheduleForm/view/ScheduleForm';
 import { Avatar } from '@/shared/ui';
 import type { EmployeeScheduleCardProps } from '../types/EmployeeScheduleCard';
 import styles from './EmployeeScheduleCard.module.scss';
+
+const getInitials = (nameStr: string) => {
+  if (!nameStr) return '';
+  const words = nameStr.trim().split(/\s+/);
+  if (words.length >= 2) {
+    return (words[0][0] + words[1][0]).toUpperCase();
+  }
+  return nameStr.substring(0, 2).toUpperCase();
+};
 
 const Chevron: FC<{ open: boolean }> = ({ open }) => (
   <svg
@@ -47,7 +56,7 @@ export const EmployeeScheduleCard: FC<EmployeeScheduleCardProps> = ({
         onClick={() => setOpen((prev) => !prev)}
       >
         <div className={styles.employeeCol}>
-          <Avatar src={avatarUrl} initials={name} size="sm" status="online" />
+          <Avatar initials={getInitials(name)} size="sm" status="online" />
 
           <div className={styles.meta}>
             <Typography variant="h5" weight="bold" className={styles.name}>

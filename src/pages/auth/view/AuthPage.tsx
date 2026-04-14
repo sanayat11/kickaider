@@ -1,8 +1,6 @@
 import styles from './AuthPage.module.scss';
 import logo from '@shared/assets/images/logo.svg';
 import { LoginForm } from '@/features/auth/loginForm/view/LoginForm';
-import { Button } from '@/shared/ui/button/view/Button';
-import { paths } from '@/shared/constants/constants';
 import { Typography } from '@/shared/ui';
 
 export const AuthPage = () => {
@@ -26,16 +24,6 @@ export const AuthPage = () => {
 
             <div className={styles.form}>
               <LoginForm />
-
-              <Button
-                type="link"
-                to={paths.DASHBOARD}
-                className={styles.button}
-                size="giant"
-                fullWidth
-              >
-                Войти
-              </Button>
             </div>
           </div>
         </div>

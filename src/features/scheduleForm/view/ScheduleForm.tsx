@@ -2,6 +2,8 @@ import { useState, type FC } from 'react';
 import classNames from 'classnames';
 import { Button } from '@/shared/ui/button/view/Button';
 import { Typography } from '@/shared/ui/typoghraphy/view/Typography';
+import { Toggle } from '@/shared/ui/toggle/view/Toggle';
+import { SelectDropdown } from '@/shared/ui/selectDropdown/view/selectDropdown';
 import styles from './ScheduleForm.module.scss';
 
 const DAYS = [
@@ -68,23 +70,13 @@ export const ScheduleForm: FC<ScheduleFormProps> = ({
   return (
     <div className={classNames(styles.form, { [styles.disabled]: disabled })}>
       {!hideToggle && (
-        <label className={styles.switchRow}>
-          <button
-            type="button"
-            className={classNames(styles.switch, {
-              [styles.switchOn]: useCompanySchedule,
-            })}
-            onClick={() => !disabled && setUseCompanySchedule((prev) => !prev)}
-            aria-pressed={useCompanySchedule}
-            disabled={disabled}
-          >
-            <span className={styles.switchThumb} />
-          </button>
-
-          <Typography variant="h4" color='gray' weight='regular' className={styles.switchLabel}>
-            Использовать график компании
-          </Typography>
-        </label>
+        <Toggle
+          className={styles.switchRow}
+          checked={useCompanySchedule}
+          onChange={setUseCompanySchedule}
+          disabled={disabled}
+          label="Использовать график компании"
+        />
       )}
 
       <div
@@ -122,16 +114,17 @@ export const ScheduleForm: FC<ScheduleFormProps> = ({
             <Typography variant="h5" className={styles.label}>
               Обед
             </Typography>
-            <select
-              className={styles.select}
+            <SelectDropdown
               value={lunch}
-              onChange={(e) => setLunch(e.target.value)}
+              onChange={setLunch}
               disabled={formLocked}
-            >
-              <option value="09:00">09:00</option>
-              <option value="09:30">09:30</option>
-              <option value="10:00">10:00</option>
-            </select>
+              className={styles.selectWrapper}
+              options={[
+                { label: '09:00', value: '09:00' },
+                { label: '09:30', value: '09:30' },
+                { label: '10:00', value: '10:00' },
+              ]}
+            />
           </div>
         </div>
 

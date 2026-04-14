@@ -19,17 +19,17 @@ export const DevicesTable: FC<DevicesTableProps> = ({ devices, onAssign }) => {
         <tr>
           <th>
             <Typography variant="h5" weight="bold" className={styles.headerText}>
-              {t('settings.organization.devices.table.pending') || 'Ожидают привязки'}
+              {t('settings.organization.devices.table.pending', { defaultValue: 'Ожидают привязки' })}
             </Typography>
           </th>
           <th>
             <Typography variant="h5" weight="bold" className={styles.headerText}>
-              {t('settings.organization.devices.table.activity') || 'Последняя активность'}
+              {t('settings.organization.devices.table.activity', { defaultValue: 'Последняя активность' })}
             </Typography>
           </th>
           <th className={styles.actionsCol}>
             <Typography variant="h5" weight="bold" className={styles.headerText}>
-              {t('settings.organization.devices.table.action') || 'Действие'}
+              {t('settings.organization.devices.table.action', { defaultValue: 'Действие' })}
             </Typography>
           </th>
         </tr>
@@ -50,11 +50,11 @@ export const DevicesTable: FC<DevicesTableProps> = ({ devices, onAssign }) => {
             <td className={styles.actionsCol}>
               <Button
                 variant="primary"
-                size="large"
+                size="medium"
                 onClick={() => onAssign(device)}
                 className={styles.assignBtn}
               >
-                {t('settings.organization.devices.assignBtn')}
+                {t('settings.organization.devices.assignBtn', { defaultValue: 'Привязать' })}
               </Button>
             </td>
           </tr>

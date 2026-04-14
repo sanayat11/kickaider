@@ -9,14 +9,17 @@ export const Chip: FC<ChipProps> = ({
   variant = 'filter',
   selected,
   disabled,
+  isActionable = true,
   className,
   onClick,
 }) => {
+  const Component = isActionable ? 'button' : 'div';
+  
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
+    <Component
+      type={isActionable ? "button" : undefined}
+      onClick={isActionable ? onClick : undefined}
+      disabled={isActionable ? disabled : undefined}
       className={classNames(
         styles.chip,
         styles[tone],
@@ -24,11 +27,12 @@ export const Chip: FC<ChipProps> = ({
         {
           [styles.selected]: selected && variant === 'filter',
           [styles.disabled]: disabled,
+          [styles.static]: !isActionable,
         },
         className,
       )}
     >
       <span className={styles.label}>{children}</span>
-    </button>
+    </Component>
   );
 };

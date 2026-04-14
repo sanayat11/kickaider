@@ -10,7 +10,7 @@ const schema = yup.object({
 
   password: yup
     .string()
-    .min(8, "Минимум 8 символов")
+    .min(5, "Минимум 5 символов")
     .required("Пароль обязателен"),
 
   confirmPassword: yup
@@ -31,6 +31,9 @@ export const useLoginForm = () => {
     resolver: yupResolver(schema),
     mode: "onBlur",
     defaultValues: {
+      email: "",
+      password: "",
+      confirmPassword: "",
       remember: false,
     },
   })

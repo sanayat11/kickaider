@@ -40,34 +40,34 @@ export const ActivityPage: React.FC = () => {
   return (
     <div className={styles.page}>
       <ActivityHeader />  <div className={styles.filtersWrapper}>
-          <ActivityFilters
-            date={date}
-            setDate={setDate}
-            department={department}
-            setDepartment={setDepartment}
-            scale={scale}
-            setScale={setScale}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-          />
-        </div>
-       <ActivityLegend />
+        <ActivityFilters
+          date={date}
+          setDate={setDate}
+          department={department}
+          setDepartment={setDepartment}
+          scale={scale}
+          setScale={setScale}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+        />
+      </div>
+      <ActivityLegend />
       <div className={styles.mainCard}>
-        
-      
 
-       
-        
+
+
+
+
         <ActivityTable employees={employees} date={date} loading={loading} scale={scale} />
-        
-        <div className={styles.footer}> 
+
+        <div className={styles.footer}>
           <Pagination
             currentPage={currentPage}
             totalPages={6}
             onPageChange={setCurrentPage}
             variant="bar"
             pageSize={10}
-            onPageSizeChange={() => {}}
+            onPageSizeChange={() => { }}
           />
         </div>
       </div>

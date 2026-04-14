@@ -12,18 +12,9 @@ export const DevicesSection: FC<DevicesSectionProps> = ({ children }) => {
 
   return (
     <div className={styles.root}>
-      <div className={styles.header}>
-        <Typography variant="h3" weight="bold">
-          {t('settings.organization.devices.title')}
-        </Typography>
-        <Typography variant="h5" color="secondary" className={styles.subtitle}>
-          {t('settings.organization.devices.subtitle')}
-        </Typography>
-      </div>
-
       <div className={styles.instruction}>
         <Typography variant="h5" color="secondary">
-          {t('settings.organization.devices.instruction') || 'Эти устройства подключились к серверу, но не привязаны ни к одному сотруднику.'}
+          {t('settings.organization.devices.instruction', { defaultValue: 'Эти устройства подключились к серверу, но не привязаны ни к одному сотруднику.' })}
         </Typography>
       </div>
 

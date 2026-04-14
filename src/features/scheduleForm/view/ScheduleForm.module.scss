@@ -11,43 +11,7 @@
 /* ================= SWITCH ================= */
 
 .switchRow {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-}
-
-.switch {
-  width: 28px;
-  height: 16px;
-  border-radius: 999px;
-  background: var(--grey-200);
-  position: relative;
-  cursor: pointer;
-  border: none;
-  transition: background 0.2s;
-}
-
-.switchOn {
-  background: var(--primery-500); // ⚠️ у тебя опечатка в переменной
-}
-
-.switchThumb {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--text-white);
-  transition: transform 0.2s;
-}
-
-.switchOn .switchThumb {
-  transform: translateX(12px);
-}
-
-.switchLabel {
-  color: var(--text-color);
+  margin-bottom: var(--space-xs);
 }
 
 /* ================= CONTENT ================= */
@@ -83,10 +47,9 @@
   color: var(--text-grey-400);
 }
 
-.input,
-.select {
+.input {
   width: 100%;
-  height: 44px;
+  height: 48px;
   padding: 0 var(--space-xs);
 
   border: 1px solid var(--grey-200);
@@ -100,25 +63,13 @@
   transition: border 0.2s;
 }
 
-.input:focus,
-.select:focus {
+.input:focus {
   border-color: var(--primary-300);
 }
 
-/* ================= SELECT ARROW ================= */
-
-.select {
-  appearance: none;
-  background-image:
-    linear-gradient(45deg, transparent 50%, var(--grey-400) 50%),
-    linear-gradient(135deg, var(--grey-400) 50%, transparent 50%);
-  background-position:
-    calc(100% - 14px) 18px,
-    calc(100% - 10px) 18px;
-  background-size: 4px 4px;
-  background-repeat: no-repeat;
-
-  padding-right: 24px;
+.selectWrapper {
+  width: 100%;
+  max-width: none !important;
 }
 
 /* ================= DAYS ================= */

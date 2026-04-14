@@ -6,6 +6,7 @@ import type { GeneralSettings } from '@/shared/api/mock/settings.mock';
 import { useTranslation } from 'react-i18next';
 import styles from './Tabs.module.scss';
 import type { FC } from 'react';
+import { Typography } from '@/shared/ui';
 
 export const SettingsTab: FC = () => {
   const { i18n } = useTranslation();
@@ -36,7 +37,7 @@ export const SettingsTab: FC = () => {
     <div className={styles.tabWrapper}>
       <div className={styles.grid2}>
         <div className={styles.formGroup}>
-          <label className={styles.label}>Часовой пояс компании</label>
+          <Typography variant='h4' className={styles.label}>Часовой пояс компании</Typography>
           <SelectDropdown
             value={settings.timezone}
             onChange={v => setSettings(p => ({ ...p, timezone: v as string }))}
@@ -50,7 +51,7 @@ export const SettingsTab: FC = () => {
         </div>
 
         <div className={styles.formGroup}>
-          <label className={styles.label}>Язык интерфейса</label>
+          <Typography variant='h4' className={styles.label}>Язык интерфейса</Typography>
           <SelectDropdown
             value={settings.language}
             onChange={v => setSettings(p => ({ ...p, language: v as 'ru' | 'en' }))}
@@ -62,7 +63,7 @@ export const SettingsTab: FC = () => {
         </div>
 
         <div className={styles.formGroup}>
-          <label className={styles.label}>Порог бездействия (сек)</label>
+          <Typography variant='h4' className={styles.label}>Порог бездействия (сек)</Typography>
           <SelectDropdown
             value={String(settings.idleThreshold)}
             onChange={v => setSettings(p => ({ ...p, idleThreshold: Number(v) }))}
@@ -77,7 +78,7 @@ export const SettingsTab: FC = () => {
         </div>
 
         <div className={styles.formGroup}>
-          <label className={styles.label}>Допуск опозданий (мин)</label>
+          <Typography variant='h4' className={styles.label}>Допуск опозданий (мин)</Typography>
           <SelectDropdown
             value={String(settings.lateTolerance)}
             onChange={v => setSettings(p => ({ ...p, lateTolerance: Number(v) }))}
@@ -93,7 +94,7 @@ export const SettingsTab: FC = () => {
       </div>
 
       <div className={styles.saveBtnWrap}>
-        <Button variant="primary" fullWidth onClick={handleSave}>Сохранить</Button>
+        <Button variant="primary" size='large' fullWidth className={styles.saveBtn} onClick={handleSave}>Сохранить</Button>
       </div>
     </div>
   );

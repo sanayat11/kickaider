@@ -27,6 +27,7 @@ interface ActivityTableProps {
 
 export const ActivityTable: FC<ActivityTableProps> = ({ employees, date, loading, scale }) => {
   const [selectedEmpId, setSelectedEmpId] = useState<string | null>(null);
+  const [popupCoords, setPopupCoords] = useState<{ top: number; left: number } | null>(null);
 
   if (loading) {
     return <div className={styles.loader}><Typography variant="body1">Загрузка...</Typography></div>;
@@ -50,8 +51,21 @@ export const ActivityTable: FC<ActivityTableProps> = ({ employees, date, loading
   const workTimeLabels = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
   const labelsToUse = scale === 'allDay' ? allDayLabels : workTimeLabels;
 
-  const handleSegmentClick = (empId: string) => {
-    setSelectedEmpId(prev => prev === empId ? null : empId);
+  const handleSegmentClick = (empId: string, event?: React.MouseEvent) => {
+    if (selectedEmpId === empId) {
+      setSelectedEmpId(null);
+      setPopupCoords(null);
+      return;
+    }
+
+    if (event) {
+      const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+      setPopupCoords({
+        top: rect.top + window.scrollY,
+        left: rect.left + window.scrollX + rect.width / 2
+      });
+    }
+    setSelectedEmpId(empId);
   };
 
   return (
@@ -63,12 +77,12 @@ export const ActivityTable: FC<ActivityTableProps> = ({ employees, date, loading
             <th>Отдел</th>
             <th>Период</th>
             <th className={styles.timelineHeaderCell}>
-                <div className={styles.axisWrapper}>
-                  <span>Общая активность</span>
-                  <div className={styles.axis}>
-                     {labelsToUse.map(t => <span key={t}>{t}</span>)}
-                  </div>
+              <div className={styles.axisWrapper}>
+                <span>Общая активность</span>
+                <div className={styles.axis}>
+                  {labelsToUse.map(t => <span key={t}>{t}</span>)}
                 </div>
+              </div>
             </th>
             <th>Общее время</th>
             <th>Скриншоты</th>
@@ -79,7 +93,7 @@ export const ActivityTable: FC<ActivityTableProps> = ({ employees, date, loading
             <tr key={emp.id} style={{ position: 'relative' }}>
               <td>
                 <Link to={`/activity/${emp.id}?date=${date}`} className={styles.empLink}>
-                  <Avatar initials={emp.fullName[0]} size="md" status={emp.id === 'emp-1' ? 'online' : 'none'} />
+                  <Avatar initials={emp.fullName[0]} size='sm' status={emp.id === 'emp-1' ? 'online' : 'none'} />
                   <div className={styles.empInfo}>
                     <Typography variant="body2" className={styles.name}>{emp.fullName}</Typography>
                     <Typography variant="caption" className={styles.desktop}>{emp.hostname}</Typography>
@@ -93,24 +107,27 @@ export const ActivityTable: FC<ActivityTableProps> = ({ employees, date, loading
                   <TimeBar
                     height="sm"
                     segments={getTimeBlocks(emp.timeline)}
-                    onSegmentClick={() => handleSegmentClick(emp.id)}
+                    onSegmentClick={(_, e) => handleSegmentClick(emp.id, e)}
                   />
 
-                  {selectedEmpId === emp.id && (
-                    <ActivityDetailsPopup 
-                      employee={emp} 
-                      date={date} 
-                      onClose={() => setSelectedEmpId(null)}
-                      style={{ left: '10%' }}
+                  {selectedEmpId === emp.id && popupCoords && (
+                    <ActivityDetailsPopup
+                      employee={emp}
+                      date={date}
+                      onClose={() => {
+                        setSelectedEmpId(null);
+                        setPopupCoords(null);
+                      }}
+                      coords={popupCoords}
                     />
                   )}
                 </div>
               </td>
               <td className={styles.mutedText}>08:15:00</td>
               <td>
-                <div 
-                  className={styles.screenshotThumb} 
-                  style={{ backgroundImage: `url(/src/shared/assets/images/imgBoost2.png)` }}
+                <div
+                  className={styles.screenshotThumb}
+                  style={{ backgroundImage: `url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIFExawxp46Gv-ZqiqQtFADbtBLjN9CRbQ5Q&s)` }}
                 />
               </td>
             </tr>

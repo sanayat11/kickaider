@@ -100,22 +100,24 @@
 }
 
 .dangerOutlineBtn {
-  color: #ff4d4f;
-  border-color: #ff4d4f;
-  background: transparent;
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid #ff4d4f;
+  background: #ff8484;
+  border: none;
+  border-radius: 10px;
+  width: 44px;
+  height: 44px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.2s;
 
-  &:hover {
-    background: #fff1f0;
+  &:hover:not(:disabled) {
+    background: #ff6b6b;
   }
 }
-
+.trashIcon {
+  color: #ffffff;
+}
 .pageHeader {
   margin-bottom: 32px;
   .pageTitle {
@@ -167,11 +169,15 @@
   border-radius: 16px;
   box-shadow: 0 6px 24px rgba(16, 24, 40, 0.04);
   border: 1px solid #edf1f7;
-  overflow: hidden;
+  overflow: visible;
   padding: 32px;
 }
 
 .searchWrap {
   margin-bottom: 24px;
   max-width: 600px;
+}
+.saveBtn{
+  width: 242px;
+  height: 44px;
 }

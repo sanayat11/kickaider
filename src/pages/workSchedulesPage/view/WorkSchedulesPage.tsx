@@ -32,9 +32,9 @@ export const WorkSchedulesPage: React.FC = () => {
                     <WorkSchedulesHeader />
                 </div>
 
-                <div className={styles.contentCard}>
-                    <WorkSchedulesTabs activeTab={activeTab} onChange={handleTabChange} />
+                <WorkSchedulesTabs activeTab={activeTab} onChange={handleTabChange} />
 
+                <div className={styles.contentCard}>
                     {activeTab === 'company' && (
                         <CompanyScheduleSection 
                             schedule={companySchedule} 

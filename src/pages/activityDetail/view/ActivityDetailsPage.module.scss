@@ -64,14 +64,50 @@
   gap: 16px;
 }
 
-.timeInputMock {
-  width: 120px;
-  
-  :global(.fieldInner) {
+.timeSelectWrap {
+  width: auto;
+  min-width: 140px;
+
+  .timeSelect {
     height: 44px;
-    background: transparent;
-    border: 1px solid #edf1f7;
-    border-radius: 10px;
+    max-width: none;
+
+    :global(.trigger) {
+      height: 44px;
+      min-height: 44px;
+      border: 1.5px solid #5260f1;
+      border-radius: 12px;
+      color: #5260f1;
+      font-weight: 600;
+      background-color: #ffffff;
+      padding: 0 16px;
+
+      &:hover {
+        background-color: rgba(82, 96, 241, 0.04);
+        border-color: #3b4bdb;
+      }
+
+      :global(.value) {
+        color: #5260f1;
+        font-weight: 600;
+      }
+
+      :global(.chevron) {
+        color: #5260f1;
+      }
+    }
+
+    :global(.menu) {
+      border-radius: 14px;
+      border: 1px solid #eef1fb;
+      box-shadow: 0 10px 30px rgba(31, 42, 93, 0.08);
+      margin-top: 8px;
+    }
+
+    :global(.optionSelected) {
+      background-color: #5260f1;
+      color: #ffffff;
+    }
   }
 }
 

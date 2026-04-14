@@ -47,7 +47,7 @@ export const ActivityFilters: FC<ActivityFiltersProps> = ({
       icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" />
       </svg>,
-      onClick: () => {}
+      onClick: () => { }
     },
     {
       id: 'period',
@@ -61,7 +61,7 @@ export const ActivityFilters: FC<ActivityFiltersProps> = ({
         // Value comes formatted as DD.MM.YYYY, changing back to YYYY-MM-DD
         const parts = val.split('.');
         if (parts.length === 3) {
-            setDate(`${parts[2]}-${parts[1]}-${parts[0]}`);
+          setDate(`${parts[2]}-${parts[1]}-${parts[0]}`);
         }
       }
     },

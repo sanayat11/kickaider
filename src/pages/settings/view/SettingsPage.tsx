@@ -5,6 +5,7 @@ import { SettingsTab } from './components/SettingsTab';
 import { AccountsTab } from './components/AccountsTab';
 import { PasswordGenTab } from './components/PasswordGenTab';
 import { SegmentedControl } from '@/shared/ui/segmentedControl/view/SegmentedControl';
+import { Typography } from '@/shared/ui';
 
 export const SettingsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'settings' | 'accounts' | 'password'>('settings');
@@ -12,8 +13,8 @@ export const SettingsPage: React.FC = () => {
   return (
     <div className={styles.page}>
       <div className={tabsStyles.pageHeader}>
-        <h1 className={tabsStyles.pageTitle}>Общие настройки и учетные записи</h1>
-        <div className={tabsStyles.pageSubtitle}>Настройка времени работы, обедов и выходных дней.</div>
+        <Typography variant='h1' weight='bold' className={tabsStyles.pageTitle}>Общие настройки и учетные записи</Typography>
+        <Typography variant='h5' weight='regular' className={tabsStyles.pageSubtitle}>Настройка времени работы, обедов и выходных дней.</Typography>
       </div>
 
       <div className={tabsStyles.card}>
@@ -21,6 +22,8 @@ export const SettingsPage: React.FC = () => {
           <SegmentedControl
             value={activeTab}
             onChange={(val) => setActiveTab(val as any)}
+            className={styles.segmentedControl}
+            size='medium'
             options={[
               { label: 'Настройки', value: 'settings' },
               { label: 'Учетные записи', value: 'accounts' },

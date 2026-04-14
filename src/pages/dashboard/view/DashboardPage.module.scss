@@ -958,11 +958,11 @@
     gap: 6px;
     font-size: 0.85rem;
     font-weight: 500;
-    color: #1a1f4d;
+    color: #8a91b4;
 
     em {
-        width: 10px;
-        height: 10px;
+        width: 12px;
+        height: 12px;
         border-radius: 2px;
         display: inline-block;
         flex-shrink: 0;
@@ -1035,25 +1035,26 @@
 
 .detailedDropdown {
     > button {
-        background: var(--primary-50, #EDEFFE);
+        background: transparent;
         border: none;
-        border-radius: 10px;
-        padding: 10px 20px;
+        border-radius: 0;
+        padding: 10px 0;
         box-shadow: none;
 
         &:hover:not(:disabled) {
-            background: #dce1fd;
+            background: transparent;
+            opacity: 0.8;
             box-shadow: none;
         }
 
         span {
-            color: var(--primary-500, #4E61F6);
-            font-weight: 700;
+            color: #8a91b4;
+            font-weight: 600;
             font-size: 14px;
         }
 
         > span:last-child {
-            color: var(--primary-500, #4E61F6);
+            color: #8a91b4;
         }
     }
 }

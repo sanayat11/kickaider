@@ -6,6 +6,7 @@ import styles from './ActivityDetailsPage.module.scss';
 import { Pagination } from '@/shared/ui/pagination/view/Pagination';
 import { BaseInput } from '@/shared/ui/input/view/BaseInput';
 import { SegmentedControl } from '@/shared/ui/segmentedControl/view/SegmentedControl';
+import { SelectDropdown } from '@/shared/ui/selectDropdown/view/selectDropdown';
 import { IoSearchOutline } from 'react-icons/io5';
 
 import { activityMockApi } from '@/shared/api/mock/activity.mock';
@@ -20,6 +21,7 @@ export const ActivityDetailsPage = () => {
 
   const [viewMode, setViewMode] = useState<'full' | 'short'>('full');
   const [timeMode, setTimeMode] = useState<'allDay' | 'workTime' | 'custom'>('workTime');
+  const [timeInterval, setTimeInterval] = useState('15m');
   const [search, setSearch] = useState('');
   const [data, setData] = useState<EmployeeDayDetails | null>(null);
 
@@ -51,13 +53,21 @@ export const ActivityDetailsPage = () => {
               ]}
             />
 
-            <BaseInput
-               value=""
-               onChange={() => {}}
-               placeholder="Время"
-               className={styles.timeInputMock}
-               disabled
-            />
+            <div className={styles.timeSelectWrap}>
+              <SelectDropdown
+                value={timeInterval}
+                onChange={setTimeInterval}
+                placeholder="Время"
+                size="sm"
+                className={styles.timeSelect}
+                options={[
+                  { label: '1 минута', value: '1m' },
+                  { label: '5 минут', value: '5m' },
+                  { label: '15 минут', value: '15m' },
+                  { label: '1 час', value: '1h' },
+                ]}
+              />
+            </div>
 
             <div className={styles.searchWrap}>
               <BaseInput

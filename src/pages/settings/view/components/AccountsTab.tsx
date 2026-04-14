@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/shared/ui/button/view/Button';
-import { IoTrashOutline } from 'react-icons/io5';
+import { TrashIcon } from '@/shared/assets/icons/index';
 import { settingsMockApi } from '@/shared/api/mock/settings.mock';
 import type { AdminAccount } from '@/shared/api/mock/settings.mock';
 import { CreateAccountModal } from '@/features/account-admin-create/view/CreateAccountModal';
@@ -8,6 +8,7 @@ import { ChangePasswordModal } from '@/features/account-admin-password-update/vi
 import { ConfirmDeleteModal } from '@/features/account-admin-delete/view/ConfirmDeleteModal';
 import styles from './Tabs.module.scss';
 import type { FC } from 'react';
+import { Checkbox } from '@/shared/ui/checkbox/view/CheckBox';
 
 export const AccountsTab: FC = () => {
   const [accounts, setAccounts] = useState<AdminAccount[]>([]);
@@ -16,7 +17,6 @@ export const AccountsTab: FC = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [changePwdModalOpen, setChangePwdModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  // const [targetAccountId, setTargetAccountId] = useState<string | null>(null);
 
   useEffect(() => {
     loadAccounts();
@@ -47,7 +47,6 @@ export const AccountsTab: FC = () => {
 
   const handleDelete = async () => {
     try {
-      // API mock only supports single delete in the current version, so we loop or just delete randomly.
       for (const id of selectedIds) {
         await settingsMockApi.deleteAdminAccount(id);
       }
@@ -69,7 +68,6 @@ export const AccountsTab: FC = () => {
   };
 
   const openChangePassword = (_id: string) => {
-    // setTargetAccountId(id);
     setChangePwdModalOpen(true);
   };
 
@@ -81,11 +79,9 @@ export const AccountsTab: FC = () => {
           <Button variant="primary" onClick={() => setCreateModalOpen(true)}>Создать аккаунт</Button>
           <button 
             className={styles.dangerOutlineBtn} 
-            disabled={selectedIds.length === 0}
             onClick={() => setDeleteModalOpen(true)}
-            style={{ opacity: selectedIds.length === 0 ? 0.5 : 1 }}
           >
-            <IoTrashOutline size={18} />
+            <TrashIcon className={styles.trashIcon} />
           </button>
         </div>
       </div>
@@ -96,8 +92,7 @@ export const AccountsTab: FC = () => {
             <tr>
               <th style={{ width: '40px' }}>
                 <div className={styles.checkboxContainer}>
-                  <input 
-                    type="checkbox" 
+                  <Checkbox 
                     checked={accounts.length > 0 && selectedIds.length === accounts.length} 
                     onChange={toggleSelectAll} 
                   />
@@ -113,8 +108,7 @@ export const AccountsTab: FC = () => {
               <tr key={acc.id}>
                 <td>
                   <div className={styles.checkboxContainer}>
-                    <input 
-                      type="checkbox" 
+                    <Checkbox 
                       checked={selectedIds.includes(acc.id)} 
                       onChange={() => toggleSelect(acc.id)} 
                     />
@@ -125,7 +119,7 @@ export const AccountsTab: FC = () => {
                 </td>
                 <td>{new Date(acc.createdAt).toLocaleDateString('ru-RU')}</td>
                 <td style={{ textAlign: 'right' }}>
-                  <Button variant="primary" onClick={() => openChangePassword(acc.id)}>Изменить пароль</Button>
+                  <Button variant="primary" size='medium' onClick={() => openChangePassword(acc.id)}>Изменить пароль</Button>
                 </td>
               </tr>
             ))}
@@ -143,7 +137,6 @@ export const AccountsTab: FC = () => {
         open={changePwdModalOpen} 
         onClose={() => setChangePwdModalOpen(false)} 
         onSubmit={() => {
-          // console.log('Changed password for', targetAccountId, 'to', pwd);
           setChangePwdModalOpen(false);
         }} 
       />

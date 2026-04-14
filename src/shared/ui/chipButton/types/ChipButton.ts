@@ -6,6 +6,7 @@ export interface ChipProps {
   variant?: 'list' | 'filter'; 
   selected?: boolean;
   disabled?: boolean;
+  isActionable?: boolean;
   className?: string;
   onClick?: (e: MouseEvent<HTMLButtonElement | HTMLDivElement>) => void;
 }

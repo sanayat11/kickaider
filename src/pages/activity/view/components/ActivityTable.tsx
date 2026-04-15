@@ -137,3 +137,4 @@ export const ActivityTable: FC<ActivityTableProps> = ({ employees, date, loading
     </div>
   );
 };
+

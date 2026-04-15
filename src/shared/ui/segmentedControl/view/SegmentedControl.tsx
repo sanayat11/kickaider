@@ -2,6 +2,7 @@ import { useMemo, type FC } from 'react';
 import classNames from 'classnames';
 import styles from './SegmentedControl.module.scss';
 import type { SegmentedControlProps } from '../types/SegmentedControl';
+import { Typography } from '../../typoghraphy/view/Typography';
 
 export const SegmentedControl: FC<SegmentedControlProps> = ({
   options,
@@ -49,7 +50,7 @@ export const SegmentedControl: FC<SegmentedControlProps> = ({
             onClick={() => !option.disabled && onChange?.(option.value)}
             disabled={option.disabled}
           >
-            <span className={styles.label}>{option.label}</span>
+            <Typography variant='h5' context='dashboard' weight='semiBold'>{option.label}</Typography>
           </button>
         );
       })}

@@ -1,15 +1,15 @@
 import { useNavigate } from 'react-router-dom';
 import { Input, Checkbox } from '@/shared/ui';
 import { Button } from '@/shared/ui/button/view/Button';
-import { useLoginForm } from '../model/useLoginForm';
-import { useLoginMutation } from '../api/authApi';
+import { useLoginForm } from '../lib/validation';
+import { useLogin } from '../model/useLogin';
 import { paths } from '@/shared/constants/constants';
 import styles from './LoginForm.module.scss';
 
 export const LoginForm = () => {
   const navigate = useNavigate();
-  const [login, { isLoading }] = useLoginMutation();
-  
+  const loginMutation = useLogin();
+
   const {
     control,
     register,
@@ -17,14 +17,21 @@ export const LoginForm = () => {
     formState: { errors },
   } = useLoginForm();
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: {
+    email: string;
+    password: string;
+    confirmPassword: string;
+    remember: boolean;
+  }) => {
+    console.log('SUBMIT WORKS', data);
+
     try {
-      const response = await login({
+      const response = await loginMutation.mutateAsync({
         email: data.email,
-        password: data.password
-      }).unwrap();
-      
-      localStorage.setItem('accessToken', response.accessToken);
+        password: data.password,
+      });
+
+      console.log('LOGIN RESPONSE', response);
       navigate(paths.ACTIVITY);
     } catch (err) {
       console.error('Login failed:', err);
@@ -32,8 +39,12 @@ export const LoginForm = () => {
     }
   };
 
+  const onInvalid = (formErrors: unknown) => {
+    console.log('FORM INVALID', formErrors);
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+    <form onSubmit={handleSubmit(onSubmit, onInvalid)} className={styles.form}>
       <Input
         name="email"
         label="Email"
@@ -65,21 +76,23 @@ export const LoginForm = () => {
       />
 
       <div className={styles.checkboxWrap}>
-        <Checkbox 
-          label="Запомнить меня" 
-          {...register('remember')} 
-          className={styles.checkbox} 
+        <Checkbox
+          label="Запомнить меня"
+          {...register('remember')}
+          className={styles.checkbox}
         />
       </div>
 
       <Button
-        actionType="submit"
+        type='button'
+        actionType='submit'
+        variant='primary'
         className={styles.submitBtn}
         size="giant"
         fullWidth
-        disabled={isLoading}
+        disabled={loginMutation.isPending}
       >
-        {isLoading ? 'Загрузка...' : 'Войти'}
+        {loginMutation.isPending ? 'Загрузка...' : 'Войти'}
       </Button>
     </form>
   );

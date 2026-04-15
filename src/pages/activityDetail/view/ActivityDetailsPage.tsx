@@ -44,6 +44,8 @@ export const ActivityDetailsPage = () => {
         <div className={styles.controlsSection}>
           <div className={styles.controlsRowTop}>
             <SegmentedControl
+            size='small'
+             className={styles.segmented}
               value={timeMode}
               onChange={(v) => setTimeMode(v as any)}
               options={[
@@ -82,6 +84,7 @@ export const ActivityDetailsPage = () => {
           <div className={styles.controlsRowBottom}>
              <SegmentedControl
                 value={viewMode}
+                className={styles.controls}
                 onChange={(v) => setViewMode(v as any)}
                 options={[
                   { label: 'Подробный вид', value: 'full' },

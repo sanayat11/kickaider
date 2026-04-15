@@ -19,7 +19,7 @@ export const DetailsHeader: FC<DetailsHeaderProps> = ({ fullName, hostname }) =>
         className={styles.backBtn}
       >
         <IoChevronBackOutline size={20} />
-        <Typography variant="body1">Назад</Typography>
+        <Typography variant="h3">Назад</Typography>
       </button>
       
       <Typography variant="h1" className={styles.pageTitle}>

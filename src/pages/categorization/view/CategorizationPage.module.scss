@@ -36,7 +36,7 @@
   font-size: 12px !important;
   line-height: 1.4;
   font-weight: 400 !important;
-  
+
 }
 
 .resetBtn {
@@ -283,12 +283,12 @@
     background: transparent !important;
     overflow: hidden;
 
-    & > span:first-child {
-       width: 100%;
-       height: 100%;
-       display: flex;
-       align-items: center;
-       justify-content: center;
+    &>span:first-child {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 
@@ -321,7 +321,7 @@
   }
 
   // Adding the new border rule inside ul
-  ul > li {
+  ul>li {
     border-bottom: 1px solid #edf1fb;
 
     &:last-child {
@@ -337,7 +337,7 @@
   border-radius: 8px !important;
   font-size: 11px !important;
   font-weight: 700 !important;
-  
+
   // Specifically for the small trigger
   .categorySelect & {
     border-radius: 6px !important;
@@ -523,7 +523,7 @@
   }
 
   :global(.shared-ui-modal-title) {
-    font-size:16px !important;
+    font-size: 16px !important;
     color: #25317c !important;
     font-weight: 600 !important;
   }

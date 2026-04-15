@@ -7,44 +7,43 @@ interface ConfirmStatusModalProps {
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  status: string; // 'Active' or 'Suspended'
+  status: 'ACTIVE' | 'SUSPENDED';
 }
 
-export const ConfirmStatusModal: FC<ConfirmStatusModalProps> = ({ open, onClose, onConfirm, status }) => {
-  const isBlocking = status === 'Active';
-  
-  const titleText = isBlocking ? 'Вы уверены в блокировке компании?' : 'Вы уверены в снятии блокировки компании?';
-  const confirmBtnText = isBlocking ? 'Заблокировать компанию' : 'Разблокировать компанию';
-  
-  // Design specifies red button for block, teal/success for unblock
+export const ConfirmStatusModal: FC<ConfirmStatusModalProps> = ({
+  open,
+  onClose,
+  onConfirm,
+  status,
+}) => {
+  const isBlocking = status === 'ACTIVE';
+
+  const titleText = isBlocking
+    ? 'Вы уверены в блокировке компании?'
+    : 'Вы уверены в снятии блокировки компании?';
+
+  const confirmBtnText = isBlocking
+    ? 'Заблокировать компанию'
+    : 'Разблокировать компанию';
+
   const btnClass = isBlocking ? styles.dangerBtn : styles.successBtn;
 
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      size="sm"
-      closable={false}
-    >
-      <div className={styles.confirmMessage}>
-        {titleText}
-      </div>
+    <Modal open={open} onClose={onClose} size="sm" closable={false}>
+      <div className={styles.confirmMessage}>{titleText}</div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-        <Button 
-          variant="primary" 
-          fullWidth 
-          onClick={onConfirm} 
+        <Button
+          type="button"
+          variant="primary"
+          fullWidth
+          onClick={onConfirm}
           className={btnClass}
         >
           {confirmBtnText}
         </Button>
 
-        <Button 
-          variant="outline" 
-          fullWidth 
-          onClick={onClose}
-        >
+        <Button type="button" variant="outline" fullWidth onClick={onClose}>
           Отмена
         </Button>
       </div>

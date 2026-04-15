@@ -10,7 +10,7 @@ interface DetailsTableFullProps {
 export const DetailsTableFull: FC<DetailsTableFullProps> = ({ events }) => {
   return (
     <table className={styles.table}>
-      <thead>
+      <thead className={styles.tableHead}>
         <tr>
           <th>Время</th>
           <th>Продолжительность</th>

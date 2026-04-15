@@ -1,38 +1,17 @@
-import { baseApi } from '@/shared/api/baseApi';
+import { apiFetch } from '@/shared/api/baseApi';
+import type { LoginRequest, LoginResponse } from '@/shared/types/types';
 
-export interface User {
-    id: number;
-    email: string;
-    name: string;
-    role: string;
-    companyId: number;
-    createdAt: string;
-    twoFactorEnabled: boolean;
-}
+export const authApi = {
+  login: async (payload: LoginRequest) => {
+    return apiFetch<LoginResponse>('auth/login', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  },
 
-export interface LoginResponse {
-    accessToken: string;
-    refreshToken: string;
-    tokenType: string;
-    expiresIn: number;
-    user: User;
-}
-
-export interface LoginRequest {
-    email: string;
-    password: string;
-}
-
-export const authApi = baseApi.injectEndpoints({
-    endpoints: (builder) => ({
-        login: builder.mutation<LoginResponse, LoginRequest>({
-            query: (credentials) => ({
-                url: 'auth/login',
-                method: 'POST',
-                body: credentials,
-            }),
-        }),
-    }),
-});
-
-export const { useLoginMutation } = authApi;
+  logout: async () => {
+    return apiFetch<void>('auth/logout', {
+      method: 'POST',
+    });
+  },
+};

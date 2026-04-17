@@ -18,6 +18,7 @@ import { SettingsPage } from '@/pages/settings';
 import { CompaniesPage } from '@/pages/companies/view/CompaniesPage';
 import { CompanyDetailsPage } from '@/pages/companyDetails/view/CompanyDetailsPage';
 import { CreateOperatorPage } from '@/pages/createOperator/view/CreateOperatorPage';
+import { AuthorizationGuard } from '@/app/guard/AuthorizationGuard';
 
 export const Router = createBrowserRouter([
   {
@@ -31,7 +32,11 @@ export const Router = createBrowserRouter([
   },
   {
     path: paths.DASHBOARD,
-    element: <DashboardPage />,
+    element: (
+      <AuthorizationGuard>
+        <DashboardPage />
+      </AuthorizationGuard>
+    ),
     children: [
       {
         index: true,
@@ -61,7 +66,11 @@ export const Router = createBrowserRouter([
   },
   {
     path: paths.WORK_TIME,
-    element: <DashboardPage />,
+    element: (
+      <AuthorizationGuard>
+        <DashboardPage />
+      </AuthorizationGuard>
+    ),
     children: [
       {
         index: true,
@@ -71,7 +80,11 @@ export const Router = createBrowserRouter([
   },
   {
     path: paths.ACTIVITY,
-    element: <DashboardPage />,
+    element: (
+      <AuthorizationGuard>
+        <DashboardPage />
+      </AuthorizationGuard>
+    ),
     children: [
       {
         index: true,
@@ -89,7 +102,11 @@ export const Router = createBrowserRouter([
   },
   {
     path: paths.CATEGORIZATION,
-    element: <DashboardPage />,
+    element: (
+      <AuthorizationGuard>
+        <DashboardPage />
+      </AuthorizationGuard>
+    ),
     children: [
       {
         index: true,
@@ -99,7 +116,11 @@ export const Router = createBrowserRouter([
   },
   {
     path: paths.CALENDAR,
-    element: <DashboardPage />,
+    element: (
+      <AuthorizationGuard>
+        <DashboardPage />
+      </AuthorizationGuard>
+    ),
     children: [
       {
         index: true,
@@ -109,7 +130,11 @@ export const Router = createBrowserRouter([
   },
   {
     path: paths.SETTINGS,
-    element: <DashboardPage />,
+    element: (
+      <AuthorizationGuard>
+        <DashboardPage />
+      </AuthorizationGuard>
+    ),
     children: [
       {
         index: true,
@@ -119,7 +144,11 @@ export const Router = createBrowserRouter([
   },
   {
     path: paths.COMPANIES,
-    element: <DashboardPage />,
+    element: (
+      <AuthorizationGuard>
+        <DashboardPage />
+      </AuthorizationGuard>
+    ),
     children: [
       {
         index: true,
@@ -133,7 +162,11 @@ export const Router = createBrowserRouter([
   },
   {
     path: paths.CREATE_OPERATOR,
-    element: <DashboardPage />,
+    element: (
+      <AuthorizationGuard>
+        <DashboardPage />
+      </AuthorizationGuard>
+    ),
     children: [
       {
         index: true,

@@ -9,9 +9,10 @@ export const authApi = {
     });
   },
 
-  logout: async () => {
-    return apiFetch<void>('auth/logout', {
+  logout: async (payload: { refreshToken: string }) => {
+    return apiFetch<{ success: boolean; timestamp: string }>('auth/logout', {
       method: 'POST',
+      body: JSON.stringify(payload),
     });
   },
 };

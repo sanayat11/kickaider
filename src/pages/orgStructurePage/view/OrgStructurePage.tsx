@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 import { OrganizationHeader } from '@/widgets/OrganizationHeader';
 import { OrganizationTabs } from '@/widgets/OrganizationTabs';
 import { EmployeesSection } from '@/widgets/EmployeesSection';
@@ -12,17 +13,25 @@ import { BindDeviceModal } from '@/features/bind-device';
 import { DeleteConfirmModal } from '@/features/deleteModal/view/DeleteModal';
 
 import type { Department, UnassignedDevice, OrgTab } from '../model/types';
-import { initialDepartments, initialUnassigned } from '../model/mockData';
+import { useCompanyEmployees } from '../model/useOrgStructure';
+import {
+  useCompanyDepartments,
+  useCreateDepartment,
+  useDeleteDepartment,
+} from '../model/useDepartments';
+import { mapDepartmentsWithEmployees } from '../model/mappers';
 
 import styles from './OrgStructurePage.module.scss';
 
 export const OrgStructurePage = () => {
   const { t } = useTranslation();
+  const { companyId } = useParams<{ companyId: string }>();
+
+  const parsedCompanyId = Number(companyId);
 
   const [activeTab, setActiveTab] = useState<OrgTab>('employees');
   const [searchQuery, setSearchQuery] = useState('');
-  const [departments, setDepartments] = useState<Department[]>(initialDepartments);
-  const [unassignedDevices, setUnassignedDevices] = useState<UnassignedDevice[]>(initialUnassigned);
+  const [unassignedDevices, setUnassignedDevices] = useState<UnassignedDevice[]>([]);
 
   const [isCreateDeptOpen, setIsCreateDeptOpen] = useState(false);
   const [selectedDept, setSelectedDept] = useState<Department | null>(null);
@@ -34,6 +43,35 @@ export const OrgStructurePage = () => {
     deptId: string;
     empName?: string;
   } | null>(null);
+
+  if (!companyId || Number.isNaN(parsedCompanyId)) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.card}>Не передан companyId в URL</div>
+      </div>
+    );
+  }
+
+  const {
+    data: employees = [],
+    isLoading: isEmployeesLoading,
+    isError: isEmployeesError,
+    error: employeesError,
+  } = useCompanyEmployees(parsedCompanyId);
+
+  const {
+    data: departmentsData = [],
+    isLoading: isDepartmentsLoading,
+    isError: isDepartmentsError,
+    error: departmentsError,
+  } = useCompanyDepartments(parsedCompanyId);
+
+  const createDepartmentMutation = useCreateDepartment(parsedCompanyId);
+  const deleteDepartmentMutation = useDeleteDepartment(parsedCompanyId);
+
+  const departments = useMemo(() => {
+    return mapDepartmentsWithEmployees(departmentsData, employees);
+  }, [departmentsData, employees]);
 
   const filteredDepartments = useMemo(() => {
     if (!searchQuery.trim()) return departments;
@@ -63,49 +101,38 @@ export const OrgStructurePage = () => {
       .filter(Boolean) as Department[];
   }, [departments, searchQuery]);
 
-  const handleCreateDept = (name: string) => {
-    const newDept: Department = {
-      id: Date.now().toString(),
-      name,
-      employees: [],
-    };
-
-    setDepartments((prev) => [...prev, newDept]);
+  const handleCreateDept = async (name: string) => {
+    try {
+      await createDepartmentMutation.mutateAsync({
+        name,
+        companyId: parsedCompanyId,
+      });
+      setIsCreateDeptOpen(false);
+    } catch (e) {
+      console.error('Не удалось создать отдел', e);
+      alert('Не удалось создать отдел');
+    }
   };
 
-  const handleEditDept = (name: string) => {
-    if (!selectedDept) return;
-
-    setDepartments((prev) =>
-      prev.map((dept) =>
-        dept.id === selectedDept.id ? { ...dept, name } : dept,
-      ),
-    );
+  const handleEditDept = async (name: string) => {
+    console.warn('Edit department API is not connected yet', name, selectedDept);
+    setSelectedDept(null);
   };
 
-  const handleDeleteDeptConfirm = () => {
+  const handleDeleteDeptConfirm = async () => {
     if (!deptToDelete) return;
 
-    setDepartments((prev) => prev.filter((dept) => dept.id !== deptToDelete.id));
-    setDeptToDelete(null);
+    try {
+      await deleteDepartmentMutation.mutateAsync(Number(deptToDelete.id));
+      setDeptToDelete(null);
+    } catch (e) {
+      console.error('Не удалось удалить отдел', e);
+      alert('Не удалось удалить отдел. Возможно, в отделе есть сотрудники.');
+    }
   };
 
   const handleDeleteEmployeeConfirm = () => {
-    if (!employeeToDelete) return;
-
-    setDepartments((prev) =>
-      prev.map((dept) =>
-        dept.id === employeeToDelete.deptId
-          ? {
-              ...dept,
-              employees: dept.employees.filter(
-                (emp) => emp.id !== employeeToDelete.empId,
-              ),
-            }
-          : dept,
-      ),
-    );
-
+    console.warn('Delete employee API is not connected yet', employeeToDelete);
     setEmployeeToDelete(null);
   };
 
@@ -119,24 +146,13 @@ export const OrgStructurePage = () => {
       prev.filter((device) => device.id !== data.deviceId),
     );
 
-    setDepartments((prev) =>
-      prev.map((dept) =>
-        dept.id === data.deptId
-          ? {
-              ...dept,
-              employees: [
-                ...dept.employees,
-                {
-                  id: Date.now().toString(),
-                  name: data.employeeName,
-                  position: data.position,
-                },
-              ],
-            }
-          : dept,
-      ),
-    );
+    console.warn('Bind device API is not connected yet', data);
+    setSelectedDevice(null);
   };
+
+  const isLoading = isEmployeesLoading || isDepartmentsLoading;
+  const isError = isEmployeesError || isDepartmentsError;
+  const error = employeesError || departmentsError;
 
   return (
     <div className={styles.container}>
@@ -163,32 +179,43 @@ export const OrgStructurePage = () => {
                 onSearchChange={setSearchQuery}
                 onAddDept={() => setIsCreateDeptOpen(true)}
               >
-                {filteredDepartments.map((dept) => (
-                  <DepartmentAccordion
-                    key={dept.id}
-                    department={dept}
-                    defaultExpanded={!!searchQuery}
-                    onEditDept={(department) => setSelectedDept(department)}
-                    onDeleteDept={(deptId) => {
-                      const department =
-                        departments.find((item) => item.id === deptId) ?? null;
-                      setDeptToDelete(department);
-                    }}
-                    onEditEmployee={(emp) => {
-                      console.log('Edit employee', emp);
-                    }}
-                    onDeleteEmployee={(empId, deptId) => {
-                      const department = departments.find((d) => d.id === deptId);
-                      const employee = department?.employees.find((e) => e.id === empId);
+                {isLoading ? (
+                  <div>Загрузка структуры...</div>
+                ) : isError ? (
+                  <div>
+                    Ошибка загрузки структуры
+                    {error instanceof Error ? `: ${error.message}` : ''}
+                  </div>
+                ) : filteredDepartments.length === 0 ? (
+                  <div>Отделы и сотрудники не найдены</div>
+                ) : (
+                  filteredDepartments.map((dept) => (
+                    <DepartmentAccordion
+                      key={dept.id}
+                      department={dept}
+                      defaultExpanded={!!searchQuery}
+                      onEditDept={(department) => setSelectedDept(department)}
+                      onDeleteDept={(deptId) => {
+                        const department =
+                          departments.find((item) => item.id === deptId) ?? null;
+                        setDeptToDelete(department);
+                      }}
+                      onEditEmployee={(emp) => {
+                        console.log('Edit employee', emp);
+                      }}
+                      onDeleteEmployee={(empId, deptId) => {
+                        const department = departments.find((d) => d.id === deptId);
+                        const employee = department?.employees.find((e) => e.id === empId);
 
-                      setEmployeeToDelete({
-                        empId,
-                        deptId,
-                        empName: employee?.name,
-                      });
-                    }}
-                  />
-                ))}
+                        setEmployeeToDelete({
+                          empId,
+                          deptId,
+                          empName: employee?.name,
+                        });
+                      }}
+                    />
+                  ))
+                )}
               </EmployeesSection>
             ) : (
               <DevicesSection>

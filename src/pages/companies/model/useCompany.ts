@@ -9,13 +9,23 @@ export const useCompanies = () => {
   });
 };
 
+export const useCompany = (id?: number) => {
+  return useQuery({
+    queryKey: ['company', id],
+    queryFn: () => companyApi.getCompanyById(id!),
+    select: (response) => response.data,
+    enabled: typeof id === 'number' && !Number.isNaN(id),
+  });
+};
+
 export const useBlockCompany = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: companyApi.blockCompany,
-    onSuccess: () => {
+    onSuccess: (_, companyId) => {
       queryClient.invalidateQueries({ queryKey: ['companies'] });
+      queryClient.invalidateQueries({ queryKey: ['company', companyId] });
     },
   });
 };
@@ -25,8 +35,9 @@ export const useActivateCompany = () => {
 
   return useMutation({
     mutationFn: companyApi.activateCompany,
-    onSuccess: () => {
+    onSuccess: (_, companyId) => {
       queryClient.invalidateQueries({ queryKey: ['companies'] });
+      queryClient.invalidateQueries({ queryKey: ['company', companyId] });
     },
   });
 };

@@ -1,3 +1,12 @@
+export const baseURL = import.meta.env.VITE_API_URL;
+
+export const Tokens = {
+  ACCESS_TOKEN: 'accessToken',
+  REFRESH_TOKEN: 'refreshToken',
+} as const;
+
+export type TokenKeys = keyof typeof Tokens;
+
 export const paths = {
   HOME: '/',
   DASHBOARD: '/dashboard',
@@ -17,3 +26,5 @@ export const paths = {
   CREATE_OPERATOR: '/create-operator',
   AUTH: '/auth',
 };
+
+

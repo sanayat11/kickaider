@@ -1,9 +1,13 @@
 import { useAuthStore } from '../lib/model/AuthStore';
 
-const API_URL =
+const RAW_API_URL =
   (import.meta.env.VITE_API_URL as string) || 'http://85.239.49.208:8080/api/v1/';
 
+const API_URL = RAW_API_URL.endsWith('/') ? RAW_API_URL : `${RAW_API_URL}/`;
+const TOKEN_REFRESH_INTERVAL_MS = 15 * 60 * 1000;
+
 let refreshPromise: Promise<string | null> | null = null;
+let refreshIntervalId: ReturnType<typeof setInterval> | null = null;
 
 type RefreshResponse = {
   success: boolean;
@@ -20,6 +24,7 @@ const refreshAccessToken = async (): Promise<string | null> => {
 
   if (!refreshToken) {
     clearTokens();
+    stopTokenAutoRefresh();
     return null;
   }
 
@@ -34,6 +39,7 @@ const refreshAccessToken = async (): Promise<string | null> => {
 
     if (!response.ok) {
       clearTokens();
+      stopTokenAutoRefresh();
       return null;
     }
 
@@ -41,6 +47,7 @@ const refreshAccessToken = async (): Promise<string | null> => {
 
     if (!json?.data?.accessToken || !json?.data?.refreshToken) {
       clearTokens();
+      stopTokenAutoRefresh();
       return null;
     }
 
@@ -48,7 +55,39 @@ const refreshAccessToken = async (): Promise<string | null> => {
     return json.data.accessToken;
   } catch {
     clearTokens();
+    stopTokenAutoRefresh();
     return null;
+  }
+};
+
+export const startTokenAutoRefresh = () => {
+  if (refreshIntervalId) return;
+
+  const { refreshToken } = useAuthStore.getState();
+  if (!refreshToken) return;
+
+  refreshIntervalId = setInterval(async () => {
+    const { refreshToken: currentRefreshToken } = useAuthStore.getState();
+
+    if (!currentRefreshToken) {
+      stopTokenAutoRefresh();
+      return;
+    }
+
+    if (!refreshPromise) {
+      refreshPromise = refreshAccessToken().finally(() => {
+        refreshPromise = null;
+      });
+    }
+
+    await refreshPromise;
+  }, TOKEN_REFRESH_INTERVAL_MS);
+};
+
+export const stopTokenAutoRefresh = () => {
+  if (refreshIntervalId) {
+    clearInterval(refreshIntervalId);
+    refreshIntervalId = null;
   }
 };
 
@@ -78,6 +117,7 @@ export async function apiFetch<T>(url: string, options: RequestInit = {}): Promi
 
     if (!newAccessToken) {
       clearTokens();
+      stopTokenAutoRefresh();
       throw new Error('Unauthorized');
     }
 

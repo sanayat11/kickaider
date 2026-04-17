@@ -37,7 +37,6 @@ export const EmployeeScheduleCard: FC<EmployeeScheduleCardProps> = ({
   name,
   department,
   statusText,
-  avatarUrl,
   defaultOpen = false,
   useParentSchedule = false,
   initialStartTime,

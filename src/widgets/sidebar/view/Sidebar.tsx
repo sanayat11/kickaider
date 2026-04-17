@@ -11,6 +11,8 @@ import {
 import logoUrl from '@/shared/assets/images/logo.svg';
 import styles from './Sidebar.module.scss';
 import { LogOutIcon } from '@/shared/assets/icons';
+import { useLogout } from '@/features/auth/loginForm/model/useLogin';
+import { useAuthStore } from '@/shared/lib/model/AuthStore';
 
 interface SidebarItemProps {
   id: string;
@@ -72,6 +74,9 @@ export const Sidebar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const logoutMutation = useLogout();
+  const refreshToken = useAuthStore((state) => state.refreshToken);
+
   const [openMenus, setOpenMenus] = useState<string[]>(() => {
     const initial: string[] = [];
 
@@ -115,7 +120,23 @@ export const Sidebar: React.FC = () => {
     }
   };
 
-  const isSuperAdmin = true; // TODO: Replace with actual role context. Requirement: "чтоб в дальнейше можно было распределить по ролям и убрать его"
+  const handleLogout = () => {
+    if (!refreshToken) {
+      navigate(paths.AUTH, { replace: true });
+      return;
+    }
+
+    logoutMutation.mutate(
+      { refreshToken },
+      {
+        onSettled: () => {
+          navigate(paths.AUTH, { replace: true });
+        },
+      },
+    );
+  };
+
+  const isSuperAdmin = true;
 
   return (
     <aside className={styles.sidebar}>
@@ -247,12 +268,15 @@ export const Sidebar: React.FC = () => {
         <button
           type="button"
           className={styles.logoutBtn}
-          onClick={() => navigate('/')}
+          onClick={handleLogout}
+          disabled={logoutMutation.isPending}
         >
           <span className={styles.logoutIcon}>
             <LogOutIcon />
           </span>
-          <span className={styles.logoutLabel}>{t('sidebar.logout', 'Выйти')}</span>
+          <span className={styles.logoutLabel}>
+            {logoutMutation.isPending ? 'Выход...' : t('sidebar.logout', 'Выйти')}
+          </span>
         </button>
       </div>
     </aside>

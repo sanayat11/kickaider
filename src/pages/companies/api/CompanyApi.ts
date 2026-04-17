@@ -8,6 +8,12 @@ export const companyApi = {
     });
   },
 
+  getCompanyById: async (id: number) => {
+    return apiFetch<ApiResponse<Company>>(`companies/${id}`, {
+      method: 'GET',
+    });
+  },
+
   blockCompany: async (id: number) => {
     return apiFetch<ApiResponse<Company>>(`companies/${id}/block`, {
       method: 'POST',

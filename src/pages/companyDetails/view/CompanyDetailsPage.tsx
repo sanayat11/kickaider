@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useMemo, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import styles from './CompanyDetailsPage.module.scss';
 import { Button } from '@/shared/ui/button/view/Button';
 import { Typography } from '@/shared/ui/typoghraphy/view/Typography';
@@ -8,31 +8,97 @@ import { Chip } from '@/shared/ui/chipButton/view/ChipButton';
 
 import { ResetPasswordModal } from '@/features/company-password-reset/view/ResetPasswordModal';
 import { ConfirmStatusModal } from '@/features/company-status-update/view/ConfirmStatusModal';
-
-const MOCK_COMPANY = {
-  id: '1',
-  name: 'ОсОО "Компания 123"',
-  status: 'Suspended', 
-  admins: [
-    { id: 'admin1', fio: 'Бектемирова Аяна итд', login: 'Санаят /nicenice', passwordRaw: 'Санаят /nicenice' }
-  ]
-};
+import { useActivateCompany, useBlockCompany, useCompany } from '@/pages/companies/model/useCompany';
+import type { CompanyStatus } from '@/pages/companies/types/CompaniesTypes';
 
 export const CompanyDetailsPage = () => {
   const navigate = useNavigate();
-  const [company, setCompany] = useState(MOCK_COMPANY);
+  const { companyId } = useParams<{ companyId: string }>();
+
+  const parsedCompanyId = Number(companyId);
+
   const [resetModalOpen, setResetModalOpen] = useState(false);
   const [statusModalOpen, setStatusModalOpen] = useState(false);
-  const cycleStatus = () => {
-    setCompany(prev => ({...prev, status: prev.status === 'Active' ? 'Suspended' : 'Active'}));
-    setStatusModalOpen(false);
+
+  const { data: company, isLoading, isError, error } = useCompany(parsedCompanyId);
+  const blockCompanyMutation = useBlockCompany();
+  const activateCompanyMutation = useActivateCompany();
+
+  const admins = useMemo(() => {
+    return [
+      {
+        id: 'admin-1',
+        fio: '—',
+        login: company?.email ?? '—',
+        passwordRaw: '—',
+      },
+    ];
+  }, [company]);
+
+  const handleConfirmStatus = async () => {
+    if (!company) return;
+
+    try {
+      if (company.status === 'ACTIVE') {
+        await blockCompanyMutation.mutateAsync(company.id);
+      } else {
+        await activateCompanyMutation.mutateAsync(company.id);
+      }
+
+      setStatusModalOpen(false);
+    } catch (e) {
+      console.error('Не удалось изменить статус компании', e);
+      alert('Не удалось изменить статус компании');
+    }
   };
 
+  const getStatusLabel = (status: CompanyStatus) => {
+    return status === 'ACTIVE' ? 'Active' : 'Suspended';
+  };
+
+  const getStatusTone = (status: CompanyStatus) => {
+    return status === 'ACTIVE' ? 'green' : 'red';
+  };
+
+  if (isLoading) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.card}>
+          <div className={styles.emptyState}>Загрузка...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError || !company) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.header}>
+          <Button
+            variant="ghost"
+            leftIcon={<IoChevronBackOutline />}
+            onClick={() => navigate(-1)}
+            className={styles.backBtn}
+          >
+            <Typography variant="h3">Назад</Typography>
+          </Button>
+        </div>
+
+        <div className={styles.card}>
+          <div className={styles.emptyState}>
+            Ошибка загрузки компании
+            {error instanceof Error ? `: ${error.message}` : ''}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className={styles.page}> 
+    <div className={styles.page}>
       <div className={styles.header}>
         <Button
-          variant='ghost'
+          variant="ghost"
           leftIcon={<IoChevronBackOutline />}
           onClick={() => navigate(-1)}
           className={styles.backBtn}
@@ -44,15 +110,16 @@ export const CompanyDetailsPage = () => {
       <div className={styles.card}>
         <div className={styles.companyTitleRow}>
           <div className={styles.title}>{company.name}</div>
-          <Chip 
-            tone={company.status === 'Active' ? 'green' : 'red'}
+
+          <Chip
+            tone={getStatusTone(company.status)}
             className={styles.statusBadge}
-            onClick={(e: React.MouseEvent) => {
+            onClick={(e) => {
               e.stopPropagation();
               setStatusModalOpen(true);
             }}
           >
-            {company.status}
+            {getStatusLabel(company.status)}
           </Chip>
         </div>
 
@@ -66,14 +133,19 @@ export const CompanyDetailsPage = () => {
                 <th className={styles.alignRight}>Действие</th>
               </tr>
             </thead>
+
             <tbody>
-              {company.admins.map(admin => (
+              {admins.map((admin) => (
                 <tr key={admin.id}>
                   <td>{admin.fio}</td>
                   <td>{admin.login}</td>
                   <td>{admin.passwordRaw}</td>
                   <td className={styles.alignRight}>
-                    <Button variant="primary" size="large" onClick={() => setResetModalOpen(true)}>
+                    <Button
+                      variant="primary"
+                      size="large"
+                      onClick={() => setResetModalOpen(true)}
+                    >
                       Сбросить пароль
                     </Button>
                   </td>
@@ -84,12 +156,16 @@ export const CompanyDetailsPage = () => {
         </div>
       </div>
 
-      <ResetPasswordModal open={resetModalOpen} onClose={() => setResetModalOpen(false)} />
-      <ConfirmStatusModal 
-        open={statusModalOpen} 
-        onClose={() => setStatusModalOpen(false)} 
-        onConfirm={cycleStatus}
-        status={company.status} 
+      <ResetPasswordModal
+        open={resetModalOpen}
+        onClose={() => setResetModalOpen(false)}
+      />
+
+      <ConfirmStatusModal
+        open={statusModalOpen}
+        onClose={() => setStatusModalOpen(false)}
+        onConfirm={handleConfirmStatus}
+        status={company.status}
       />
     </div>
   );

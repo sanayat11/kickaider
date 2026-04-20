@@ -19,6 +19,7 @@ export const CompanyDetailsPage = () => {
 
   const [resetModalOpen, setResetModalOpen] = useState(false);
   const [statusModalOpen, setStatusModalOpen] = useState(false);
+  const [selectedAdmin, setSelectedAdmin] = useState<{ id: number; email: string } | null>(null);
 
   const { data: company, isLoading, isError, error } = useCompany(parsedCompanyId);
   const blockCompanyMutation = useBlockCompany();
@@ -144,7 +145,10 @@ export const CompanyDetailsPage = () => {
                     <Button
                       variant="primary"
                       size="large"
-                      onClick={() => setResetModalOpen(true)}
+                      onClick={() => {
+                        setSelectedAdmin({ id: parsedCompanyId, email: admin.login });
+                        setResetModalOpen(true);
+                      }}
                     >
                       Сбросить пароль
                     </Button>
@@ -159,6 +163,8 @@ export const CompanyDetailsPage = () => {
       <ResetPasswordModal
         open={resetModalOpen}
         onClose={() => setResetModalOpen(false)}
+        userId={selectedAdmin?.id ?? null}
+        email={selectedAdmin?.email ?? ''}
       />
 
       <ConfirmStatusModal

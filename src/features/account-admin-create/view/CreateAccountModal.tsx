@@ -6,10 +6,15 @@ import { IoMailOutline, IoEyeOutline } from 'react-icons/io5';
 import styles from './Modals.module.scss';
 import type { FC } from 'react';
 
+type CreateAccountFormData = {
+  login: string;
+  password: string;
+};
+
 interface CreateAccountModalProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: CreateAccountFormData) => void;
 }
 
 export const CreateAccountModal: FC<CreateAccountModalProps> = ({ open, onClose, onSubmit }) => {
@@ -18,8 +23,7 @@ export const CreateAccountModal: FC<CreateAccountModalProps> = ({ open, onClose,
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleSave = () => {
-    
-    onSubmit({ email, password });
+    onSubmit({ login: email, password });
     onClose();
   };
 

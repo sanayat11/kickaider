@@ -4,12 +4,17 @@ import { useAuthStore } from '@/shared/lib/model/AuthStore';
 import { startTokenAutoRefresh, stopTokenAutoRefresh } from '@/shared/api/baseApi';
 
 export const useLogin = () => {
-  const setTokens = useAuthStore((state) => state.setTokens);
+  const setAuth = useAuthStore((state) => state.setAuth);
 
   return useMutation({
     mutationFn: authApi.login,
     onSuccess: (response) => {
-      setTokens(response.data.accessToken, response.data.refreshToken);
+      setAuth({
+        accessToken: response.data.accessToken,
+        refreshToken: response.data.refreshToken,
+        user: response.data.user,
+      });
+
       startTokenAutoRefresh();
     },
   });
@@ -27,5 +32,17 @@ export const useLogout = () => {
       stopTokenAutoRefresh();
       clearTokens();
     },
+  });
+};
+
+export const useResetPassword = () => {
+  return useMutation({
+    mutationFn: authApi.resetPassword,
+  });
+};
+
+export const useSetPassword = () => {
+  return useMutation({
+    mutationFn: authApi.setPassword,
   });
 };

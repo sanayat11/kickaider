@@ -37,7 +37,7 @@
   box-sizing: border-box;
 
   &::placeholder {
-    color: var(--input-placeholder);
+    color: var(--text-color-2);
   }
 
   &:hover {

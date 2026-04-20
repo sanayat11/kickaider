@@ -1,5 +1,6 @@
 import type { KeyboardEvent } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import styles from './selectDropdown.module.scss';
 import type { SelectDropdownOption, SelectDropdownProps } from '../types/selectDropdown';
 
@@ -48,17 +49,33 @@ export const SelectDropdown = ({
 }: SelectDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number>(-1);
+  const [menuRect, setMenuRect] = useState<{ top: number; left: number; width: number } | null>(null);
 
   const rootRef = useRef<HTMLDivElement | null>(null);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const menuRef = useRef<HTMLUListElement | null>(null);
 
   const selectedOption = useMemo(() => getOptionByValue(options, value), [options, value]);
 
   const enabledOptions = useMemo(() => options.filter((option) => !option.disabled), [options]);
 
+  const updateMenuRect = () => {
+    if (buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setMenuRect({
+        top: rect.bottom,
+        left: rect.left,
+        width: rect.width,
+      });
+    }
+  };
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) {
+      const isInsideRoot = rootRef.current?.contains(event.target as Node);
+      const isInsideMenu = menuRef.current?.contains(event.target as Node);
+
+      if (!isInsideRoot && !isInsideMenu) {
         setIsOpen(false);
         setHoveredIndex(-1);
       }
@@ -66,10 +83,18 @@ export const SelectDropdown = ({
 
     document.addEventListener('mousedown', handleClickOutside);
 
+    if (isOpen) {
+      updateMenuRect();
+      window.addEventListener('scroll', updateMenuRect, true);
+      window.addEventListener('resize', updateMenuRect);
+    }
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('scroll', updateMenuRect, true);
+      window.removeEventListener('resize', updateMenuRect);
     };
-  }, []);
+  }, [isOpen]);
 
   const openMenu = () => {
     if (disabled) return;
@@ -203,41 +228,52 @@ export const SelectDropdown = ({
         )}
       </button>
 
-      {isOpen && (
-        <ul
-          role="listbox"
-          tabIndex={-1}
-          className={[styles.menu, menuClassName ?? ''].join(' ')}
-          onKeyDown={handleListKeyDown}
-        >
-          {options.map((option, index) => {
-            const isSelected = option.value === value;
-            const isHovered = index === hoveredIndex;
+      {isOpen &&
+        createPortal(
+          <ul
+            ref={menuRef}
+            role="listbox"
+            tabIndex={-1}
+            className={[styles.menu, menuClassName ?? ''].join(' ')}
+            style={{
+              position: 'fixed',
+              top: menuRect ? `${menuRect.top + 4}px` : '0',
+              left: menuRect ? `${menuRect.left}px` : '0',
+              width: menuRect ? `${menuRect.width}px` : 'auto',
+              zIndex: 1000000,
+              visibility: menuRect ? 'visible' : 'hidden',
+            }}
+            onKeyDown={handleListKeyDown}
+          >
+            {options.map((option, index) => {
+              const isSelected = option.value === value;
+              const isHovered = index === hoveredIndex;
 
-            return (
-              <li key={option.value} role="option" aria-selected={isSelected}>
-                <button
-                  type="button"
-                  className={[
-                    styles.option,
-                    isSelected ? styles.optionSelected : '',
-                    isHovered ? styles.optionHovered : '',
-                    option.disabled ? styles.optionDisabled : '',
-                    optionClassName ?? '',
-                  ].join(' ')}
-                  disabled={option.disabled}
-                  onMouseEnter={() => setHoveredIndex(index)}
-                  onClick={() => selectOption(option)}
-                >
-                  {option.icon && <span className={styles.icon}>{option.icon}</span>}
+              return (
+                <li key={option.value} role="option" aria-selected={isSelected}>
+                  <button
+                    type="button"
+                    className={[
+                      styles.option,
+                      isSelected ? styles.optionSelected : '',
+                      isHovered ? styles.optionHovered : '',
+                      option.disabled ? styles.optionDisabled : '',
+                      optionClassName ?? '',
+                    ].join(' ')}
+                    disabled={option.disabled}
+                    onMouseEnter={() => setHoveredIndex(index)}
+                    onClick={() => selectOption(option)}
+                  >
+                    {option.icon && <span className={styles.icon}>{option.icon}</span>}
 
-                  <span className={styles.optionLabel}>{option.label}</span>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      )}
+                    <span className={styles.optionLabel}>{option.label}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>,
+          document.body,
+        )}
     </div>
   );
 };

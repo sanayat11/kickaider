@@ -1,4 +1,4 @@
-import { type FC, useEffect, useState } from 'react';
+import { type FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal } from '@/shared/ui/modal/view/Modal';
 import { BaseInput } from '@/shared/ui/input/view/BaseInput';
@@ -30,23 +30,16 @@ export const BindDeviceModal: FC<BindDeviceModalProps> = ({
   const { t } = useTranslation();
   const [employeeName, setEmployeeName] = useState('');
   const [position, setPosition] = useState('');
-  const [deptId, setDeptId] = useState('');
-
-  useEffect(() => {
-    if (open) {
-      setEmployeeName('');
-      setPosition('');
-      setDeptId(departments[0]?.id || '');
-    }
-  }, [open, departments]);
+  const [deptId, setDeptId] = useState(() => departments[0]?.id ?? '');
+  const selectedDeptId = deptId || departments[0]?.id || '';
 
   const handleSave = () => {
-    if (!employeeName.trim() || !position.trim() || !deptId) return;
+    if (!employeeName.trim() || !position.trim() || !selectedDeptId) return;
 
     onSave({
       employeeName,
       position,
-      deptId,
+      deptId: selectedDeptId,
       deviceId: device?.id,
     });
 
@@ -62,7 +55,7 @@ export const BindDeviceModal: FC<BindDeviceModalProps> = ({
       <Button
         variant="primary"
         onClick={handleSave}
-        disabled={!employeeName.trim() || !position.trim() || !deptId}
+        disabled={!employeeName.trim() || !position.trim() || !selectedDeptId}
       >
         {t('common.save')}
       </Button>
@@ -103,7 +96,7 @@ export const BindDeviceModal: FC<BindDeviceModalProps> = ({
           </label>
 
           <select
-            value={deptId}
+            value={selectedDeptId}
             onChange={(e) => setDeptId(e.target.value)}
             className={styles.select}
           >

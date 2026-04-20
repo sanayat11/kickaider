@@ -95,7 +95,7 @@ export const DashboardReportsPage: React.FC = () => {
     const [selectedEmployee, setSelectedEmployee] = useState<string>('all');
     const [onlyWorkTime, setOnlyWorkTime] = useState(false);
 
-    const departmentsList = [
+    const departmentsList = useMemo(() => [
         { id: 'all', label: t('dashboard.departments.all') },
         { id: 'backOffice', label: t('dashboard.departments.backOffice') },
         { id: 'personalAssistants', label: t('dashboard.departments.personalAssistants') },
@@ -103,14 +103,26 @@ export const DashboardReportsPage: React.FC = () => {
         { id: 'sales', label: t('dashboard.departments.sales') },
         { id: 'parsers', label: t('dashboard.departments.parsers') },
         { id: 'managers', label: t('dashboard.departments.managers') },
-    ];
+    ], [t]);
 
     useEffect(() => {
-        setLoading(true);
-        dashboardApi.getDashboardData().then(data => {
-            setDashboardData(data);
-            setLoading(false);
-        });
+        let isActive = true;
+
+        dashboardApi.getDashboardData()
+            .then(data => {
+                if (!isActive) return;
+                setDashboardData(data);
+                setLoading(false);
+            })
+            .catch(() => {
+                if (isActive) {
+                    setLoading(false);
+                }
+            });
+
+        return () => {
+            isActive = false;
+        };
     }, [activeTab]);
 
     const handleTabChange = (tab: TabType) => {
@@ -152,7 +164,7 @@ export const DashboardReportsPage: React.FC = () => {
             idle: { val: fmt(Math.round((totalLine * idlePct) / 100)), pct: idlePct },
             unproductive: { val: fmt(Math.round((totalLine * unprodPct) / 100)), pct: unprodPct }
         };
-    }, [selectedDept, selectedEmployee, chartType, onlyWorkTime]);
+    }, [selectedDept, selectedEmployee, chartType, onlyWorkTime, departmentsList]);
 
     const displayedApps = useMemo(() => {
         if (!dashboardData) return [];
@@ -180,7 +192,7 @@ export const DashboardReportsPage: React.FC = () => {
                 total: `${newHrs > 0 ? newHrs + 'h ' : ''}${newMins}m`
             };
         });
-    }, [dashboardData, selectedDept, selectedEmployee, chartType, onlyWorkTime]);
+    }, [dashboardData, selectedDept, selectedEmployee, chartType, onlyWorkTime, departmentsList]);
 
     const adjustDate = (dir: number) => {
         const d = new Date(currentDate);

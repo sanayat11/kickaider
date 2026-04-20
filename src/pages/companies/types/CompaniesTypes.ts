@@ -13,6 +13,17 @@ export interface Company {
   updatedAt: string;
 }
 
+export interface CreateCompanyRequest {
+  name: string;
+  email: string;
+  taxId: string | null;
+  phone: string | null;
+  employeeLimit: number;
+  adminName: string;
+  adminEmail: string;
+  adminPassword: string;
+}
+
 export interface ApiError {
   code: string;
   message: string;

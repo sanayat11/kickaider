@@ -1,50 +1,80 @@
 import type { FC } from 'react';
-import { useState } from 'react';
 import { Modal } from '@/shared/ui/modal/view/Modal';
 import { Button } from '@/shared/ui/button/view/Button';
-import { BaseInput } from '@/shared/ui/input/view/BaseInput';
-import { IoCopyOutline, IoEyeOutline } from 'react-icons/io5';
 import styles from './Modals.module.scss';
+import { useResetPassword } from '@/features/auth/loginForm/model/useLogin';
+import { BaseInput } from '@/shared/ui/input/view/BaseInput';
+
 
 interface ResetPasswordModalProps {
   open: boolean;
   onClose: () => void;
+  userId: number | null;
+  email: string;
 }
 
-export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({ open, onClose }) => {
-  const [password, setPassword] = useState('Input email');
+export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
+  open,
+  onClose,
+  userId,
+  email,
+}) => {
+  const resetPasswordMutation = useResetPassword();
 
-  const handleGenerate = () => {
-    setPassword(Math.random().toString(36).slice(-8));
-  };
+  const handleReset = async () => {
+    if (!userId || !email) return;
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(password);
+    try {
+      await resetPasswordMutation.mutateAsync({
+        userId,
+        email,
+      });
+
+      alert('Письмо для сброса пароля отправлено');
+      onClose();
+    } catch (e) {
+      console.error('Не удалось сбросить пароль', e);
+      alert('Не удалось сбросить пароль');
+    }
   };
 
   return (
     <Modal
       open={open}
       onClose={onClose}
-      title="Новый пароль"
+      title="Сбросить пароль"
       size="sm"
+      footer={
+        <div className={styles.footerRow}>
+          <Button
+            variant="primary"
+            size="large"
+            onClick={handleReset}
+            className={styles.footerBtn}
+            disabled={resetPasswordMutation.isPending || !userId || !email}
+          >
+            {resetPasswordMutation.isPending ? 'Отправка...' : 'Отправить письмо'}
+          </Button>
+
+          <Button
+            variant="outline"
+            size="large"
+            onClick={onClose}
+            className={styles.footerBtn}
+          >
+            Отмена
+          </Button>
+        </div>
+      }
     >
-      <div className={styles.formGroup}>
-        <label className={styles.label}>Пароль</label>
-        <BaseInput 
-          value={password} 
-          onChange={e => setPassword(e.target.value)}
-          icon={<IoEyeOutline />}
-        />
+      <div className={styles.confirmMessage}>
+        Письмо для сброса пароля будет отправлено на:
       </div>
 
-      <Button variant="outline" fullWidth onClick={handleGenerate} className={styles.formGroup}>
-        Сгенерировать пароль
-      </Button>
-
-      <Button variant="primary" fullWidth rightIcon={<IoCopyOutline />} onClick={handleCopy}>
-        Скопировать пароль
-      </Button>
+      <div className={styles.formGroup}>
+        <label className={styles.label}>Email администратора</label>
+        <BaseInput value={email} disabled />
+      </div>
     </Modal>
   );
 };

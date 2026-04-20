@@ -122,10 +122,7 @@
   min-height: auto !important;
   width: auto !important;
   display: inline-flex !important;
-  
-  &:hover {
-    background: transparent !important;
-  }
+  z-index: 99999 !important;
 
   // Target the internal trigger button from SelectDropdown
   & > button {
@@ -154,7 +151,7 @@
   padding: 12px !important;
   width: auto !important;
   min-width: 140px;
-  top: calc(100% + 4px) !important;
+  z-index: 1000000 !important;
 
   &::before {
     display: none;
@@ -195,17 +192,11 @@
     justify-content: center;
     border-radius: 8px;
     height: 32px;
+    z-index: 99999 !important;
     transition: transform 0.2s ease, filter 0.2s ease;
     
     & > span {
       text-align: center;
-    }
-  }
-
-  &:hover {
-    div[class*="chip"] {
-      transform: scale(1.05);
-      filter: brightness(1.1);
     }
   }
 }

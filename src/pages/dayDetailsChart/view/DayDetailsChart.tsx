@@ -126,10 +126,11 @@ export const DayDetailsChart: React.FC<Props> = ({ data }) => {
     const circumference = 2 * Math.PI * RADIUS;
 
     // ── DONUT label positions ──
-    let currentOffset = 0;
-    const rawLabels = data.donutSegments.map((seg) => {
-        const midP = currentOffset + seg.percent / 2;
-        currentOffset += seg.percent;
+    const rawLabels = data.donutSegments.map((seg, index) => {
+        const previousPercent = data.donutSegments
+            .slice(0, index)
+            .reduce((sum, segment) => sum + segment.percent, 0);
+        const midP = previousPercent + seg.percent / 2;
 
         const angle = (midP / 100) * 2 * Math.PI - Math.PI / 2;
         const x1 = CX + RADIUS * Math.cos(angle);
@@ -175,8 +176,6 @@ export const DayDetailsChart: React.FC<Props> = ({ data }) => {
     resolveCollisions(rightLabels);
     const labelsInfo = [...leftLabels, ...rightLabels];
 
-    let donutDrawOffset = 0;
-
     // ── SMOOTH AREA CHART data generation ──
     const areaPaths = useMemo(() => {
         const paths: { type: ActivityType; path: string }[] = [];
@@ -205,11 +204,13 @@ export const DayDetailsChart: React.FC<Props> = ({ data }) => {
                     <div className={styles.svgWrapper}>
                         <svg viewBox="0 0 140 140" className={styles.donutSvg}>
                             <circle cx={CX} cy={CY} r={RADIUS} fill="transparent" stroke="#edf1f7" strokeWidth="16" />
-                            {data.donutSegments.map((seg) => {
+                            {data.donutSegments.map((seg, index) => {
                                 const info = labelsInfo.find(l => l.seg.type === seg.type)!;
                                 const strokeDasharray = `${(seg.percent / 100) * circumference} ${circumference}`;
-                                const dashoffset = (circumference * 0.25) - ((donutDrawOffset / 100) * circumference);
-                                donutDrawOffset += seg.percent;
+                                const previousPercent = data.donutSegments
+                                    .slice(0, index)
+                                    .reduce((sum, segment) => sum + segment.percent, 0);
+                                const dashoffset = (circumference * 0.25) - ((previousPercent / 100) * circumference);
 
                                 const isDimmed = hoveredType && hoveredType !== seg.type;
                                 const { x1, y1, xLabelStart, yLabel, isLeft } = info;

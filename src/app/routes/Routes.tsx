@@ -19,6 +19,7 @@ import { CompaniesPage } from '@/pages/companies/view/CompaniesPage';
 import { CompanyDetailsPage } from '@/pages/companyDetails/view/CompanyDetailsPage';
 import { CreateOperatorPage } from '@/pages/createOperator/view/CreateOperatorPage';
 import { AuthorizationGuard } from '@/app/guard/AuthorizationGuard';
+import { RoleGuard } from '@/app/guard/RoleGuard';
 
 export const Router = createBrowserRouter([
   {
@@ -34,7 +35,9 @@ export const Router = createBrowserRouter([
     path: paths.DASHBOARD,
     element: (
       <AuthorizationGuard>
-        <DashboardPage />
+        <RoleGuard allowedRoles={['ADMIN', 'OPERATOR']}>
+          <DashboardPage />
+        </RoleGuard>
       </AuthorizationGuard>
     ),
     children: [
@@ -56,11 +59,19 @@ export const Router = createBrowserRouter([
       },
       {
         path: paths.DASHBOARD_WORK_SCHEDULES,
-        element: <WorkSchedulesPage />,
+        element: (
+          <RoleGuard allowedRoles={['OPERATOR']}>
+            <WorkSchedulesPage />
+          </RoleGuard>
+        ),
       },
       {
         path: paths.DASHBOARD_ORG_STRUCTURE,
-        element: <OrgStructurePage />,
+        element: (
+          <RoleGuard allowedRoles={['OPERATOR']}>
+            <OrgStructurePage />
+          </RoleGuard>
+        ),
       },
     ],
   },
@@ -68,7 +79,9 @@ export const Router = createBrowserRouter([
     path: paths.WORK_TIME,
     element: (
       <AuthorizationGuard>
-        <DashboardPage />
+        <RoleGuard allowedRoles={['ADMIN', 'OPERATOR']}>
+          <DashboardPage />
+        </RoleGuard>
       </AuthorizationGuard>
     ),
     children: [
@@ -82,7 +95,9 @@ export const Router = createBrowserRouter([
     path: paths.ACTIVITY,
     element: (
       <AuthorizationGuard>
-        <DashboardPage />
+        <RoleGuard allowedRoles={['ADMIN', 'OPERATOR']}>
+          <DashboardPage />
+        </RoleGuard>
       </AuthorizationGuard>
     ),
     children: [
@@ -104,7 +119,9 @@ export const Router = createBrowserRouter([
     path: paths.CATEGORIZATION,
     element: (
       <AuthorizationGuard>
-        <DashboardPage />
+        <RoleGuard allowedRoles={['OPERATOR']}>
+          <DashboardPage />
+        </RoleGuard>
       </AuthorizationGuard>
     ),
     children: [
@@ -118,7 +135,9 @@ export const Router = createBrowserRouter([
     path: paths.CALENDAR,
     element: (
       <AuthorizationGuard>
-        <DashboardPage />
+        <RoleGuard allowedRoles={['OPERATOR']}>
+          <DashboardPage />
+        </RoleGuard>
       </AuthorizationGuard>
     ),
     children: [
@@ -132,7 +151,9 @@ export const Router = createBrowserRouter([
     path: paths.SETTINGS,
     element: (
       <AuthorizationGuard>
-        <DashboardPage />
+        <RoleGuard allowedRoles={['OPERATOR']}>
+          <DashboardPage />
+        </RoleGuard>
       </AuthorizationGuard>
     ),
     children: [
@@ -146,7 +167,9 @@ export const Router = createBrowserRouter([
     path: paths.COMPANIES,
     element: (
       <AuthorizationGuard>
-        <DashboardPage />
+        <RoleGuard allowedRoles={['SUPER_ADMIN']}>
+          <DashboardPage />
+        </RoleGuard>
       </AuthorizationGuard>
     ),
     children: [
@@ -164,7 +187,9 @@ export const Router = createBrowserRouter([
     path: paths.CREATE_OPERATOR,
     element: (
       <AuthorizationGuard>
-        <DashboardPage />
+        <RoleGuard allowedRoles={['ADMIN']}>
+          <DashboardPage />
+        </RoleGuard>
       </AuthorizationGuard>
     ),
     children: [

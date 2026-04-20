@@ -76,26 +76,42 @@ export const Sidebar: React.FC = () => {
 
   const logoutMutation = useLogout();
   const refreshToken = useAuthStore((state) => state.refreshToken);
+  const user = useAuthStore((state) => state.user);
+
+  const role = user?.role;
+
+  const isSuperAdmin = role === 'SUPER_ADMIN';
+  const isAdmin = role === 'ADMIN';
+  const isOperator = role === 'OPERATOR';
+
+  const canSeeReports = isAdmin || isOperator;
+  const canSeeSettings = isOperator;
 
   const [openMenus, setOpenMenus] = useState<string[]>(() => {
     const initial: string[] = [];
 
     if (
-      location.pathname.startsWith(paths.SETTINGS) ||
-      location.pathname.startsWith(paths.DASHBOARD_WORK_SCHEDULES) ||
-      location.pathname.startsWith(paths.DASHBOARD_ORG_STRUCTURE) ||
-      location.pathname.startsWith(paths.CATEGORIZATION) ||
-      location.pathname.startsWith(paths.CALENDAR)
+      canSeeSettings &&
+      (
+        location.pathname.startsWith(paths.SETTINGS) ||
+        location.pathname.startsWith(paths.DASHBOARD_WORK_SCHEDULES) ||
+        location.pathname.startsWith(paths.DASHBOARD_ORG_STRUCTURE) ||
+        location.pathname.startsWith(paths.CATEGORIZATION) ||
+        location.pathname.startsWith(paths.CALENDAR)
+      )
     ) {
       initial.push('settings');
     }
 
     if (
-      location.pathname.startsWith(paths.DASHBOARD_REPORTS) ||
-      location.pathname.startsWith(paths.DASHBOARD_DAY_DETAILS) ||
-      location.pathname.startsWith(paths.DASHBOARD_EMPLOYEE_RATING) ||
-      location.pathname.startsWith(paths.WORK_TIME) ||
-      location.pathname.startsWith(paths.ACTIVITY)
+      canSeeReports &&
+      (
+        location.pathname.startsWith(paths.DASHBOARD_REPORTS) ||
+        location.pathname.startsWith(paths.DASHBOARD_DAY_DETAILS) ||
+        location.pathname.startsWith(paths.DASHBOARD_EMPLOYEE_RATING) ||
+        location.pathname.startsWith(paths.WORK_TIME) ||
+        location.pathname.startsWith(paths.ACTIVITY)
+      )
     ) {
       initial.push('reports');
     }
@@ -136,12 +152,10 @@ export const Sidebar: React.FC = () => {
     );
   };
 
-  const isSuperAdmin = true;
-
   return (
     <aside className={styles.sidebar}>
       <div className={styles.header}>
-        <button type="button" className={styles.brand} onClick={() => navigate('/')}>
+        <button type="button" className={styles.brand} onClick={() => navigate(paths.HOME)}>
           <img src={logoUrl} alt="KickAider Logo" className={styles.logo} />
           <span className={styles.brandName}>KickAider</span>
         </button>
@@ -149,119 +163,130 @@ export const Sidebar: React.FC = () => {
 
       <nav className={styles.nav}>
         {isSuperAdmin && (
-          <>
-            <SidebarItem
-              id="companies"
-              icon={IoDocumentTextOutline}
-              label={t('sidebar.companies', 'Список компаний')}
-              active={location.pathname.startsWith(paths.COMPANIES)}
-              onClick={() => handleItemClick('companies', false, paths.COMPANIES)}
-            />
-            <SidebarItem
-              id="create_operator"
-              icon={IoDocumentTextOutline}
-              label={t('sidebar.createOperator', 'Создать оператора')}
-              active={location.pathname.startsWith(paths.CREATE_OPERATOR)}
-              onClick={() => handleItemClick('create_operator', false, paths.CREATE_OPERATOR)}
-            />
-          </>
+          <SidebarItem
+            id="companies"
+            icon={IoDocumentTextOutline}
+            label={t('sidebar.companies', 'Список компаний')}
+            active={location.pathname.startsWith(paths.COMPANIES)}
+            onClick={() => handleItemClick('companies', false, paths.COMPANIES)}
+          />
         )}
 
-        <SidebarItem
-          id="reports"
-          icon={IoDocumentTextOutline}
-          label={t('sidebar.reports')}
-          isOpen={openMenus.includes('reports')}
-          onClick={() => handleItemClick('reports', true)}
-        >
+        {isAdmin && (
           <SidebarItem
-            id="reports-1"
-            label={t('sidebar.reports')}
-            nested
-            active={location.pathname === paths.DASHBOARD_REPORTS}
-            onClick={() => handleItemClick('reports-1', false, paths.DASHBOARD_REPORTS)}
+            id="create_operator"
+            icon={IoDocumentTextOutline}
+            label={t('sidebar.createOperator', 'Создать оператора')}
+            active={location.pathname.startsWith(paths.CREATE_OPERATOR)}
+            onClick={() => handleItemClick('create_operator', false, paths.CREATE_OPERATOR)}
           />
-          <SidebarItem
-            id="reports-day-details"
-            label={t('sidebar.dayDetails')}
-            nested
-            active={location.pathname === paths.DASHBOARD_DAY_DETAILS}
-            onClick={() =>
-              handleItemClick('reports-day-details', false, paths.DASHBOARD_DAY_DETAILS)
-            }
-          />
-          <SidebarItem
-            id="reports-employee-rating"
-            label={t('sidebar.employeeRating')}
-            nested
-            active={location.pathname === paths.DASHBOARD_EMPLOYEE_RATING}
-            onClick={() =>
-              handleItemClick('reports-employee-rating', false, paths.DASHBOARD_EMPLOYEE_RATING)
-            }
-          />
-          <SidebarItem
-            id="reports-work-time"
-            label={t('sidebar.workTime')}
-            nested
-            active={location.pathname === paths.WORK_TIME}
-            onClick={() => handleItemClick('reports-work-time', false, paths.WORK_TIME)}
-          />
-          <SidebarItem
-            id="reports-activity"
-            label={t('nav.reports.activity')}
-            nested
-            active={location.pathname.startsWith(paths.ACTIVITY)}
-            onClick={() => handleItemClick('reports-activity', false, paths.ACTIVITY)}
-          />
-        </SidebarItem>
+        )}
 
-        <SidebarItem
-          id="settings"
-          icon={IoSettingsOutline}
-          label={t('sidebar.settings')}
-          isOpen={openMenus.includes('settings')}
-          onClick={() => handleItemClick('settings', true)}
-        >
+        {canSeeReports && (
           <SidebarItem
-            id="settings-calendar"
-            label={t('sidebar.calendar')}
-            nested
-            active={location.pathname.startsWith(paths.CALENDAR)}
-            onClick={() => handleItemClick('settings-calendar', false, paths.CALENDAR)}
-          />
+            id="reports"
+            icon={IoDocumentTextOutline}
+            label={t('sidebar.reports')}
+            isOpen={openMenus.includes('reports')}
+            onClick={() => handleItemClick('reports', true)}
+          >
+            <SidebarItem
+              id="reports-main"
+              label={t('sidebar.reports')}
+              nested
+              active={location.pathname === paths.DASHBOARD_REPORTS}
+              onClick={() => handleItemClick('reports-main', false, paths.DASHBOARD_REPORTS)}
+            />
+            <SidebarItem
+              id="reports-day-details"
+              label={t('sidebar.dayDetails')}
+              nested
+              active={location.pathname === paths.DASHBOARD_DAY_DETAILS}
+              onClick={() =>
+                handleItemClick('reports-day-details', false, paths.DASHBOARD_DAY_DETAILS)
+              }
+            />
+            <SidebarItem
+              id="reports-employee-rating"
+              label={t('sidebar.employeeRating')}
+              nested
+              active={location.pathname === paths.DASHBOARD_EMPLOYEE_RATING}
+              onClick={() =>
+                handleItemClick(
+                  'reports-employee-rating',
+                  false,
+                  paths.DASHBOARD_EMPLOYEE_RATING,
+                )
+              }
+            />
+            <SidebarItem
+              id="reports-work-time"
+              label={t('sidebar.workTime')}
+              nested
+              active={location.pathname === paths.WORK_TIME}
+              onClick={() => handleItemClick('reports-work-time', false, paths.WORK_TIME)}
+            />
+            <SidebarItem
+              id="reports-activity"
+              label={t('nav.reports.activity')}
+              nested
+              active={location.pathname.startsWith(paths.ACTIVITY)}
+              onClick={() => handleItemClick('reports-activity', false, paths.ACTIVITY)}
+            />
+          </SidebarItem>
+        )}
+
+        {canSeeSettings && (
           <SidebarItem
-            id="settings-categorization"
-            label={t('sidebar.categorization')}
-            nested
-            active={location.pathname === paths.CATEGORIZATION}
-            onClick={() => handleItemClick('settings-categorization', false, paths.CATEGORIZATION)}
-          />
-          <SidebarItem
-            id="settings-schedules"
-            label={t('sidebar.workSchedules')}
-            nested
-            active={location.pathname === paths.DASHBOARD_WORK_SCHEDULES}
-            onClick={() =>
-              handleItemClick('settings-schedules', false, paths.DASHBOARD_WORK_SCHEDULES)
-            }
-          />
-          <SidebarItem
-            id="settings-org-structure"
-            label={t('sidebar.orgStructure')}
-            nested
-            active={location.pathname === paths.DASHBOARD_ORG_STRUCTURE}
-            onClick={() =>
-              handleItemClick('settings-org-structure', false, paths.DASHBOARD_ORG_STRUCTURE)
-            }
-          />
-          <SidebarItem
-            id="settings-general"
-            label={t('nav.settings.general')}
-            nested
-            active={location.pathname === paths.SETTINGS}
-            onClick={() => handleItemClick('settings-general', false, paths.SETTINGS)}
-          />
-        </SidebarItem>
+            id="settings"
+            icon={IoSettingsOutline}
+            label={t('sidebar.settings')}
+            isOpen={openMenus.includes('settings')}
+            onClick={() => handleItemClick('settings', true)}
+          >
+            <SidebarItem
+              id="settings-calendar"
+              label={t('sidebar.calendar')}
+              nested
+              active={location.pathname.startsWith(paths.CALENDAR)}
+              onClick={() => handleItemClick('settings-calendar', false, paths.CALENDAR)}
+            />
+            <SidebarItem
+              id="settings-categorization"
+              label={t('sidebar.categorization')}
+              nested
+              active={location.pathname === paths.CATEGORIZATION}
+              onClick={() =>
+                handleItemClick('settings-categorization', false, paths.CATEGORIZATION)
+              }
+            />
+            <SidebarItem
+              id="settings-schedules"
+              label={t('sidebar.workSchedules')}
+              nested
+              active={location.pathname === paths.DASHBOARD_WORK_SCHEDULES}
+              onClick={() =>
+                handleItemClick('settings-schedules', false, paths.DASHBOARD_WORK_SCHEDULES)
+              }
+            />
+            <SidebarItem
+              id="settings-org-structure"
+              label={t('sidebar.orgStructure')}
+              nested
+              active={location.pathname === paths.DASHBOARD_ORG_STRUCTURE}
+              onClick={() =>
+                handleItemClick('settings-org-structure', false, paths.DASHBOARD_ORG_STRUCTURE)
+              }
+            />
+            <SidebarItem
+              id="settings-general"
+              label={t('nav.settings.general')}
+              nested
+              active={location.pathname === paths.SETTINGS}
+              onClick={() => handleItemClick('settings-general', false, paths.SETTINGS)}
+            />
+          </SidebarItem>
+        )}
       </nav>
 
       <div className={styles.footer}>

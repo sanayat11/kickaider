@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { format, addDays, subDays, parseISO, isValid } from 'date-fns';
 import type { FilterBarItem } from '@/shared/ui/filters-bar/types/FilterBar';
 
@@ -43,7 +43,7 @@ export const useEmployeeRatingFilters = () => {
     }
   };
 
-  const filterItems = useMemo<FilterBarItem[]>(() => [
+  const filterItems: FilterBarItem[] = [
     {
       id: 'date-nav',
       type: 'date-nav',
@@ -105,7 +105,7 @@ export const useEmployeeRatingFilters = () => {
         setCurrentPage(1);
       },
     },
-  ], [filtersState]);
+  ];
 
   return {
     filtersState,

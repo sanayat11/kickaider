@@ -1,5 +1,5 @@
 import { apiFetch } from '@/shared/api/baseApi';
-import type { ApiResponse, Company } from '../types/CompaniesTypes';
+import type { ApiResponse, Company, CreateCompanyRequest } from '../types/CompaniesTypes';
 
 export const companyApi = {
   getCompanies: async () => {
@@ -11,6 +11,13 @@ export const companyApi = {
   getCompanyById: async (id: number) => {
     return apiFetch<ApiResponse<Company>>(`companies/${id}`, {
       method: 'GET',
+    });
+  },
+
+  createCompany: async (payload: CreateCompanyRequest) => {
+    return apiFetch<ApiResponse<Company>>('companies', {
+      method: 'POST',
+      body: JSON.stringify(payload),
     });
   },
 

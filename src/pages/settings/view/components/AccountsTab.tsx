@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button } from '@/shared/ui/button/view/Button';
 import { TrashIcon } from '@/shared/assets/icons/index';
 import { settingsMockApi } from '@/shared/api/mock/settings.mock';
@@ -10,25 +10,35 @@ import styles from './Tabs.module.scss';
 import type { FC } from 'react';
 import { Checkbox } from '@/shared/ui/checkbox/view/CheckBox';
 
+const ACCOUNTS_STORAGE_KEY = 'kickaider:adminAccounts';
+
+const getStoredAccounts = (): AdminAccount[] => {
+  const stored = localStorage.getItem(ACCOUNTS_STORAGE_KEY);
+
+  if (stored) {
+    return JSON.parse(stored) as AdminAccount[];
+  }
+
+  return [
+    {
+      id: 'admin-1',
+      login: 'admin',
+      password: 'admin',
+      createdAt: new Date().toISOString(),
+    },
+  ];
+};
+
 export const AccountsTab: FC = () => {
-  const [accounts, setAccounts] = useState<AdminAccount[]>([]);
+  const [accounts, setAccounts] = useState<AdminAccount[]>(() => getStoredAccounts());
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [changePwdModalOpen, setChangePwdModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
-  useEffect(() => {
-    loadAccounts();
-  }, []);
-
-  const loadAccounts = async () => {
-    try {
-      const list = await settingsMockApi.getAdminAccounts();
-      setAccounts(list);
-    } catch (e) {
-      console.error(e);
-    }
+  const loadAccounts = () => {
+    setAccounts(getStoredAccounts());
   };
 
   const toggleSelectAll = () => {
@@ -58,7 +68,7 @@ export const AccountsTab: FC = () => {
     }
   };
 
-  const handleCreate = async (data: any) => {
+  const handleCreate = async (data: Omit<AdminAccount, 'id' | 'createdAt'>) => {
     try {
       await settingsMockApi.createAdminAccount(data);
       loadAccounts();
@@ -67,7 +77,8 @@ export const AccountsTab: FC = () => {
     }
   };
 
-  const openChangePassword = (_id: string) => {
+  const openChangePassword = (id: string) => {
+    console.warn('Change password is mocked for account', id);
     setChangePwdModalOpen(true);
   };
 

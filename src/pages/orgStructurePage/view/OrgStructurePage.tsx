@@ -1,26 +1,24 @@
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
+import { BindDeviceModal } from '@/features/bind-device';
+import { CreateDepartmentModal } from '@/features/create-department';
+import { DeleteConfirmModal } from '@/features/deleteModal/view/DeleteModal';
+import { EditDepartmentModal } from '@/features/edit-department';
+import { DepartmentAccordion } from '@/widgets/DepartmentAccordion';
+import { DevicesSection } from '@/widgets/DevicesSection';
+import { DevicesTable } from '@/widgets/DevicesTable';
+import { EmployeesSection } from '@/widgets/EmployeesSection';
 import { OrganizationHeader } from '@/widgets/OrganizationHeader';
 import { OrganizationTabs } from '@/widgets/OrganizationTabs';
-import { EmployeesSection } from '@/widgets/EmployeesSection';
-import { DevicesSection } from '@/widgets/DevicesSection';
-import { DepartmentAccordion } from '@/widgets/DepartmentAccordion';
-import { DevicesTable } from '@/widgets/DevicesTable';
-import { CreateDepartmentModal } from '@/features/create-department';
-import { EditDepartmentModal } from '@/features/edit-department';
-import { BindDeviceModal } from '@/features/bind-device';
-import { DeleteConfirmModal } from '@/features/deleteModal/view/DeleteModal';
-
-import type { Department, UnassignedDevice, OrgTab } from '../model/types';
-import { useCompanyEmployees } from '../model/useOrgStructure';
+import type { Department, OrgTab, UnassignedDevice } from '../model/types';
+import { mapDepartmentsWithEmployees } from '../model/mappers';
 import {
   useCompanyDepartments,
   useCreateDepartment,
   useDeleteDepartment,
 } from '../model/useDepartments';
-import { mapDepartmentsWithEmployees } from '../model/mappers';
-
+import { useCompanyEmployees } from '../model/useOrgStructure';
 import styles from './OrgStructurePage.module.scss';
 
 export const OrgStructurePage = () => {
@@ -28,6 +26,7 @@ export const OrgStructurePage = () => {
   const { companyId } = useParams<{ companyId: string }>();
 
   const parsedCompanyId = Number(companyId);
+  const hasValidCompanyId = Number.isFinite(parsedCompanyId);
 
   const [activeTab, setActiveTab] = useState<OrgTab>('employees');
   const [searchQuery, setSearchQuery] = useState('');
@@ -44,30 +43,26 @@ export const OrgStructurePage = () => {
     empName?: string;
   } | null>(null);
 
-  if (!companyId || Number.isNaN(parsedCompanyId)) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.card}>Не передан companyId в URL</div>
-      </div>
-    );
-  }
-
   const {
     data: employees = [],
     isLoading: isEmployeesLoading,
     isError: isEmployeesError,
     error: employeesError,
-  } = useCompanyEmployees(parsedCompanyId);
+  } = useCompanyEmployees(hasValidCompanyId ? parsedCompanyId : undefined);
 
   const {
     data: departmentsData = [],
     isLoading: isDepartmentsLoading,
     isError: isDepartmentsError,
     error: departmentsError,
-  } = useCompanyDepartments(parsedCompanyId);
+  } = useCompanyDepartments(hasValidCompanyId ? parsedCompanyId : undefined);
 
-  const createDepartmentMutation = useCreateDepartment(parsedCompanyId);
-  const deleteDepartmentMutation = useDeleteDepartment(parsedCompanyId);
+  const createDepartmentMutation = useCreateDepartment(
+    hasValidCompanyId ? parsedCompanyId : undefined,
+  );
+  const deleteDepartmentMutation = useDeleteDepartment(
+    hasValidCompanyId ? parsedCompanyId : undefined,
+  );
 
   const departments = useMemo(() => {
     return mapDepartmentsWithEmployees(departmentsData, employees);
@@ -108,9 +103,9 @@ export const OrgStructurePage = () => {
         companyId: parsedCompanyId,
       });
       setIsCreateDeptOpen(false);
-    } catch (e) {
-      console.error('Не удалось создать отдел', e);
-      alert('Не удалось создать отдел');
+    } catch (error) {
+      console.error('Failed to create department', error);
+      alert('Failed to create department');
     }
   };
 
@@ -125,9 +120,9 @@ export const OrgStructurePage = () => {
     try {
       await deleteDepartmentMutation.mutateAsync(Number(deptToDelete.id));
       setDeptToDelete(null);
-    } catch (e) {
-      console.error('Не удалось удалить отдел', e);
-      alert('Не удалось удалить отдел. Возможно, в отделе есть сотрудники.');
+    } catch (error) {
+      console.error('Failed to delete department', error);
+      alert('Failed to delete department. It may still contain employees.');
     }
   };
 
@@ -154,13 +149,20 @@ export const OrgStructurePage = () => {
   const isError = isEmployeesError || isDepartmentsError;
   const error = employeesError || departmentsError;
 
+  if (!companyId || !hasValidCompanyId) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.card}>Missing companyId in URL</div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <OrganizationHeader
         title={t('settings.organization.title')}
         subtitle={
-          t('settings.organization.subtitle') ||
-          'Общий аналитический обзор по компании или сотруднику'
+          t('settings.organization.subtitle') || 'Company organization overview'
         }
       />
 
@@ -180,14 +182,14 @@ export const OrgStructurePage = () => {
                 onAddDept={() => setIsCreateDeptOpen(true)}
               >
                 {isLoading ? (
-                  <div>Загрузка структуры...</div>
+                  <div>Loading structure...</div>
                 ) : isError ? (
                   <div>
-                    Ошибка загрузки структуры
+                    Failed to load structure
                     {error instanceof Error ? `: ${error.message}` : ''}
                   </div>
                 ) : filteredDepartments.length === 0 ? (
-                  <div>Отделы и сотрудники не найдены</div>
+                  <div>Departments and employees not found</div>
                 ) : (
                   filteredDepartments.map((dept) => (
                     <DepartmentAccordion
@@ -236,6 +238,7 @@ export const OrgStructurePage = () => {
       />
 
       <EditDepartmentModal
+        key={selectedDept?.id ?? 'edit-dept-closed'}
         open={!!selectedDept}
         onClose={() => setSelectedDept(null)}
         department={selectedDept}
@@ -243,6 +246,7 @@ export const OrgStructurePage = () => {
       />
 
       <BindDeviceModal
+        key={selectedDevice?.id ?? 'bind-device-closed'}
         open={!!selectedDevice}
         onClose={() => setSelectedDevice(null)}
         device={selectedDevice}
@@ -254,18 +258,18 @@ export const OrgStructurePage = () => {
         open={!!deptToDelete}
         onClose={() => setDeptToDelete(null)}
         onConfirm={handleDeleteDeptConfirm}
-        title="Удалить отдел"
-        description={`Вы действительно хотите удалить отдел "${deptToDelete?.name ?? ''}"?`}
-        confirmText="Удалить"
+        title="Delete department"
+        description={`Are you sure you want to delete department "${deptToDelete?.name ?? ''}"?`}
+        confirmText="Delete"
       />
 
       <DeleteConfirmModal
         open={!!employeeToDelete}
         onClose={() => setEmployeeToDelete(null)}
         onConfirm={handleDeleteEmployeeConfirm}
-        title="Удалить сотрудника"
-        description={`Вы действительно хотите удалить сотрудника "${employeeToDelete?.empName ?? ''}"?`}
-        confirmText="Удалить"
+        title="Delete employee"
+        description={`Are you sure you want to delete employee "${employeeToDelete?.empName ?? ''}"?`}
+        confirmText="Delete"
       />
     </div>
   );

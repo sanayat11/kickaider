@@ -18,6 +18,17 @@ export const useCompany = (id?: number) => {
   });
 };
 
+export const useCreateCompany = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: companyApi.createCompany,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['companies'] });
+    },
+  });
+};
+
 export const useBlockCompany = () => {
   const queryClient = useQueryClient();
 

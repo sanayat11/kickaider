@@ -1,4 +1,4 @@
-  import { type FC, useState, useEffect } from 'react';
+  import { type FC, useState } from 'react';
   import { useTranslation } from 'react-i18next';
   import { Modal } from '@/shared/ui/modal/view/Modal';
   import { BaseInput } from '@/shared/ui/input/view/BaseInput';
@@ -19,17 +19,13 @@
     onSave,
   }) => {
     const { t } = useTranslation();
-    const [name, setName] = useState('');
-
-    useEffect(() => {
-      if (department) {
-        setName(department.name);
-      }
-    }, [department]);
+    const [name, setName] = useState(() => department?.name ?? '');
 
     const handleSave = () => {
-      if (name.trim()) {
-        onSave(name);
+      const trimmedName = name.trim();
+
+      if (trimmedName) {
+        onSave(trimmedName);
         onClose();
       }
     };

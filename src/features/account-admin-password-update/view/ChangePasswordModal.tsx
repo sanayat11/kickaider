@@ -10,13 +10,15 @@ import { useSetPassword } from '@/features/auth/loginForm/model/useLogin';
 interface ChangePasswordModalProps {
   open: boolean;
   onClose: () => void;
-  token: string;
+  token?: string;
+  onSubmit?: () => void;
 }
 
 export const ChangePasswordModal: FC<ChangePasswordModalProps> = ({
   open,
   onClose,
   token,
+  onSubmit,
 }) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -25,6 +27,18 @@ export const ChangePasswordModal: FC<ChangePasswordModalProps> = ({
   const handleSave = async () => {
     if (!password || password !== confirmPassword) {
       alert('Пароли не совпадают');
+      return;
+    }
+
+    if (onSubmit) {
+      onSubmit();
+      setPassword('');
+      setConfirmPassword('');
+      return;
+    }
+
+    if (!token) {
+      console.error('No token provided for password update');
       return;
     }
 

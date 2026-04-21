@@ -39,7 +39,7 @@ export const Typography: FC<TypographyProps> = ({
     className,
   );
   const renderChildren = () => {
-    if (truncate && typeof children === 'string') {
+    if (typeof truncate === 'number' && typeof children === 'string') {
       return children.length <= truncate ? children : children.slice(0, truncate) + '...';
     }
     return children;

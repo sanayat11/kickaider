@@ -135,11 +135,11 @@ export const AssignEventModal: FC<AssignEventModalProps> = ({
               onClick={() => setIsStatusOpen(!isStatusOpen)}
             >
               {selectedStatus ? (
-                <Chip tone={selectedStatus.tone as any} variant="filter" className={styles.triggerChip}>
+                <Chip tone={selectedStatus.tone as any} variant="filter" isActionable={false} className={styles.triggerChip}>
                   {selectedStatus.label}
                 </Chip>
               ) : (
-                <Chip tone="blue" variant="filter" className={styles.triggerChip}>
+                <Chip tone="blue" variant="filter" isActionable={false} className={styles.triggerChip}>
                   Категории
                 </Chip>
               )}
@@ -149,7 +149,7 @@ export const AssignEventModal: FC<AssignEventModalProps> = ({
             {isStatusOpen && (
               <div className={styles.customDropdownMenu}>
                 <div className={styles.dropdownOption}>
-                  <Chip tone="blue" variant="filter" className={styles.optionChip}>
+                  <Chip tone="blue" variant="filter" isActionable={false} className={styles.optionChip}>
                     Категории
                   </Chip>
                 </div>
@@ -162,7 +162,7 @@ export const AssignEventModal: FC<AssignEventModalProps> = ({
                       setIsStatusOpen(false);
                     }}
                   >
-                    <Chip tone={opt.tone as any} variant="filter" className={styles.optionChip}>
+                    <Chip tone={opt.tone as any} variant="filter" isActionable={false} className={styles.optionChip}>
                       {opt.label}
                     </Chip>
                   </div>

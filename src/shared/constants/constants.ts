@@ -15,7 +15,12 @@ export const paths = {
   DASHBOARD_DAY_DETAILS: '/dashboard/day-details',
   DASHBOARD_EMPLOYEE_RATING: '/dashboard/employee-rating',
   DASHBOARD_WORK_SCHEDULES: '/dashboard/settings/work-schedules',
-  DASHBOARD_ORG_STRUCTURE: '/dashboard/settings/org-structure',
+
+  DASHBOARD_ORG_STRUCTURE_BASE: '/dashboard/settings/org-structure',
+  DASHBOARD_ORG_STRUCTURE: '/dashboard/settings/org-structure/:companyId',
+  getOrgStructurePath: (companyId: number | string) =>
+    `/dashboard/settings/org-structure/${companyId}`,
+
   WORK_TIME: '/work-time',
   ACTIVITY: '/activity',
   CATEGORIZATION: '/categorization',
@@ -26,5 +31,3 @@ export const paths = {
   CREATE_OPERATOR: '/create-operator',
   AUTH: '/auth',
 };
-
-

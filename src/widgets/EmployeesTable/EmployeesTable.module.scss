@@ -1,46 +1,42 @@
 .table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
-}
 
-/* ===== BODY ===== */
-tbody {
+  thead {
+    background: #f8faff;
+    
+    th {
+      padding: 12px 24px;
+      text-align: left;
+      color: #5d668f;
+      font-size: 13px;
+      font-weight: 600;
+    }
+  }
+
   tr {
-    height: 64px;
-    transition: background-color 0.2s ease;
+    border-bottom: 1px solid #f0f2f7;
+    transition: background 0.2s ease;
+
+    &:last-child {
+      border-bottom: none;
+    }
 
     &:hover {
-      background-color: #fcfdff;
+      background: #fcfdff;
     }
   }
 
   td {
-    padding: 0 24px;
-    border-bottom: 1px solid #f5f6fa;
+    padding: 12px 24px;
     vertical-align: middle;
-  }
-
-  tr:last-child td {
-    border-bottom: none;
   }
 }
 
-/* ===== COLUMNS ===== */
 .nameCol {
   width: 45%;
 }
 
-.posCol {
-  width: 35%;
-}
-
-.actionsCol {
-  width: 20%;
-  text-align: right;
-}
-
-/* ===== NAME CELL ===== */
 .nameCell {
   display: flex;
   align-items: center;
@@ -53,17 +49,22 @@ tbody {
   background: #e0e4fe;
   color: #4e5bd9;
   font-weight: 600;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .nameText {
   color: #1a1f4d !important;
   font-size: 14px !important;
-  font-weight: 700 !important;
+  font-weight: 600 !important;
 }
 
-/* ===== POSITION ===== */
+.posCol {
+  flex: 1;
+}
+
 .posText {
-  color: #3b3f5c !important;
+  color: #5d668f !important;
   font-size: 14px !important;
   font-weight: 400 !important;
 }

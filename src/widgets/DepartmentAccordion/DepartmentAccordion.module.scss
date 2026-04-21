@@ -1,8 +1,10 @@
 .root {
   background: #ffffff;
-  border-bottom: 2px solid #f5f6fa;
+  border: 1px solid #edf1f7;
+  border-radius: 12px;
   overflow: hidden;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
+  transition: all 0.2s ease;
 
   &.expanded {
     .arrow {
@@ -15,10 +17,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 48px;
+  min-height: 54px;
   padding: 0 24px;
   background: #f0f2ff;
-  border-radius: 10px;
+  cursor: pointer;
+  
+  &:hover {
+    background: #e9ecff;
+  }
 }
 
 .info {
@@ -26,7 +32,6 @@
   align-items: center;
   flex: 1;
   min-width: 0;
-  cursor: pointer;
 }
 
 .titleGroup {
@@ -40,7 +45,7 @@
   font-size: 14px !important;
   font-weight: 700 !important;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
 }
 
 .tableHeaders {
@@ -50,16 +55,16 @@
 }
 
 .colTitle {
-  color: #1a1f4d !important;
+  color: #5d668f !important;
   font-size: 13px !important;
   font-weight: 600 !important;
   
   &:first-child {
-    width: 65%;
+    width: 60%;
   }
   
   &:last-child {
-    width: 35%;
+    width: 40%;
     text-align: right;
     padding-right: 40px;
   }
@@ -68,40 +73,49 @@
 .actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   margin-left: 12px;
 }
 
 .deptAction {
-  color: #4e5bd9 !important;
+  color: #5B67F3 !important;
+  width: 32px !important;
+  height: 32px !important;
+  padding: 0 !important;
+  border-radius: 8px !important;
+  background: #fff !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
   
   &:hover {
-    background: rgba(78, 91, 217, 0.1) !important;
+    background: #f8faff !important;
+    transform: translateY(-1px);
+  }
+
+  &[class*="tone-red"] {
+    color: #ff4d4f !important;
   }
 }
 
 .deptIcon {
-  width: 18px;
-  height: 18px;
-  stroke-width: 1.5;
+  width: 16px;
+  height: 16px;
 }
 
 .arrow {
-  color: #1a1f4d;
-  cursor: pointer;
+  color: #5B67F3;
   transition: transform 0.2s ease;
-  margin-left: 12px;
+  margin-left: 8px;
   width: 20px;
   height: 20px;
-  stroke-width: 1.5;
 }
 
 .body {
   padding: 0;
+  border-top: 1px solid #edf1f7;
 }
 
 .empty {
-  padding: 24px;
+  padding: 32px;
   text-align: center;
   color: #8a91b4;
 }

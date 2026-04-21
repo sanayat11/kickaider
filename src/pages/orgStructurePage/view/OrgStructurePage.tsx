@@ -1,17 +1,16 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-import { BindDeviceModal } from '@/features/bind-device';
 import { CreateDepartmentModal } from '@/features/create-department';
 import { DeleteConfirmModal } from '@/features/deleteModal/view/DeleteModal';
-import { EditDepartmentModal } from '@/features/edit-department';
+import { EditEmployeeModal } from '@/features/editEmployeeModal/view/EditEmployeeModal';
 import { DepartmentAccordion } from '@/widgets/DepartmentAccordion';
 import { DevicesSection } from '@/widgets/DevicesSection';
 import { DevicesTable } from '@/widgets/DevicesTable';
 import { EmployeesSection } from '@/widgets/EmployeesSection';
 import { OrganizationHeader } from '@/widgets/OrganizationHeader';
 import { OrganizationTabs } from '@/widgets/OrganizationTabs';
-import type { Department, OrgTab, UnassignedDevice } from '../model/types';
+import type { Department, Employee, OrgTab, UnassignedDevice } from '../model/types';
 import { mapDepartmentsWithEmployees } from '../model/mappers';
 import {
   useCompanyDepartments,
@@ -19,7 +18,21 @@ import {
   useDeleteDepartment,
 } from '../model/useDepartments';
 import { useCompanyEmployees } from '../model/useOrgStructure';
+import { useBlockEmployee, useUpdateEmployee } from '../model/useEmployees';
+import { useApproveDevice, usePendingDevices } from '../model/useDevice';
 import styles from './OrgStructurePage.module.scss';
+
+const formatLastSeen = (value?: string | null) => {
+  if (!value) return '—';
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return '—';
+  }
+
+  return date.toLocaleString('ru-RU');
+};
 
 export const OrgStructurePage = () => {
   const { t } = useTranslation();
@@ -30,14 +43,13 @@ export const OrgStructurePage = () => {
 
   const [activeTab, setActiveTab] = useState<OrgTab>('employees');
   const [searchQuery, setSearchQuery] = useState('');
-  const [unassignedDevices, setUnassignedDevices] = useState<UnassignedDevice[]>([]);
 
   const [isCreateDeptOpen, setIsCreateDeptOpen] = useState(false);
-  const [selectedDept, setSelectedDept] = useState<Department | null>(null);
-  const [selectedDevice, setSelectedDevice] = useState<UnassignedDevice | null>(null);
-
   const [deptToDelete, setDeptToDelete] = useState<Department | null>(null);
-  const [employeeToDelete, setEmployeeToDelete] = useState<{
+  const [selectedEmployee, setSelectedEmployee] = useState<(Employee & { deptId: string }) | null>(
+    null,
+  );
+  const [employeeToBlock, setEmployeeToBlock] = useState<{
     empId: string;
     deptId: string;
     empName?: string;
@@ -57,12 +69,26 @@ export const OrgStructurePage = () => {
     error: departmentsError,
   } = useCompanyDepartments(hasValidCompanyId ? parsedCompanyId : undefined);
 
+  const {
+    data: pendingDevices = [],
+    isLoading: isDevicesLoading,
+    isError: isDevicesError,
+    error: devicesError,
+  } = usePendingDevices();
+
   const createDepartmentMutation = useCreateDepartment(
     hasValidCompanyId ? parsedCompanyId : undefined,
   );
   const deleteDepartmentMutation = useDeleteDepartment(
     hasValidCompanyId ? parsedCompanyId : undefined,
   );
+  const updateEmployeeMutation = useUpdateEmployee(
+    hasValidCompanyId ? parsedCompanyId : undefined,
+  );
+  const blockEmployeeMutation = useBlockEmployee(
+    hasValidCompanyId ? parsedCompanyId : undefined,
+  );
+  const approveDeviceMutation = useApproveDevice();
 
   const departments = useMemo(() => {
     return mapDepartmentsWithEmployees(departmentsData, employees);
@@ -78,7 +104,8 @@ export const OrgStructurePage = () => {
         const filteredEmployees = dept.employees.filter(
           (emp) =>
             emp.name.toLowerCase().includes(query) ||
-            emp.position.toLowerCase().includes(query),
+            emp.position.toLowerCase().includes(query) ||
+            (emp.employeeNumber ?? '').toLowerCase().includes(query),
         );
 
         const isDeptMatch = dept.name.toLowerCase().includes(query);
@@ -96,22 +123,26 @@ export const OrgStructurePage = () => {
       .filter(Boolean) as Department[];
   }, [departments, searchQuery]);
 
+  const unassignedDevices = useMemo<UnassignedDevice[]>(() => {
+    return pendingDevices.map((device) => ({
+      id: String(device.id),
+      hostname: device.hostname || device.deviceName || `Device #${device.id}`,
+      lastSeen: formatLastSeen(device.lastSeenAt || device.firstSeenAt),
+    }));
+  }, [pendingDevices]);
+
   const handleCreateDept = async (name: string) => {
     try {
       await createDepartmentMutation.mutateAsync({
-        name,
+        name: name.trim(),
         companyId: parsedCompanyId,
       });
+
       setIsCreateDeptOpen(false);
     } catch (error) {
       console.error('Failed to create department', error);
-      alert('Failed to create department');
+      alert('Не удалось создать отдел');
     }
-  };
-
-  const handleEditDept = async (name: string) => {
-    console.warn('Edit department API is not connected yet', name, selectedDept);
-    setSelectedDept(null);
   };
 
   const handleDeleteDeptConfirm = async () => {
@@ -122,27 +153,55 @@ export const OrgStructurePage = () => {
       setDeptToDelete(null);
     } catch (error) {
       console.error('Failed to delete department', error);
-      alert('Failed to delete department. It may still contain employees.');
+      alert('Не удалось удалить отдел. Возможно, в нём ещё есть сотрудники.');
     }
   };
 
-  const handleDeleteEmployeeConfirm = () => {
-    console.warn('Delete employee API is not connected yet', employeeToDelete);
-    setEmployeeToDelete(null);
+  const handleSaveEmployee = async (data: {
+    employeeId: string;
+    departmentId: string;
+    position: string;
+    employeeNumber: string;
+  }) => {
+    try {
+      await updateEmployeeMutation.mutateAsync({
+        id: Number(data.employeeId),
+        payload: {
+          departmentId: Number(data.departmentId),
+          position: data.position,
+          employeeNumber: data.employeeNumber,
+        },
+      });
+
+      setSelectedEmployee(null);
+    } catch (error) {
+      console.error('Failed to update employee', error);
+      alert('Не удалось обновить сотрудника');
+    }
   };
 
-  const handleBindDevice = (data: {
-    employeeName: string;
-    position: string;
-    deptId: string;
-    deviceId?: string;
-  }) => {
-    setUnassignedDevices((prev) =>
-      prev.filter((device) => device.id !== data.deviceId),
-    );
+  const handleBlockEmployeeConfirm = async () => {
+    if (!employeeToBlock) return;
 
-    console.warn('Bind device API is not connected yet', data);
-    setSelectedDevice(null);
+    try {
+      await blockEmployeeMutation.mutateAsync(Number(employeeToBlock.empId));
+      setEmployeeToBlock(null);
+    } catch (error) {
+      console.error('Failed to block employee', error);
+      alert('Не удалось заблокировать сотрудника');
+    }
+  };
+
+  const handleApproveDevice = async (device: UnassignedDevice) => {
+    try {
+      await approveDeviceMutation.mutateAsync({
+        id: Number(device.id),
+        alias: device.hostname,
+      });
+    } catch (error) {
+      console.error('Failed to approve device', error);
+      alert('Не удалось подтвердить устройство');
+    }
   };
 
   const isLoading = isEmployeesLoading || isDepartmentsLoading;
@@ -161,9 +220,7 @@ export const OrgStructurePage = () => {
     <div className={styles.container}>
       <OrganizationHeader
         title={t('settings.organization.title')}
-        subtitle={
-          t('settings.organization.subtitle') || 'Company organization overview'
-        }
+        subtitle={t('settings.organization.subtitle') || 'Company organization overview'}
       />
 
       <main className={styles.main}>
@@ -182,34 +239,36 @@ export const OrgStructurePage = () => {
                 onAddDept={() => setIsCreateDeptOpen(true)}
               >
                 {isLoading ? (
-                  <div>Loading structure...</div>
+                  <div>Загрузка структуры...</div>
                 ) : isError ? (
                   <div>
-                    Failed to load structure
+                    Не удалось загрузить структуру
                     {error instanceof Error ? `: ${error.message}` : ''}
                   </div>
                 ) : filteredDepartments.length === 0 ? (
-                  <div>Departments and employees not found</div>
+                  <div>Отделы и сотрудники не найдены</div>
                 ) : (
                   filteredDepartments.map((dept) => (
                     <DepartmentAccordion
                       key={dept.id}
                       department={dept}
                       defaultExpanded={!!searchQuery}
-                      onEditDept={(department) => setSelectedDept(department)}
                       onDeleteDept={(deptId) => {
-                        const department =
-                          departments.find((item) => item.id === deptId) ?? null;
+                        const department = departments.find((item) => item.id === deptId) ?? null;
                         setDeptToDelete(department);
                       }}
-                      onEditEmployee={(emp) => {
-                        console.log('Edit employee', emp);
+                      onEditEmployee={(emp, deptId) => {
+                        setSelectedEmployee({
+                          ...emp,
+                          deptId,
+                          departmentId: deptId,
+                        });
                       }}
                       onDeleteEmployee={(empId, deptId) => {
                         const department = departments.find((d) => d.id === deptId);
                         const employee = department?.employees.find((e) => e.id === empId);
 
-                        setEmployeeToDelete({
+                        setEmployeeToBlock({
                           empId,
                           deptId,
                           empName: employee?.name,
@@ -221,10 +280,16 @@ export const OrgStructurePage = () => {
               </EmployeesSection>
             ) : (
               <DevicesSection>
-                <DevicesTable
-                  devices={unassignedDevices}
-                  onAssign={(device) => setSelectedDevice(device)}
-                />
+                {isDevicesLoading ? (
+                  <div>Загрузка устройств...</div>
+                ) : isDevicesError ? (
+                  <div>
+                    Не удалось загрузить устройства
+                    {devicesError instanceof Error ? `: ${devicesError.message}` : ''}
+                  </div>
+                ) : (
+                  <DevicesTable devices={unassignedDevices} onApprove={handleApproveDevice} />
+                )}
               </DevicesSection>
             )}
           </div>
@@ -237,39 +302,31 @@ export const OrgStructurePage = () => {
         onSave={handleCreateDept}
       />
 
-      <EditDepartmentModal
-        key={selectedDept?.id ?? 'edit-dept-closed'}
-        open={!!selectedDept}
-        onClose={() => setSelectedDept(null)}
-        department={selectedDept}
-        onSave={handleEditDept}
-      />
-
-      <BindDeviceModal
-        key={selectedDevice?.id ?? 'bind-device-closed'}
-        open={!!selectedDevice}
-        onClose={() => setSelectedDevice(null)}
-        device={selectedDevice}
+      <EditEmployeeModal
+        key={selectedEmployee?.id ?? 'edit-employee-closed'}
+        open={!!selectedEmployee}
+        onClose={() => setSelectedEmployee(null)}
+        employee={selectedEmployee}
         departments={departments}
-        onSave={handleBindDevice}
+        onSave={handleSaveEmployee}
       />
 
       <DeleteConfirmModal
         open={!!deptToDelete}
         onClose={() => setDeptToDelete(null)}
         onConfirm={handleDeleteDeptConfirm}
-        title="Delete department"
-        description={`Are you sure you want to delete department "${deptToDelete?.name ?? ''}"?`}
-        confirmText="Delete"
+        title="Удалить отдел"
+        description={`Вы уверены, что хотите удалить отдел "${deptToDelete?.name ?? ''}"?`}
+        confirmText="Удалить"
       />
 
       <DeleteConfirmModal
-        open={!!employeeToDelete}
-        onClose={() => setEmployeeToDelete(null)}
-        onConfirm={handleDeleteEmployeeConfirm}
-        title="Delete employee"
-        description={`Are you sure you want to delete employee "${employeeToDelete?.empName ?? ''}"?`}
-        confirmText="Delete"
+        open={!!employeeToBlock}
+        onClose={() => setEmployeeToBlock(null)}
+        onConfirm={handleBlockEmployeeConfirm}
+        title="Заблокировать сотрудника"
+        description={`Вы уверены, что хотите заблокировать сотрудника "${employeeToBlock?.empName ?? ''}"?`}
+        confirmText="Заблокировать"
       />
     </div>
   );

@@ -25,12 +25,19 @@
     --text-grey-400:    #9EA2AE;   
 
     // STATE / SEMANTIC
-    --danger:           #FF0000;
-    --danger-25:        rgba(255, 0, 0, 0.25);
-    --success:          #8DE4DB;
-    --warning:          #FFCC00;
+    --danger:           #FF4B55;
+    --danger-bg:        #FFE9EA;
+    --success:          #3DD9CA;
+    --success-bg:       #E8F9F7;
+    --warning:          #FFC107;
+    --warning-bg:       #FFF8E1;
     --disabled:         #D2D5DB;
     --pink:             #CB5FFF;
+    --pink-bg:          #F8EFFF;
+    --blue:             #5262F5;
+    --blue-bg:          #EEF0FF;
+    --grey:             #9EA2AE;
+    --grey-bg:          #F3F4F6;
 
     // LEGACY / ACCENT (kept for compatibility)
     --bg-color:                  #FFFFFF;

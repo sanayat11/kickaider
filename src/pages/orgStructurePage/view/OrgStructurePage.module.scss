@@ -1,6 +1,6 @@
 .container {
-  padding: 32px 40px;
-  // background: #f5f6fa;
+  padding: 32px 48px;
+  background: #f8faff;
   min-height: 100vh;
 }
 
@@ -10,12 +10,12 @@
 
 .card {
   background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 6px 24px rgba(16, 24, 40, 0.04);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(31, 42, 93, 0.04);
   border: 1px solid #edf1f7;
-  padding: 32px;
+  padding: 40px;
 }
 
 .tabsBody {
-  margin-top: 32px;
+  margin-top: 40px;
 }

@@ -14,9 +14,9 @@ interface CategorizationRowProps {
 }
 
 const CATEGORY_OPTIONS = [
-  { label: <Chip tone="green" variant="filter" className={styles.categoryChip}>Продуктивно</Chip>, value: 'productive' },
-  { label: <Chip tone="red" variant="filter" className={styles.categoryChip}>Непродуктивно</Chip>, value: 'unproductive' },
-  { label: <Chip tone="yellow" variant="filter" className={styles.categoryChip}>Нейтрально</Chip>, value: 'neutral' },
+  { label: <Chip tone="green" variant="filter" isActionable={false} className={styles.categoryChip}>Продуктивно</Chip>, value: 'productive' },
+  { label: <Chip tone="red" variant="filter" isActionable={false} className={styles.categoryChip}>Непродуктивно</Chip>, value: 'unproductive' },
+  { label: <Chip tone="yellow" variant="filter" isActionable={false} className={styles.categoryChip}>Нейтрально</Chip>, value: 'neutral' },
 ];
 
 export const CategorizationRow: FC<CategorizationRowProps> = ({
@@ -61,6 +61,8 @@ export const CategorizationRow: FC<CategorizationRowProps> = ({
             variant="ghost"
             showChevron={false}
             className={classNames(styles.categorySelect, styles[row.category])}
+            menuClassName={styles.categoryMenu}
+            optionClassName={styles.categoryOption}
           />
         </div>
       </div>

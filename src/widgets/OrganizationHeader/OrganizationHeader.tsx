@@ -13,7 +13,7 @@ export const OrganizationHeader: FC<OrganizationHeaderProps> = ({ title, subtitl
 
   return (
     <div className={styles.root}>
-      <Typography variant="h2" weight="bold">
+      <Typography variant="h2" weight="bold" className={styles.title}>
         {title || t('settings.organization.title')}
       </Typography>
       <Typography variant="h5" color="secondary" className={styles.subtitle}>

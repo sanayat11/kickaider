@@ -37,7 +37,7 @@ export interface TypographyProps {
   weight?: TypographyWeight;
   color?: TypographyColor;
   className?: string;
-  truncate?: number;
+  truncate?: number | boolean;
   onClick?: () => void;
   style?: CSSProperties;
   children: ReactNode;

@@ -77,11 +77,9 @@ export const EmployeesTable: FC<EmployeesTableProps> = ({
                   className={styles.editBtn}
                 />
                 <Button
-                  variant="ghost"
-                  tone="red"
-                  size="small"
+                  variant="iconGhost"
                   iconOnly
-                  leftIcon={<TrashIcon className={styles.trashIcon}/>}
+                  leftIcon={<TrashIcon color='#ff4d4f' className={styles.trashIcon}/>}
                   onClick={() => onDelete(emp.id)}
                   className={styles.deleteBtn}
                 />

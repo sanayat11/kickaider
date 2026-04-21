@@ -13,6 +13,7 @@ import styles from './Sidebar.module.scss';
 import { LogOutIcon } from '@/shared/assets/icons';
 import { useLogout } from '@/features/auth/loginForm/model/useLogin';
 import { useAuthStore } from '@/shared/lib/model/AuthStore';
+import { Typography } from '@/shared/ui';
 
 interface SidebarItemProps {
   id: string;
@@ -55,7 +56,9 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           </span>
         )}
 
-        <span className={styles.label}>{label}</span>
+        <Typography variant="h5" weight="regular" className={styles.label}>
+          {label}
+        </Typography>
 
         {hasSubmenu && (
           <span className={classNames(styles.arrow, { [styles.open]: isOpen })}>
@@ -95,7 +98,7 @@ export const Sidebar: React.FC = () => {
       (
         location.pathname.startsWith(paths.SETTINGS) ||
         location.pathname.startsWith(paths.DASHBOARD_WORK_SCHEDULES) ||
-        location.pathname.startsWith(paths.DASHBOARD_ORG_STRUCTURE) ||
+        location.pathname.startsWith(paths.DASHBOARD_ORG_STRUCTURE_BASE) ||
         location.pathname.startsWith(paths.CATEGORIZATION) ||
         location.pathname.startsWith(paths.CALENDAR)
       )
@@ -157,7 +160,9 @@ export const Sidebar: React.FC = () => {
       <div className={styles.header}>
         <button type="button" className={styles.brand} onClick={() => navigate(paths.HOME)}>
           <img src={logoUrl} alt="KickAider Logo" className={styles.logo} />
-          <span className={styles.brandName}>KickAider</span>
+          <Typography variant="h4" weight="bold" className={styles.brandName}>
+            KickAider
+          </Typography>
         </button>
       </div>
 
@@ -273,10 +278,21 @@ export const Sidebar: React.FC = () => {
               id="settings-org-structure"
               label={t('sidebar.orgStructure')}
               nested
-              active={location.pathname === paths.DASHBOARD_ORG_STRUCTURE}
-              onClick={() =>
-                handleItemClick('settings-org-structure', false, paths.DASHBOARD_ORG_STRUCTURE)
-              }
+              active={location.pathname.startsWith(paths.DASHBOARD_ORG_STRUCTURE_BASE)}
+              onClick={() => {
+                const companyId = user?.companyId;
+
+                if (!companyId) {
+                  console.error('Missing companyId in auth user');
+                  return;
+                }
+
+                handleItemClick(
+                  'settings-org-structure',
+                  false,
+                  paths.getOrgStructurePath(companyId),
+                );
+              }}
             />
             <SidebarItem
               id="settings-general"
@@ -299,9 +315,9 @@ export const Sidebar: React.FC = () => {
           <span className={styles.logoutIcon}>
             <LogOutIcon />
           </span>
-          <span className={styles.logoutLabel}>
+          <Typography variant="body2" className={styles.logoutLabel}>
             {logoutMutation.isPending ? 'Выход...' : t('sidebar.logout', 'Выйти')}
-          </span>
+          </Typography>
         </button>
       </div>
     </aside>

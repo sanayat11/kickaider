@@ -1,11 +1,19 @@
 .root {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  margin-bottom: 14px;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.title {
+  color: #1a1f4d !important;
+  font-size: 24px !important;
+  line-height: 1.2 !important;
 }
 
 .subtitle {
-  color: #8e94b7 !important;
-  line-height: 1.35;
+  color: #5d668f !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  margin: 0 !important;
 }

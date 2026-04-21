@@ -7,10 +7,10 @@ import styles from './DevicesTable.module.scss';
 
 interface DevicesTableProps {
   devices: UnassignedDevice[];
-  onAssign: (device: UnassignedDevice) => void;
+  onApprove: (device: UnassignedDevice) => void;
 }
 
-export const DevicesTable: FC<DevicesTableProps> = ({ devices, onAssign }) => {
+export const DevicesTable: FC<DevicesTableProps> = ({ devices, onApprove }) => {
   const { t } = useTranslation();
 
   return (
@@ -19,46 +19,67 @@ export const DevicesTable: FC<DevicesTableProps> = ({ devices, onAssign }) => {
         <tr>
           <th>
             <Typography variant="h5" weight="bold" className={styles.headerText}>
-              {t('settings.organization.devices.table.pending', { defaultValue: 'Ожидают привязки' })}
+              {t('settings.organization.devices.table.pending', {
+                defaultValue: 'Ожидают подтверждения',
+              })}
             </Typography>
           </th>
           <th>
             <Typography variant="h5" weight="bold" className={styles.headerText}>
-              {t('settings.organization.devices.table.activity', { defaultValue: 'Последняя активность' })}
+              {t('settings.organization.devices.table.activity', {
+                defaultValue: 'Последняя активность',
+              })}
             </Typography>
           </th>
           <th className={styles.actionsCol}>
             <Typography variant="h5" weight="bold" className={styles.headerText}>
-              {t('settings.organization.devices.table.action', { defaultValue: 'Действие' })}
+              {t('settings.organization.devices.table.action', {
+                defaultValue: 'Действие',
+              })}
             </Typography>
           </th>
         </tr>
       </thead>
+
       <tbody>
-        {devices.map((device) => (
-          <tr key={device.id}>
-            <td>
+        {devices.length === 0 ? (
+          <tr>
+            <td colSpan={3}>
               <Typography variant="h5" color="secondary" className={styles.hostname}>
-                {device.hostname}
+                {t('settings.organization.devices.empty', {
+                  defaultValue: 'Нет ожидающих устройств',
+                })}
               </Typography>
-            </td>
-            <td>
-              <Typography variant="h5" color="secondary" className={styles.lastSeen}>
-                {device.lastSeen}
-              </Typography>
-            </td>
-            <td className={styles.actionsCol}>
-              <Button
-                variant="primary"
-                size="medium"
-                onClick={() => onAssign(device)}
-                className={styles.assignBtn}
-              >
-                {t('settings.organization.devices.assignBtn', { defaultValue: 'Привязать' })}
-              </Button>
             </td>
           </tr>
-        ))}
+        ) : (
+          devices.map((device) => (
+            <tr key={device.id}>
+              <td>
+                <Typography variant="h5" color="secondary" className={styles.hostname}>
+                  {device.hostname}
+                </Typography>
+              </td>
+              <td>
+                <Typography variant="h5" color="secondary" className={styles.lastSeen}>
+                  {device.lastSeen}
+                </Typography>
+              </td>
+              <td className={styles.actionsCol}>
+                <Button
+                  variant="primary"
+                  size="medium"
+                  onClick={() => onApprove(device)}
+                  className={styles.assignBtn}
+                >
+                  {t('settings.organization.devices.approveBtn', {
+                    defaultValue: 'Подтвердить',
+                  })}
+                </Button>
+              </td>
+            </tr>
+          ))
+        )}
       </tbody>
     </table>
   );

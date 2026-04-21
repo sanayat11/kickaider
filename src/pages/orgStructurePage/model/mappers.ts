@@ -29,6 +29,9 @@ export const mapDepartmentsWithEmployees = (
       id: String(employee.id),
       name: `Сотрудник #${employee.userId}`,
       position: employee.position || '—',
+      employeeNumber: employee.employeeNumber || '',
+      departmentId,
+      userId: employee.userId,
     });
   });
 

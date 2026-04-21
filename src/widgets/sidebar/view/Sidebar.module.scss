@@ -113,14 +113,8 @@
 .label {
   flex: 1;
   min-width: 0;
-  font-size: 13px;
-  line-height: 1.2;
-  font-weight: 500;
   color: inherit;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+  }
 
 .arrow {
   width: 16px;

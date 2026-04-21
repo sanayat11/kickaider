@@ -19,9 +19,9 @@ export const ArrowDownIcon: FC<TIcons> = ({
     <path
       d="M5 7.5L10 12.5L15 7.5"
       stroke="#5D5A88"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );

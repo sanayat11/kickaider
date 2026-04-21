@@ -1,7 +1,7 @@
 .root {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 24px;
 }
 
 .header {
@@ -15,7 +15,15 @@
 }
 
 .instruction {
-  margin-bottom: 4px;
+  margin-bottom: 8px;
+  padding: 0 4px;
+}
+
+.instructionText {
+  color: #5d668f !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  font-weight: 500 !important;
 }
 
 .content {

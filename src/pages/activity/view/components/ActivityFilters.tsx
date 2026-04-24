@@ -2,12 +2,6 @@ import type { FC } from 'react';
 import { FilterBar } from '@/shared/ui/filters-bar/view/FiltersBar';
 import type { FilterBarItem } from '@/shared/ui/filters-bar/types/FilterBar';
 
-const DEPARTMENTS = [
-  { value: 'Company', label: 'Все отделы' },
-  { value: 'IT', label: 'IT' },
-  { value: 'Sales', label: 'Продажи' },
-];
-
 const SCALES = [
   { value: 'allDay', label: 'Весь день' },
   { value: 'workTime', label: 'Рабочее время' },
@@ -22,6 +16,7 @@ export interface ActivityFiltersProps {
   setScale: (scale: string) => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+  departmentOptions: { value: string; label: string }[];
 }
 
 export const ActivityFilters: FC<ActivityFiltersProps> = ({
@@ -33,6 +28,7 @@ export const ActivityFilters: FC<ActivityFiltersProps> = ({
   setScale,
   searchQuery,
   setSearchQuery,
+  departmentOptions,
 }) => {
   const handleDateChange = (days: number) => {
     const d = new Date(date);
@@ -44,10 +40,19 @@ export const ActivityFilters: FC<ActivityFiltersProps> = ({
     {
       id: 'iconBtn',
       type: 'icon',
-      icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" />
-      </svg>,
-      onClick: () => { }
+      icon: (
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" />
+        </svg>
+      ),
+      onClick: () => {},
     },
     {
       id: 'period',
@@ -58,18 +63,17 @@ export const ActivityFilters: FC<ActivityFiltersProps> = ({
       onPrev: () => handleDateChange(-1),
       onNext: () => handleDateChange(1),
       onChange: (val) => {
-        // Value comes formatted as DD.MM.YYYY, changing back to YYYY-MM-DD
         const parts = val.split('.');
         if (parts.length === 3) {
           setDate(`${parts[2]}-${parts[1]}-${parts[0]}`);
         }
-      }
+      },
     },
     {
       id: 'department',
       type: 'select',
       value: department,
-      options: DEPARTMENTS,
+      options: departmentOptions,
       onChange: setDepartment,
     },
     {
@@ -83,9 +87,9 @@ export const ActivityFilters: FC<ActivityFiltersProps> = ({
       id: 'search',
       type: 'search',
       value: searchQuery,
-      placeholder: 'Поиск по приложению',
+      placeholder: 'Поиск по сотруднику/хосту',
       onChange: setSearchQuery,
-    }
+    },
   ];
 
   return <FilterBar items={filterItems} />;

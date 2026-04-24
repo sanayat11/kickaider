@@ -5,7 +5,7 @@ import { MdChevronLeft, MdChevronRight, MdSearch } from 'react-icons/md';
 import styles from './FiltersBar.module.scss';
 import type { FilterBarItem, FilterBarProps } from '../types/FilterBar';
 import { Calendar } from '@/shared/ui/calendar/view/Calendar';
-import { SelectDropdown } from '@/shared/ui/selectDropdown/view/selectDropdown';
+import { SelectDropdown } from '@/shared/ui/selectDropdown/view/SelectDropdown';
 import { Checkbox } from '@/shared/ui/checkbox/view/CheckBox';
 import { BaseInput } from '@/shared/ui/input/view/BaseInput';
 import { Typography } from '@/shared/ui/typoghraphy/view/Typography';

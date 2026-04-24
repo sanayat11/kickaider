@@ -1,14 +1,15 @@
 import type { FC } from 'react';
 
 import styles from './EmployeeRatingPage.module.scss';
-import { BASE_EMPLOYEES } from '@/shared/api/mock/employees.mock';
 
 import { EmployeeRatingHeader } from '@/widgets/employeeRatingBlock/components/EmployeeRatingHeader';
 import { EmployeeRatingFilters } from '@/widgets/employeeRatingBlock/components/EmployeeRatingFilters';
 import { EmployeeRatingTable } from '@/widgets/employeeRatingBlock/components/EmployeeRatingTable';
+import { useEmployeeRatingReport } from '../model/useEmployeeRating';
 import { useEmployeeRatingFilters } from '../model/EmployeeRatingFilters';
-import { getEmployeeRatingRows } from '../model/EmployeeRatingRows';
 import type { EmployeeRatingRowData } from '@/pages/employeeRatingPage/types/EmployeeRatingPage';
+import { exportRatingReport } from '@/shared/api/exportApi';
+import { useState } from 'react';
 
 type Props = {
   rows: EmployeeRatingRowData[];
@@ -42,28 +43,61 @@ export const EmployeeRatingPageContent: FC<Props> = ({
 };
 
 export const EmployeeRatingPage: FC = () => {
-  const { filterItems, filtersState, currentPage, pageSize, setCurrentPage, setPageSize } =
-    useEmployeeRatingFilters();
+  const {
+    filterItems,
+    filtersState,
+    currentPage,
+    pageSize,
+    setCurrentPage,
+    setPageSize,
+  } = useEmployeeRatingFilters();
+  
 
-  const { rows, totalPages } = getEmployeeRatingRows({
-    employees: BASE_EMPLOYEES,
+  const { rows, totalPages, isLoading, error } = useEmployeeRatingReport({
     filters: filtersState,
     currentPage,
     pageSize,
   });
 
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExport = async () => {
+    try {
+      setIsExporting(true);
+      await exportRatingReport({
+        departmentId: filtersState.department !== 'all' ? Number(filtersState.department) : undefined,
+        from: `${filtersState.currentDate}T00:00:00Z`,
+        to: `${filtersState.currentDate}T23:59:59Z`,
+        date: filtersState.currentDate,
+        groupBy: 'DAY',
+        onlyWorkTime: filtersState.onlyWorkHours,
+        page: currentPage - 1,
+        size: pageSize,
+      }, `rating_${filtersState.currentDate}.xlsx`);
+    } catch (e) {
+      console.error('Export failed:', e);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div className={styles.page}>
-      <EmployeeRatingHeader />
+      <EmployeeRatingHeader onExport={handleExport} exporting={isExporting} />
       <EmployeeRatingFilters items={filterItems} />
+
+      {isLoading ? <div>Загрузка рейтинга...</div> : null}
+      {error ? <div>{error}</div> : null}
+
       <EmployeeRatingPageContent
-        rows={rows as any}
+        rows={rows}
         currentPage={currentPage}
         totalPages={totalPages}
         pageSize={pageSize}
         onPageChange={setCurrentPage}
         onPageSizeChange={setPageSize}
       />
+      
     </div>
   );
 };

@@ -1,26 +1,14 @@
-export type Criterion = 'productive' | 'unproductive' | 'neutral' | 'idle';
+export type Criterion = 'productive' | 'unproductive';
 
-export type EmployeeRatingFiltersState = {
+export interface EmployeeRatingFiltersState {
   currentDate: string;
-  department: string;
-  criterion: Criterion;
-  searchQuery: string;
+  department: string; // 'all' или строковый departmentId, например '3'
   onlyWorkHours: boolean;
-};
+  searchQuery: string;
+  criterion: Criterion;
+}
 
-export type EmployeeRatingSourceEmployee = {
-  id: string;
-  name: string;
-  initials: string;
-  hostname: string;
-  department: string;
-  bProd: number;
-  bUnp: number;
-  bNeu: number;
-  bIdle: number;
-};
-
-export type EmployeeRatingRowData = {
+export interface EmployeeRatingRowData {
   id: string;
   rank: string;
   name: string;
@@ -31,16 +19,4 @@ export type EmployeeRatingRowData = {
   timeLabel: string;
   avatar?: string;
   isOnline?: boolean;
-};
-
-export type GetEmployeeRatingRowsParams = {
-  employees: EmployeeRatingSourceEmployee[];
-  filters: EmployeeRatingFiltersState;
-  currentPage: number;
-  pageSize: number;
-};
-
-export type GetEmployeeRatingRowsResult = {
-  rows: EmployeeRatingRowData[];
-  totalPages: number;
-};
+}

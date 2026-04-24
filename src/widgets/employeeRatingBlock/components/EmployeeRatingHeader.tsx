@@ -1,11 +1,16 @@
 import type { FC } from 'react';
-import { MdOutlineFileDownload } from 'react-icons/md';
+import { AttachmentIcon } from '@/shared/assets/icons';
 
 import styles from '../styles/EmployeeRatingHeader.module.scss';
 import { Typography } from '@/shared/ui/typoghraphy/view/Typography';
 import { Button } from '@/shared/ui/button/view/Button';
 
-export const EmployeeRatingHeader: FC = () => {
+interface Props {
+  onExport?: () => void;
+  exporting?: boolean;
+}
+
+export const EmployeeRatingHeader: FC<Props> = ({ onExport, exporting }) => {
   return (
     <div className={styles.header}>
       <div className={styles.content}>
@@ -20,13 +25,14 @@ export const EmployeeRatingHeader: FC = () => {
 
       <Button
         variant="primary"
-        size="large"
+        size="medium"
         tone="primary"
-        rightIcon={<MdOutlineFileDownload size={18} />}
-        onClick={() => undefined}
+        rightIcon={<AttachmentIcon />}
+        onClick={onExport}
+        disabled={exporting}
         className={styles.exportBtn}
       >
-        Экспорт XLS
+        {exporting ? 'Экспорт...' : 'Экспорт XLS'}
       </Button>
     </div>
   );

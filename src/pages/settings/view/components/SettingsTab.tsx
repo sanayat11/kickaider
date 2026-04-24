@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/shared/ui/button/view/Button';
-import { SelectDropdown } from '@/shared/ui/selectDropdown/view/selectDropdown';
+import { SelectDropdown } from '@/shared/ui/selectDropdown/view/SelectDropdown';
 import { settingsMockApi } from '@/shared/api/mock/settings.mock';
 import type { GeneralSettings } from '@/shared/api/mock/settings.mock';
 import { useTranslation } from 'react-i18next';

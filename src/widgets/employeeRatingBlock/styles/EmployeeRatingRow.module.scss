@@ -53,6 +53,10 @@
   position: relative;
 }
 
+.rowWrapOpened {
+  z-index: 1000;
+}
+
 .row {
   width: 100%;
   display: grid;

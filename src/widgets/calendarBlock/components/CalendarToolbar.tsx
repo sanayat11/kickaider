@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { Input } from '@/shared/ui/input/view/Input';
 import { Chip } from '@/shared/ui/chipButton/view/ChipButton';
-import { SelectDropdown } from '@/shared/ui/selectDropdown/view/selectDropdown';
+import { SelectDropdown } from '@/shared/ui/selectDropdown/view/SelectDropdown';
 import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
 import { SegmentedControl } from '@/shared/ui/segmentedControl/view/SegmentedControl';
 import { SearchIcon } from '@/shared/assets/icons/IconSearch';

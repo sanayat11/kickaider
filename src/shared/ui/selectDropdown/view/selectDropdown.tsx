@@ -234,7 +234,7 @@ export const SelectDropdown = ({
             ref={menuRef}
             role="listbox"
             tabIndex={-1}
-            className={[styles.menu, menuClassName ?? ''].join(' ')}
+            className={[styles.menu, styles[size], menuClassName ?? ''].join(' ')}
             style={{
               position: 'fixed',
               top: menuRect ? `${menuRect.top + 4}px` : '0',

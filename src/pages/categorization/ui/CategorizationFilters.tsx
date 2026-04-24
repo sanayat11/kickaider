@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import { BaseInput } from '@/shared/ui/input/view/BaseInput';
-import { SelectDropdown } from '@/shared/ui/selectDropdown/view/selectDropdown';
+import { SelectDropdown } from '@/shared/ui/selectDropdown/view/SelectDropdown';
 import { Chip } from '@/shared/ui/chipButton/view/ChipButton';
 import { IoSearchOutline } from 'react-icons/io5';
 import styles from '../view/CategorizationPage.module.scss';

@@ -12,7 +12,7 @@ export const AuthPage = () => {
             <div className={styles.logo}>
               <img src={logo} alt="Logo" />
               <Typography variant="h4" context="landing" weight="bold">
-                KickAider
+                Metricon
               </Typography>
             </div>
 

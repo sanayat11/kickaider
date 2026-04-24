@@ -5,58 +5,85 @@ import type { DepartmentData, Schedule } from '../../model/types';
 import styles from './DepartmentsScheduleSection.module.scss';
 
 type DepartmentsScheduleSectionProps = {
-    departments: DepartmentData[];
-    companySchedule: Schedule;
-    onToggleInheritance: (id: string) => void;
-    onChangeSchedule: (id: string, field: keyof Schedule, value: any) => void;
+  departments: DepartmentData[];
+  loading: boolean;
+  savingIds: string[];
+  loadingScheduleIds: string[];
+  companySchedule: Schedule;
+  onOpenDepartment: (id: string) => void;
+  onSaveDepartmentSchedule: (
+    id: string,
+    values: {
+      useCompanySchedule: boolean;
+      startTime: string;
+      endTime: string;
+      lunch: string;
+      days: string[];
+    },
+  ) => void;
 };
 
 export const DepartmentsScheduleSection: FC<DepartmentsScheduleSectionProps> = ({
-    departments,
-    companySchedule,
-    onToggleInheritance,
-    onChangeSchedule,
+  departments,
+  loading,
+  savingIds,
+  loadingScheduleIds,
+  companySchedule,
+  onOpenDepartment,
+  onSaveDepartmentSchedule,
 }) => {
-    const { t } = useTranslation();
+  const { t } = useTranslation();
 
+  if (loading) {
     return (
-        <div className={styles.section}>
-            <div className={styles.list}>
-                {departments.map((dept) => {
-                    const effectiveSchedule = dept.inheritCompany ? companySchedule : dept.schedule;
-                    const statusText = `${dept.inheritCompany ? t('settings.schedules.departments.inherit') : t('settings.schedules.departments.custom')} | ${effectiveSchedule.startTime} - ${effectiveSchedule.endTime}`;
-
-                    return (
-                        <CompanyScheduleCard
-                            key={dept.id}
-                            departmentName={dept.name}
-                            statusText={statusText}
-                            defaultOpen={false}
-                            useCompanySchedule={dept.inheritCompany}
-                            initialStartTime={effectiveSchedule.startTime}
-                            initialEndTime={effectiveSchedule.endTime}
-                            initialLunch={effectiveSchedule.lunchDuration}
-                            initialDays={effectiveSchedule.workDays}
-                            onSubmit={(values: {
-                                useCompanySchedule: boolean;
-                                startTime: string;
-                                endTime: string;
-                                lunch: string;
-                                days: string[];
-                            }) => {
-                                if (values.useCompanySchedule !== dept.inheritCompany) {
-                                    onToggleInheritance(dept.id);
-                                } else if (!dept.inheritCompany) {
-                                    onChangeSchedule(dept.id, 'startTime', values.startTime);
-                                    onChangeSchedule(dept.id, 'endTime', values.endTime);
-                                    onChangeSchedule(dept.id, 'lunchDuration', values.lunch);
-                                    onChangeSchedule(dept.id, 'workDays', values.days);
-                                }
-                            }}
-                        />
-                    );
-                })}
-            </div>
-        </div>
+      <div className={styles.section}>
+        <div className={styles.emptyResults}>{t('common.loading')}</div>
+      </div>
     );
+  }
+
+  if (departments.length === 0) {
+    return (
+      <div className={styles.section}>
+        <div className={styles.emptyResults}>{t('common.noData')}</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.section}>
+      <div className={styles.list}>
+        {departments.map((dept) => {
+          const effectiveSchedule = dept.inheritCompany ? companySchedule : dept.schedule;
+          const isLoadingSchedule = loadingScheduleIds.includes(dept.id);
+          const isSavingSchedule = savingIds.includes(dept.id);
+          const isBusy = isLoadingSchedule || isSavingSchedule;
+          const statusText = `${dept.inheritCompany ? t('settings.schedules.departments.inherit') : t('settings.schedules.departments.custom')} | ${effectiveSchedule.startTime} - ${effectiveSchedule.endTime}`;
+
+          return (
+            <CompanyScheduleCard
+              key={dept.id}
+              departmentName={dept.name}
+              statusText={statusText}
+              defaultOpen={false}
+              disabled={isBusy}
+              useCompanySchedule={dept.inheritCompany}
+              initialStartTime={effectiveSchedule.startTime}
+              initialEndTime={effectiveSchedule.endTime}
+              initialLunch={effectiveSchedule.lunchDuration}
+              initialDays={effectiveSchedule.workDays}
+              onOpenChange={(open) => {
+                if (open) {
+                  onOpenDepartment(dept.id);
+                }
+              }}
+              onSubmit={(values) => {
+                onSaveDepartmentSchedule(dept.id, values);
+              }}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
 };

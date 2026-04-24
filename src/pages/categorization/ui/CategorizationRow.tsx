@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import { IoGlobeOutline, IoLaptopOutline, IoTrashOutline } from 'react-icons/io5';
 import classNames from 'classnames';
 import styles from '../view/CategorizationPage.module.scss';
-import type { CategorizationRow as RowType, Category } from '@/shared/api/mock/categorization.mock';
+import type { CategorizationRow as RowType, Category } from '../model/types';
 import { SelectDropdown } from '@/shared/ui/selectDropdown/view/selectDropdown';
 import { Chip } from '@/shared/ui/chipButton/view/ChipButton';
 

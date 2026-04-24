@@ -12,17 +12,27 @@ export const WorkSchedulesPage: React.FC = () => {
         activeTab,
         handleTabChange,
         companySchedule,
-        handleCompanyScheduleChange,
+        companyLoading,
+        companySaving,
+        scheduleKey,
+        saveCompanySchedule,
         departments,
-        toggleDepartmentInheritance,
-        handleDepartmentScheduleChange,
+        departmentsLoading,
+        savingDepartmentIds,
+        loadingDepartmentScheduleIds,
+        saveDepartmentSchedule,
+        ensureDepartmentScheduleLoaded,
+        employeesLoading,
+        savingEmployeeIds,
+        loadingEmployeeScheduleIds,
         filteredEmployees,
+        saveEmployeeSchedule,
+        ensureEmployeeScheduleLoaded,
+        changeEmployeeScheduleDate,
         empSearch,
         setEmpSearch,
         empDeptFilter,
         setEmpDeptFilter,
-        toggleEmployeeInheritance,
-        handleEmployeeScheduleChange,
     } = useWorkSchedulesPage();
 
     return (
@@ -36,32 +46,41 @@ export const WorkSchedulesPage: React.FC = () => {
 
                 <div className={styles.contentCard}>
                     {activeTab === 'company' && (
-                        <CompanyScheduleSection 
-                            schedule={companySchedule} 
-                            onChange={handleCompanyScheduleChange} 
+                        <CompanyScheduleSection
+                            schedule={companySchedule}
+                            loading={companyLoading}
+                            saving={companySaving}
+                            scheduleKey={scheduleKey}
+                            onSave={saveCompanySchedule}
                         />
                     )}
                     
                     {activeTab === 'departments' && (
                         <DepartmentsScheduleSection
                             departments={departments}
+                            loading={departmentsLoading}
+                            savingIds={savingDepartmentIds}
+                            loadingScheduleIds={loadingDepartmentScheduleIds}
                             companySchedule={companySchedule}
-                            onToggleInheritance={toggleDepartmentInheritance}
-                            onChangeSchedule={handleDepartmentScheduleChange}
+                            onSaveDepartmentSchedule={saveDepartmentSchedule}
+                            onOpenDepartment={ensureDepartmentScheduleLoaded}
                         />
                     )}
                     
                     {activeTab === 'employees' && (
                         <EmployeesScheduleSection
                             employees={filteredEmployees}
+                            loading={employeesLoading}
+                            savingIds={savingEmployeeIds}
+                            loadingScheduleIds={loadingEmployeeScheduleIds}
                             departments={departments}
-                            companySchedule={companySchedule}
                             searchQuery={empSearch}
                             onSearchChange={setEmpSearch}
                             filterType={empDeptFilter}
                             onFilterChange={setEmpDeptFilter}
-                            onToggleInheritance={toggleEmployeeInheritance}
-                            onChangeSchedule={handleEmployeeScheduleChange}
+                            onSaveEmployeeSchedule={saveEmployeeSchedule}
+                            onOpenEmployee={ensureEmployeeScheduleLoaded}
+                            onEmployeeDateChange={changeEmployeeScheduleDate}
                         />
                     )}
                 </div>

@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { CalendarDayCell } from './CalendarDayCell';
 import { CalendarPopover } from './CalendarPopover';
 import { isToday } from '../lib/calendar';
-import type { CalendarStatus, CalendarStatusType } from '@/shared/api/mock/productionCalendar.mock';
+import type { CalendarStatus, CalendarStatusType } from '../model/types';
 
 import styles from '../view/CalendarBlock.module.scss';
 

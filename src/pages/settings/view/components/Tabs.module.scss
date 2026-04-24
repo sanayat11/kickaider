@@ -48,6 +48,22 @@
 
 .saveBtnWrap {
   width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.saveStatus {
+  margin: 0;
+  font-size: 13px;
+}
+
+.saveStatusSuccess {
+  color: #20a35b;
+}
+
+.saveStatusError {
+  color: #d64545;
 }
 
 /* Table styles */

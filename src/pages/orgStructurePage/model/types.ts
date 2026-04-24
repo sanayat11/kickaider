@@ -93,7 +93,21 @@ export interface PendingDevicesApiResponse {
   timestamp?: string;
 }
 
-export type OrgTab = 'employees' | 'devices';
+export interface PendingDevicesData {
+  devices: DeviceApiItem[];
+  total: number;
+}
+
+export type OrgTab = 'employees' | 'devices' | 'management';
+
+export interface CompanyDevicesApiResponse {
+  success?: boolean;
+  data?: DeviceApiItem[] | { devices: DeviceApiItem[]; total: number };
+  devices?: DeviceApiItem[];
+  total?: number;
+  error?: ApiError | null;
+  timestamp?: string;
+}
 
 export interface Employee {
   id: string;

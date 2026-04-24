@@ -401,6 +401,10 @@
                 "inherit": "Inherits from department",
                 "custom": "Custom schedule",
                 "useDept": "Use department schedule",
+                "date": "Date",
+                "workingDay": "Working day",
+                "prevDay": "Previous day",
+                "nextDay": "Next day",
                 "noResults": "No results found"
             }
         },
@@ -508,6 +512,7 @@
             "language": "Interface Language",
             "idleThreshold": "Idle Threshold (sec)",
             "lateTolerance": "Late Tolerance (min)",
+            "batchInterval": "Batch Interval (sec)",
             "save": "Save Settings"
         },
         "accounts": {

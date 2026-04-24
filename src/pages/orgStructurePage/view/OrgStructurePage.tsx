@@ -1,16 +1,20 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
+import { BlockDeviceModal } from '@/features/block-device-modal';
 import { CreateDepartmentModal } from '@/features/create-department';
+import { CreateEmployeeModal } from '@/features/create-employee';
 import { DeleteConfirmModal } from '@/features/deleteModal/view/DeleteModal';
 import { EditEmployeeModal } from '@/features/editEmployeeModal/view/EditEmployeeModal';
+import { EditAliasModal } from '@/features/edit-device-alias/view/EditAliasModal';
 import { DepartmentAccordion } from '@/widgets/DepartmentAccordion';
 import { DevicesSection } from '@/widgets/DevicesSection';
 import { DevicesTable } from '@/widgets/DevicesTable';
+import { CompanyDevicesTable } from '@/widgets/CompanyDevicesTable';
 import { EmployeesSection } from '@/widgets/EmployeesSection';
 import { OrganizationHeader } from '@/widgets/OrganizationHeader';
 import { OrganizationTabs } from '@/widgets/OrganizationTabs';
-import type { Department, Employee, OrgTab, UnassignedDevice } from '../model/types';
+import type { Department, DeviceApiItem, Employee, OrgTab } from '../model/types';
 import { mapDepartmentsWithEmployees } from '../model/mappers';
 import {
   useCompanyDepartments,
@@ -18,21 +22,16 @@ import {
   useDeleteDepartment,
 } from '../model/useDepartments';
 import { useCompanyEmployees } from '../model/useOrgStructure';
-import { useBlockEmployee, useUpdateEmployee } from '../model/useEmployees';
-import { useApproveDevice, usePendingDevices } from '../model/useDevice';
+import { useBlockEmployee, useCreateEmployeeWithUser, useUpdateEmployee } from '../model/useEmployees';
+import {
+  useApproveDevice,
+  useBlockDevice,
+  useCompanyDevices,
+  usePendingDevices,
+  useUnblockDevice,
+  useUpdateDeviceAlias,
+} from '../model/useDevice';
 import styles from './OrgStructurePage.module.scss';
-
-const formatLastSeen = (value?: string | null) => {
-  if (!value) return '—';
-
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return '—';
-  }
-
-  return date.toLocaleString('ru-RU');
-};
 
 export const OrgStructurePage = () => {
   const { t } = useTranslation();
@@ -54,6 +53,9 @@ export const OrgStructurePage = () => {
     deptId: string;
     empName?: string;
   } | null>(null);
+  const [deviceForAlias, setDeviceForAlias] = useState<DeviceApiItem | null>(null);
+  const [deviceToBlock, setDeviceToBlock] = useState<DeviceApiItem | null>(null);
+  const [addEmployeeDept, setAddEmployeeDept] = useState<Department | null>(null);
 
   const {
     data: employees = [],
@@ -70,7 +72,7 @@ export const OrgStructurePage = () => {
   } = useCompanyDepartments(hasValidCompanyId ? parsedCompanyId : undefined);
 
   const {
-    data: pendingDevices = [],
+    data: pendingDevicesData = { devices: [], total: 0 },
     isLoading: isDevicesLoading,
     isError: isDevicesError,
     error: devicesError,
@@ -88,7 +90,20 @@ export const OrgStructurePage = () => {
   const blockEmployeeMutation = useBlockEmployee(
     hasValidCompanyId ? parsedCompanyId : undefined,
   );
+  const createEmployeeWithUserMutation = useCreateEmployeeWithUser(
+    hasValidCompanyId ? parsedCompanyId : undefined,
+  );
   const approveDeviceMutation = useApproveDevice();
+  const blockDeviceMutation = useBlockDevice();
+  const unblockDeviceMutation = useUnblockDevice();
+  const updateDeviceAliasMutation = useUpdateDeviceAlias();
+
+  const {
+    data: companyDevices = [],
+    isLoading: isCompanyDevicesLoading,
+    isError: isCompanyDevicesError,
+    error: companyDevicesError,
+  } = useCompanyDevices();
 
   const departments = useMemo(() => {
     return mapDepartmentsWithEmployees(departmentsData, employees);
@@ -123,13 +138,16 @@ export const OrgStructurePage = () => {
       .filter(Boolean) as Department[];
   }, [departments, searchQuery]);
 
-  const unassignedDevices = useMemo<UnassignedDevice[]>(() => {
-    return pendingDevices.map((device) => ({
-      id: String(device.id),
-      hostname: device.hostname || device.deviceName || `Device #${device.id}`,
-      lastSeen: formatLastSeen(device.lastSeenAt || device.firstSeenAt),
-    }));
-  }, [pendingDevices]);
+  const employeeMap = useMemo(() => {
+    const map = new Map<number, string>();
+    employees.forEach((emp) => {
+      map.set(emp.id, `Сотрудник #${emp.userId}`);
+    });
+    return map;
+  }, [employees]);
+
+  const pendingDevices = pendingDevicesData.devices;
+  const pendingDevicesTotal = pendingDevicesData.total;
 
   const handleCreateDept = async (name: string) => {
     try {
@@ -192,15 +210,73 @@ export const OrgStructurePage = () => {
     }
   };
 
-  const handleApproveDevice = async (device: UnassignedDevice) => {
+  const handleCreateEmployee = async (data: {
+    email: string;
+    password: string;
+    name: string;
+    departmentId: number;
+    position: string;
+    hireDate: string;
+  }) => {
+    try {
+      await createEmployeeWithUserMutation.mutateAsync(data);
+      setAddEmployeeDept(null);
+    } catch (error) {
+      console.error('Failed to create employee', error);
+      alert('Не удалось создать сотрудника');
+    }
+  };
+
+  const handleApproveDevice = async (device: DeviceApiItem) => {
     try {
       await approveDeviceMutation.mutateAsync({
-        id: Number(device.id),
-        alias: device.hostname,
+        id: device.id,
+        alias: device.deviceName || device.hostname || `Device #${device.id}`,
       });
     } catch (error) {
       console.error('Failed to approve device', error);
       alert('Не удалось подтвердить устройство');
+    }
+  };
+
+  const handleApproveCompanyDevice = async (device: DeviceApiItem) => {
+    try {
+      await approveDeviceMutation.mutateAsync({
+        id: device.id,
+        alias: device.deviceName || device.hostname,
+      });
+    } catch (error) {
+      console.error('Failed to approve device', error);
+      alert('Не удалось разрешить устройство');
+    }
+  };
+
+  const handleBlockDeviceConfirm = async (deviceId: number, reason: string) => {
+    try {
+      await blockDeviceMutation.mutateAsync({ id: deviceId, reason });
+      setDeviceToBlock(null);
+    } catch (error) {
+      console.error('Failed to block device', error);
+      alert('Не удалось заблокировать устройство');
+    }
+  };
+
+  const handleUnblockDevice = async (device: DeviceApiItem) => {
+    try {
+      await unblockDeviceMutation.mutateAsync(device.id);
+    } catch (error) {
+      console.error('Failed to unblock device', error);
+      alert('Не удалось разблокировать устройство');
+    }
+  };
+
+  const handleSaveAlias = async (deviceId: number, alias: string) => {
+    try {
+      await updateDeviceAliasMutation.mutateAsync({ id: deviceId, alias });
+      setDeviceForAlias(null);
+    } catch (error) {
+      console.error('Failed to update alias', error);
+      alert('Не удалось переименовать устройство');
     }
   };
 
@@ -228,11 +304,29 @@ export const OrgStructurePage = () => {
           <OrganizationTabs
             activeTab={activeTab}
             onChange={setActiveTab}
-            unassignedCount={unassignedDevices.length}
+            unassignedCount={pendingDevicesTotal}
           />
 
           <div className={styles.tabsBody}>
-            {activeTab === 'employees' ? (
+            {activeTab === 'management' ? (
+              isCompanyDevicesLoading ? (
+                <div>Загрузка устройств...</div>
+              ) : isCompanyDevicesError ? (
+                <div>
+                  Не удалось загрузить устройства
+                  {companyDevicesError instanceof Error ? `: ${companyDevicesError.message}` : ''}
+                </div>
+              ) : (
+                <CompanyDevicesTable
+                  devices={companyDevices}
+                  employeeMap={employeeMap}
+                  onApprove={handleApproveCompanyDevice}
+                  onBlock={(device) => setDeviceToBlock(device)}
+                  onUnblock={handleUnblockDevice}
+                  onEditAlias={(device) => setDeviceForAlias(device)}
+                />
+              )
+            ) : activeTab === 'employees' ? (
               <EmployeesSection
                 searchQuery={searchQuery}
                 onSearchChange={setSearchQuery}
@@ -256,6 +350,10 @@ export const OrgStructurePage = () => {
                       onDeleteDept={(deptId) => {
                         const department = departments.find((item) => item.id === deptId) ?? null;
                         setDeptToDelete(department);
+                      }}
+                      onAddEmployee={(deptId) => {
+                        const department = departments.find((item) => item.id === deptId) ?? null;
+                        setAddEmployeeDept(department);
                       }}
                       onEditEmployee={(emp, deptId) => {
                         setSelectedEmployee({
@@ -288,7 +386,7 @@ export const OrgStructurePage = () => {
                     {devicesError instanceof Error ? `: ${devicesError.message}` : ''}
                   </div>
                 ) : (
-                  <DevicesTable devices={unassignedDevices} onApprove={handleApproveDevice} />
+                  <DevicesTable devices={pendingDevices} onApprove={handleApproveDevice} />
                 )}
               </DevicesSection>
             )}
@@ -328,6 +426,35 @@ export const OrgStructurePage = () => {
         description={`Вы уверены, что хотите заблокировать сотрудника "${employeeToBlock?.empName ?? ''}"?`}
         confirmText="Заблокировать"
       />
+
+      <BlockDeviceModal
+        open={!!deviceToBlock}
+        onClose={() => setDeviceToBlock(null)}
+        device={deviceToBlock}
+        onConfirm={handleBlockDeviceConfirm}
+        isLoading={blockDeviceMutation.isPending}
+      />
+
+      <EditAliasModal
+        open={!!deviceForAlias}
+        onClose={() => setDeviceForAlias(null)}
+        device={deviceForAlias}
+        onSave={handleSaveAlias}
+        isLoading={updateDeviceAliasMutation.isPending}
+      />
+
+      {addEmployeeDept && (
+        <CreateEmployeeModal
+          open={!!addEmployeeDept}
+          onClose={() => setAddEmployeeDept(null)}
+          departmentId={Number(addEmployeeDept.id)}
+          departmentName={addEmployeeDept.name}
+          onSave={handleCreateEmployee}
+          isLoading={createEmployeeWithUserMutation.isPending}
+        />
+      )}
     </div>
   );
 };
+
+

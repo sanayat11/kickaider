@@ -14,7 +14,7 @@ export const Header: React.FC = () => {
       <div className={styles.wrapper}>
         <div className={styles.logo}>
           <img src={logo} alt="KickAider Logo" className={styles.logoIcon} />
-          <Typography context="landing" variant='h3' weight='bold'className={styles.logoText}>KickAider</Typography>
+          <Typography context="landing" variant='h3' weight='bold'className={styles.logoText}>Metricon</Typography>
         </div>
         <nav className={styles.nav}>
           <a href="#about">{t("header.aboutCompany")}</a>

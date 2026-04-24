@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IoPeopleOutline, IoDesktopOutline } from 'react-icons/io5';
+import { IoPeopleOutline, IoDesktopOutline, IoSettingsOutline } from 'react-icons/io5';
 import { SegmentedControl } from '@/shared/ui/segmentedControl/view/SegmentedControl';
 import type { OrgTab } from '../../pages/orgStructurePage/model/types';
 import styles from './OrganizationTabs.module.scss';
@@ -34,6 +34,15 @@ export const OrganizationTabs: FC<OrganizationTabsProps> = ({ activeTab, onChang
         </div>
       ),
     },
+    {
+      value: 'management',
+      label: (
+        <div className={styles.tabLabel}>
+          <IoSettingsOutline size={18} />
+          <span>{t('settings.organization.tabs.management', { defaultValue: 'Управление устройствами' })}</span>
+        </div>
+      ),
+    },
   ];
 
   return (
@@ -42,6 +51,7 @@ export const OrganizationTabs: FC<OrganizationTabsProps> = ({ activeTab, onChang
         options={options}
         value={activeTab}
         size='medium'
+        fullWidth
         onChange={(val) => onChange(val as OrgTab)}
         className={styles.segmented}
       />

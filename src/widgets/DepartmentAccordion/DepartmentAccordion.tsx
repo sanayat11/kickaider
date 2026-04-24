@@ -1,7 +1,7 @@
 import { type FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import classNames from 'classnames';
-import { IoChevronDownOutline } from 'react-icons/io5';
+import { IoChevronDownOutline, IoAddOutline } from 'react-icons/io5';
 import { Typography } from '@/shared/ui/typoghraphy/view/Typography';
 import { Button } from '@/shared/ui/button/view/Button';
 import { TrashSimpleIcon } from '@/shared/assets/icons';
@@ -13,6 +13,7 @@ interface DepartmentAccordionProps {
   department: Department;
   defaultExpanded?: boolean;
   onDeleteDept: (id: string) => void;
+  onAddEmployee: (deptId: string) => void;
   onEditEmployee: (emp: Employee, deptId: string) => void;
   onDeleteEmployee: (empId: string, deptId: string) => void;
 }
@@ -21,6 +22,7 @@ export const DepartmentAccordion: FC<DepartmentAccordionProps> = ({
   department,
   defaultExpanded = false,
   onDeleteDept,
+  onAddEmployee,
   onEditEmployee,
   onDeleteEmployee,
 }) => {
@@ -49,6 +51,14 @@ export const DepartmentAccordion: FC<DepartmentAccordionProps> = ({
         </div>
 
         <div className={styles.actions}>
+          <Button
+            variant="ghost"
+            size="small"
+            iconOnly
+            leftIcon={<IoAddOutline className={styles.deptIcon} />}
+            onClick={() => onAddEmployee(department.id)}
+            className={styles.deptAction}
+          />
           <Button
             variant="ghost"
             size="small"

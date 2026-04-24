@@ -1,0 +1,139 @@
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+
+  thead {
+    th {
+      text-align: left;
+      padding: 14px 20px;
+      background: #f0f2ff;
+      border: none;
+      white-space: nowrap;
+
+      &:first-child {
+        border-top-left-radius: 12px;
+        border-bottom-left-radius: 12px;
+      }
+
+      &:last-child {
+        border-top-right-radius: 12px;
+        border-bottom-right-radius: 12px;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      transition: background 0.15s ease;
+
+      &:hover {
+        background-color: #fcfdff;
+      }
+    }
+
+    td {
+      padding: 14px 20px;
+      border-bottom: 1px solid #f0f2f7;
+      vertical-align: middle;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+  }
+}
+
+.headerText {
+  color: #5d668f !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
+.deviceName {
+  color: #1a1f4d !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+.aliasText {
+  color: #5d668f !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  margin-top: 2px;
+}
+
+.metaText {
+  color: #5d668f !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &.allowed {
+    background: var(--success-bg);
+    color: #1aaa9c;
+  }
+
+  &.blocked {
+    background: var(--danger-bg);
+    color: var(--danger);
+  }
+
+  &.pending {
+    background: var(--warning-bg);
+    color: #b07d00;
+  }
+}
+
+.badgeDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+
+  .allowed & {
+    background: #1aaa9c;
+  }
+
+  .blocked & {
+    background: var(--danger);
+  }
+
+  .pending & {
+    background: #b07d00;
+  }
+}
+
+.actionsCol {
+  width: 220px;
+  text-align: right;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.emptyRow {
+  td {
+    text-align: center;
+    padding: 40px 20px !important;
+  }
+}
+
+.deviceCell {
+  display: flex;
+  flex-direction: column;
+}

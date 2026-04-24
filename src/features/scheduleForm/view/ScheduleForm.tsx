@@ -1,4 +1,4 @@
-import { useState, type FC } from 'react';
+import { useEffect, useRef, useState, type FC } from 'react';
 import classNames from 'classnames';
 import { Button } from '@/shared/ui/button/view/Button';
 import { Typography } from '@/shared/ui/typoghraphy/view/Typography';
@@ -48,6 +48,7 @@ export const ScheduleForm: FC<ScheduleFormProps> = ({
   const [endTime, setEndTime] = useState(initialEndTime);
   const [lunch, setLunch] = useState(initialLunch);
   const [days, setDays] = useState<string[]>(initialDays);
+  const formContentRef = useRef<HTMLDivElement | null>(null);
 
   const toggleDay = (day: string) => {
     setDays((prev) =>
@@ -67,6 +68,21 @@ export const ScheduleForm: FC<ScheduleFormProps> = ({
 
   const formLocked = disabled || useCompanySchedule;
 
+  useEffect(() => {
+    const node = formContentRef.current;
+    if (!node) return;
+
+    if (formLocked) {
+      const active = document.activeElement;
+      if (active instanceof HTMLElement && node.contains(active)) {
+        active.blur();
+      }
+      node.setAttribute('inert', '');
+    } else {
+      node.removeAttribute('inert');
+    }
+  }, [formLocked]);
+
   return (
     <div className={classNames(styles.form, { [styles.disabled]: disabled })}>
       {!hideToggle && (
@@ -80,10 +96,10 @@ export const ScheduleForm: FC<ScheduleFormProps> = ({
       )}
 
       <div
+        ref={formContentRef}
         className={classNames(styles.formContent, {
           [styles.formContentLocked]: formLocked,
         })}
-        aria-hidden={formLocked}
       >
         <div className={styles.fields}>
           <div className={styles.field}>
@@ -120,9 +136,12 @@ export const ScheduleForm: FC<ScheduleFormProps> = ({
               disabled={formLocked}
               className={styles.selectWrapper}
               options={[
-                { label: '09:00', value: '09:00' },
-                { label: '09:30', value: '09:30' },
-                { label: '10:00', value: '10:00' },
+                { label: '11:00', value: '11:00' },
+                { label: '11:30', value: '11:30' },
+                { label: '12:00', value: '12:00' },
+                { label: '12:30', value: '12:30' },
+                { label: '13:00', value: '13:00' },
+                { label: '13:30', value: '13:30' },
               ]}
             />
           </div>
@@ -153,6 +172,7 @@ export const ScheduleForm: FC<ScheduleFormProps> = ({
           tone="primary"
           size="large"
           className={styles.saveButton}
+          disabled={formLocked}
           onClick={handleSubmit}
         >
           Сохранить график

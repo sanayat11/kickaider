@@ -1,10 +1,11 @@
 .root {
   margin-bottom: 32px;
-  display: inline-flex;
+  display: flex;
+  width: 100%;
 }
 
 .segmented {
-  width: 500px;
+  width: 100%;
   min-height: 44px;
   background: #f5f6fa;
   border-radius: 12px;
@@ -14,7 +15,7 @@
     border-radius: 10px;
     transition: all 0.2s ease;
     color: #8a91b4;
-    
+
     &.active {
       background: #4e5bd9 !important;
       color: #ffffff !important;

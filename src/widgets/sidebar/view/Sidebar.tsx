@@ -161,7 +161,7 @@ export const Sidebar: React.FC = () => {
         <button type="button" className={styles.brand} onClick={() => navigate(paths.HOME)}>
           <img src={logoUrl} alt="KickAider Logo" className={styles.logo} />
           <Typography variant="h4" weight="bold" className={styles.brandName}>
-            KickAider
+            Metricon
           </Typography>
         </button>
       </div>

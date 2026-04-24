@@ -9,6 +9,7 @@ type CollapsibleCardProps = {
   children: ReactNode;
   defaultOpen?: boolean;
   className?: string;
+  onOpenChange?: (open: boolean) => void;
 };
 
 const ChevronIcon: FC<{ open: boolean }> = ({ open }) => (
@@ -37,6 +38,7 @@ export const CollapsibleCard: FC<CollapsibleCardProps> = ({
   children,
   defaultOpen = true,
   className,
+  onOpenChange,
 }) => {
   const [open, setOpen] = useState(defaultOpen);
 
@@ -45,7 +47,13 @@ export const CollapsibleCard: FC<CollapsibleCardProps> = ({
       <button
         type="button"
         className={styles.header}
-        onClick={() => setOpen((prev) => !prev)}
+        onClick={() =>
+          setOpen((prev) => {
+            const next = !prev;
+            onOpenChange?.(next);
+            return next;
+          })
+        }
       >
         <div className={styles.left}>{left}</div>
         <div className={styles.center}>{center}</div>

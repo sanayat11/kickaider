@@ -1,5 +1,5 @@
 import { apiFetch } from '@/shared/api/baseApi';
-import type { DeviceApiItem, PendingDevicesApiResponse } from '../model/types';
+import type { CompanyDevicesApiResponse, DeviceApiItem, PendingDevicesApiResponse } from '../model/types';
 
 export const devicesApi = {
   getPendingDevices: async () => {
@@ -27,4 +27,18 @@ export const devicesApi = {
       method: 'POST',
     });
   },
+
+  getCompanyDevices: async () => {
+    return apiFetch<CompanyDevicesApiResponse>('devices/company', {
+      method: 'GET',
+    });
+  },
+
+  updateDeviceAlias: async (id: number, alias: string) => {
+    return apiFetch<DeviceApiItem>(`devices/${id}/alias`, {
+      method: 'PUT',
+      body: JSON.stringify({ alias }),
+    });
+  },
+
 };

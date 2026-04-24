@@ -6,7 +6,8 @@ import { Calendar } from '@/shared/ui/calendar/view/Calendar';
 import { CalendarIcon } from '@/shared/assets/icons/IconCalendar';
 import { ArrowDownIcon } from '@/shared/assets/icons/IconArrowDown';
 import classNames from 'classnames';
-import type { CalendarStatusType } from '@/shared/api/mock/productionCalendar.mock';
+import type { CalendarStatusType } from '../model/types';
+import { SelectDropdown } from '@/shared/ui/selectDropdown/view/selectDropdown';
 
 import styles from '../view/CalendarBlock.module.scss';
 
@@ -18,9 +19,11 @@ interface AssignEventModalProps {
     from: string;
     to: string;
     status: CalendarStatusType;
+    employeeId: string;
   };
   setEventRange: (range: any) => void;
   statusOptions: Array<{ label: string; value: string; tone: string }>;
+  employeeOptions: Array<{ label: string; value: string }>;
 }
 
 const formatDateToDisplay = (dateStr: string) => {
@@ -43,6 +46,7 @@ export const AssignEventModal: FC<AssignEventModalProps> = ({
   eventRange,
   setEventRange,
   statusOptions,
+  employeeOptions,
 }) => {
   const [isStatusOpen, setIsStatusOpen] = useState(false);
   const [activePicker, setActivePicker] = useState<'from' | 'to' | null>(null);
@@ -171,6 +175,17 @@ export const AssignEventModal: FC<AssignEventModalProps> = ({
             )}
           </div>
         </div>
+
+        {employeeOptions.length > 1 && (
+          <div className={styles.rangeRow} style={{ marginTop: 12 }}>
+            <SelectDropdown
+              value={eventRange.employeeId}
+              onChange={(val) => setEventRange({ ...eventRange, employeeId: val })}
+              options={employeeOptions}
+              variant="ghost"
+            />
+          </div>
+        )}
 
         <div className={styles.modalFooter}>
           <Button onClick={onSubmit} className={styles.submitBtn}>

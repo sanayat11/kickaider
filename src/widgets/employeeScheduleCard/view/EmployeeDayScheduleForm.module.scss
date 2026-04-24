@@ -1,0 +1,119 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.disabled {
+  opacity: 0.7;
+}
+
+.dateRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dateHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dateControls {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) 40px;
+  gap: 8px;
+  align-items: center;
+}
+
+.dayShift {
+  width: 40px;
+  height: 48px;
+  border: 1px solid var(--grey-200);
+  border-radius: 12px;
+  background: #ffffff;
+  color: var(--text-color-2);
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.dayShift:hover:not(:disabled) {
+  border-color: var(--primary-300);
+  background: var(--grey-50);
+}
+
+.dayShift:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.switchRow {
+  margin-bottom: var(--space-xs);
+}
+
+.formContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  transition: 0.25s;
+}
+
+.formContentLocked {
+  opacity: 0.5;
+  filter: blur(1px);
+  pointer-events: none;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-sm);
+}
+
+.field {
+  min-width: 0;
+}
+
+.label {
+  margin-bottom: 4px;
+  font-size: 11px;
+  color: var(--text-grey-400);
+}
+
+.input {
+  width: 100%;
+  height: 48px;
+  padding: 0 var(--space-xs);
+  border: 1px solid var(--grey-200);
+  border-radius: 12px;
+  background: var(--bg-color);
+  color: var(--text-color-2);
+  font-size: 12px;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.input:focus {
+  border-color: var(--primary-300);
+}
+
+.selectWrapper {
+  width: 100%;
+  max-width: none !important;
+}
+
+.saveButton {
+  margin-top: 8px;
+  padding: 0 32px;
+  height: 48px;
+  border-radius: 12px;
+  font-weight: 600;
+  align-self: flex-start;
+}
+
+@media (max-width: 900px) {
+  .fields {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,8 +1,8 @@
 import { useState, type FC } from 'react';
 import { Typography } from '@/shared/ui/typoghraphy/view/Typography';
-import { ScheduleForm } from '@/features/scheduleForm/view/ScheduleForm';
 import { Avatar } from '@/shared/ui';
 import type { EmployeeScheduleCardProps } from '../types/EmployeeScheduleCard';
+import { EmployeeDayScheduleForm } from './EmployeeDayScheduleForm';
 import styles from './EmployeeScheduleCard.module.scss';
 
 const getInitials = (nameStr: string) => {
@@ -38,21 +38,39 @@ export const EmployeeScheduleCard: FC<EmployeeScheduleCardProps> = ({
   department,
   statusText,
   defaultOpen = false,
+  disabled = false,
+  onOpenChange,
   useParentSchedule = false,
+  initialDate,
+  initialWorkingDay,
   initialStartTime,
   initialEndTime,
   initialLunch,
-  initialDays,
+  onDateChange,
   onSubmit,
 }) => {
   const [open, setOpen] = useState(defaultOpen);
+  const formKey = [
+    useParentSchedule ? 'inherit' : 'custom',
+    initialDate,
+    initialWorkingDay ? 'working' : 'off',
+    initialStartTime ?? '',
+    initialEndTime ?? '',
+    initialLunch ?? '',
+  ].join('-');
 
   return (
     <div className={styles.row}>
       <button
         type="button"
         className={styles.header}
-        onClick={() => setOpen((prev) => !prev)}
+        onClick={() =>
+          setOpen((prev) => {
+            const next = !prev;
+            onOpenChange?.(next);
+            return next;
+          })
+        }
       >
         <div className={styles.employeeCol}>
           <Avatar initials={getInitials(name)} size="sm" status="online" />
@@ -81,12 +99,16 @@ export const EmployeeScheduleCard: FC<EmployeeScheduleCardProps> = ({
 
       {open && (
         <div className={styles.body}>
-          <ScheduleForm
-            initialUseCompanySchedule={useParentSchedule}
+          <EmployeeDayScheduleForm
+            key={formKey}
+            disabled={disabled}
+            initialUseDepartmentSchedule={useParentSchedule}
+            initialDate={initialDate}
+            initialWorkingDay={initialWorkingDay}
             initialStartTime={initialStartTime}
             initialEndTime={initialEndTime}
             initialLunch={initialLunch}
-            initialDays={initialDays}
+            onDateChange={onDateChange}
             onSubmit={onSubmit}
           />
         </div>

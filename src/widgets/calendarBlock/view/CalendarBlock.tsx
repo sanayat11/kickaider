@@ -57,6 +57,7 @@ export const ProductionCalendar = () => {
         eventRange={calendar.eventRange}
         setEventRange={calendar.setEventRange}
         statusOptions={calendar.statusOptions}
+        employeeOptions={calendar.employeeOptions}
       />
     </div>
   );

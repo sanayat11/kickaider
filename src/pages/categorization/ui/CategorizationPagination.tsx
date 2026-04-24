@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { SelectDropdown } from '@/shared/ui/selectDropdown/view/selectDropdown';
+import { SelectDropdown } from '@/shared/ui/selectDropdown/view/SelectDropdown';
 import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
 import classNames from 'classnames';
 import styles from '../view/CategorizationPage.module.scss';

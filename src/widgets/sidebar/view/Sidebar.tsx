@@ -110,7 +110,7 @@ export const Sidebar: React.FC = () => {
       canSeeReports &&
       (
         location.pathname.startsWith(paths.DASHBOARD_REPORTS) ||
-        location.pathname.startsWith(paths.DASHBOARD_DAY_DETAILS) ||
+        location.pathname.startsWith(paths.DASHBOARD_DAY_DETAILS_BASE) ||
         location.pathname.startsWith(paths.DASHBOARD_EMPLOYEE_RATING) ||
         location.pathname.startsWith(paths.WORK_TIME) ||
         location.pathname.startsWith(paths.ACTIVITY)
@@ -202,15 +202,28 @@ export const Sidebar: React.FC = () => {
               active={location.pathname === paths.DASHBOARD_REPORTS}
               onClick={() => handleItemClick('reports-main', false, paths.DASHBOARD_REPORTS)}
             />
+
             <SidebarItem
               id="reports-day-details"
               label={t('sidebar.dayDetails')}
               nested
-              active={location.pathname === paths.DASHBOARD_DAY_DETAILS}
-              onClick={() =>
-                handleItemClick('reports-day-details', false, paths.DASHBOARD_DAY_DETAILS)
-              }
+              active={location.pathname.startsWith(paths.DASHBOARD_DAY_DETAILS_BASE)}
+              onClick={() => {
+                const companyId = user?.companyId;
+
+                if (!companyId) {
+                  console.error('Missing companyId in auth user');
+                  return;
+                }
+
+                handleItemClick(
+                  'reports-day-details',
+                  false,
+                  paths.getDashboardDayDetailsPath(companyId),
+                );
+              }}
             />
+
             <SidebarItem
               id="reports-employee-rating"
               label={t('sidebar.employeeRating')}
@@ -224,6 +237,7 @@ export const Sidebar: React.FC = () => {
                 )
               }
             />
+
             <SidebarItem
               id="reports-work-time"
               label={t('sidebar.workTime')}
@@ -231,6 +245,7 @@ export const Sidebar: React.FC = () => {
               active={location.pathname === paths.WORK_TIME}
               onClick={() => handleItemClick('reports-work-time', false, paths.WORK_TIME)}
             />
+
             <SidebarItem
               id="reports-activity"
               label={t('nav.reports.activity')}

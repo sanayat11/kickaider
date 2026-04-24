@@ -6,10 +6,11 @@
 }
 
 .labels {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   width: 100%;
+  gap: 8px;
 }
 
 .label {
@@ -17,16 +18,20 @@
   line-height: 1.2;
   font-weight: 500;
   color: var(--primary-800);
-  text-align: left;
+  text-align: center;
   white-space: nowrap;
+  flex: 1 1 0;
 }
 
 .track {
+  position: relative;
   width: 100%;
-  display: flex;
-  align-items: stretch;
-  overflow: hidden;
   background: var(--grey-200);
+  overflow: hidden;
+}
+
+.timeline {
+  display: block;
 }
 
 .sm {
@@ -39,10 +44,17 @@
   border-radius: 10px;
 }
 
+.emptyTrack {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--grey-200);
+}
+
 .segment {
   height: 100%;
-  flex-shrink: 0;
   transition: opacity 0.2s ease;
+  min-width: 2px;
 
   &.clickable {
     cursor: pointer;
@@ -51,6 +63,19 @@
       opacity: 0.85;
     }
   }
+}
+
+.stacked {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.positioned {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 999px;
 }
 
 .first {

@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import classNames from 'classnames';
 import styles from '../ActivityDetailsPage.module.scss';
-import type { ActivityEvent } from '@/shared/api/mock/activity.mock';
+import type { ActivityEvent } from '@/pages/activity/api/ActivityApi';
 
 interface DetailsTableFullProps {
   events: ActivityEvent[];
@@ -22,15 +22,15 @@ export const DetailsTableFull: FC<DetailsTableFullProps> = ({ events }) => {
       <tbody>
         {events.map((row, i) => (
           <tr key={i} className={classNames({ [styles.idleRow]: row.state === 'idle' })}>
-            <td className={styles.timeText}>
-              {row.timestamp}
-            </td>
+            <td className={styles.timeText}>{row.timestamp}</td>
             <td className={styles.durationText}>{row.duration}</td>
             <td className={styles.appName}>
               <span className={classNames(styles.dot, styles[`state_${row.state}`])} />
               <div className={styles.appTitleStack}>
                 <span>{row.appName}</span>
-                {row.windowTitle && <span className={styles.windowTitle}>{row.windowTitle}</span>}
+                {row.windowTitle && (
+                  <span className={styles.windowTitle}>{row.windowTitle}</span>
+                )}
               </div>
             </td>
             <td>
@@ -42,12 +42,7 @@ export const DetailsTableFull: FC<DetailsTableFullProps> = ({ events }) => {
                 '-'
               )}
             </td>
-            <td>
-              <div 
-                className={styles.screenshotThumb} 
-                style={{ backgroundImage: `url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIFExawxp46Gv-ZqiqQtFADbtBLjN9CRbQ5Q&s)` }}
-              />
-            </td>
+            <td>{row.screenshotUrl ? row.screenshotUrl : '-'}</td>
           </tr>
         ))}
       </tbody>

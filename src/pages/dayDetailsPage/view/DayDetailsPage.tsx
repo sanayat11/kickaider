@@ -1,220 +1,512 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { AttachmentIcon } from '@/shared/assets/icons';
 import styles from './DayDetailsPage.module.scss';
 import { DayDetailsChart } from '../../dayDetailsChart/view/DayDetailsChart';
-import type { DayActivityData } from '../../dayDetailsChart/view/DayDetailsChart';
-import { BASE_EMPLOYEES } from '@/shared/api/mock/employees.mock';
+import type {
+  ActivityType,
+  DayActivityData,
+  TimeSegment,
+} from '../../dayDetailsChart/view/DayDetailsChart';
 import { DayDetailsFilter } from './DayDetailsFilter';
-import { Pagination } from '@/shared/ui';
+import {
+  fetchAttendanceReport,
+  fetchCompanyDepartments,
+  fetchCompanyEmployees,
+  fetchTimelineReport,
+  type AttendanceResponse,
+  type DepartmentItem,
+  type RawEmployee,
+  type TimelineItem,
+  type TimelineResponse,
+} from '../api/DayDetailsApi';
 
-const mockData1: DayActivityData = {
-    employeeName: 'Сауле Абдыкадырова Sakewa',
-    date: '2026-02-18',
-    department: 'Парсеры',
-    donutSegments: [
-        { type: 'neutral', percent: 94.6, duration: '01:03:14' },
-        { type: 'unproductive', percent: 3.9, duration: '00:02:38' },
-        { type: 'uncategorized', percent: 1.4, duration: '00:00:54' },
-    ],
-    timelineSegments: [
-        { id: '1', type: 'neutral', startPercent: 70, widthPercent: 1.5, tooltipTime: '16:00-16:05' },
-        { id: '2', type: 'neutral', startPercent: 71, widthPercent: 2, tooltipTime: '16:05-16:15' },
-        { id: '3', type: 'uncategorized', startPercent: 73, widthPercent: 0.5, tooltipTime: '16:20-16:22' },
-        { id: '4', type: 'neutral', startPercent: 76, widthPercent: 1, tooltipTime: '16:45-16:50' },
-        { id: '5', type: 'neutral', startPercent: 78, widthPercent: 3, tooltipTime: '16:55-17:07' },
-    ],
-    stats: {
-        active: '00:03:38',
-        productive: '00:00:05',
-        unproductive: '-',
-        neutral: '00:02:38',
-        uncategorized: '00:00:54',
-        firstActivity: '16:52:00',
-        lastActivity: '17:07:00',
-        timeAtWork: '00:15:00',
-    }
+type LocationState = {
+  selectedEmployeeId?: string | number;
 };
 
-const mockData2: DayActivityData = {
-    employeeName: 'Сауле Абдыкадырова Sakewa',
-    date: '2026-02-19',
-    department: 'Парсеры',
-    donutSegments: [
-        { type: 'unproductive', percent: 58.8, duration: '03:13:30' },
-        { type: 'productive', percent: 12.6, duration: '00:41:30' },
-        { type: 'uncategorized', percent: 11.3, duration: '00:37:07' },
-        { type: 'neutral', percent: 17.3, duration: '00:56:57' },
-    ],
-    timelineSegments: [
-        { id: '10', type: 'neutral', startPercent: 40, widthPercent: 1, tooltipTime: '12:30' },
-        { id: '11', type: 'productive', startPercent: 55, widthPercent: 2, tooltipTime: '14:00' },
-        { id: '12', type: 'uncategorized', startPercent: 58, widthPercent: 1.5, tooltipTime: '14:20' },
-        { id: '13', type: 'neutral', startPercent: 65, widthPercent: 4, tooltipTime: '15:15' },
-        { id: '14', type: 'unproductive', startPercent: 70, widthPercent: 10, tooltipTime: '16:00' },
-        { id: '15', type: 'productive', startPercent: 82, widthPercent: 3, tooltipTime: '17:30' },
-        { id: '16', type: 'unproductive', startPercent: 86, widthPercent: 2, tooltipTime: '18:00' },
-    ],
-    stats: {
-        active: '02:15:37',
-        productive: '00:41:30',
-        unproductive: '00:00:01',
-        neutral: '00:56:57',
-        uncategorized: '00:37:07',
-        firstActivity: '12:30:00',
-        lastActivity: '17:59:00',
-        timeAtWork: '05:29:00',
-    }
+type EmployeeOption = {
+  value: string;
+  label: string;
+  departmentId?: number;
 };
 
-// mockDataWeek / mockDataMonth placeholders
-const mockDataWeek: DayActivityData[] = [
-    {
-        ...mockData1,
-        date: 'Неделя 1',
-        stats: { ...mockData1.stats, timeAtWork: '40:15:00' }
-    },
-    {
-        ...mockData2,
-        employeeName: 'Иванов Иван',
-        department: 'IT',
-        date: 'Неделя 1',
-        stats: { ...mockData2.stats, timeAtWork: '38:29:00' }
-    },
-    {
-        ...mockData1,
-        employeeName: 'Смирнова Анна',
-        department: 'HR',
-        date: 'Неделя 1',
-        stats: { ...mockData1.stats, timeAtWork: '42:10:00' }
-    }
-];
+const ALL_EMPLOYEES_VALUE = 'all';
 
-const mockDataMonth: DayActivityData[] = [
-    {
-        ...mockData1,
-        date: 'Февраль',
-        stats: { ...mockData1.stats, timeAtWork: '160:15:00' }
+const formatDateToIso = (date: Date) => {
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, '0');
+  const day = `${date.getDate()}`.padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const formatRuDate = (date: Date) =>
+  date.toLocaleDateString('ru-RU', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
+
+const formatSecondsToHHMMSS = (value: number) => {
+  const totalSeconds = Math.max(0, Math.floor(value || 0));
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  return [hours, minutes, seconds]
+    .map((part) => String(part).padStart(2, '0'))
+    .join(':');
+};
+
+const formatMinutesToHHMMSS = (value: number) => {
+  const totalSeconds = Math.max(0, Math.floor((value || 0) * 60));
+  return formatSecondsToHHMMSS(totalSeconds);
+};
+
+const getEmployeeDisplayName = (employee: RawEmployee) => {
+  const directName =
+    employee.name ||
+    employee.fullName ||
+    employee.user?.name ||
+    employee.user?.fullName;
+
+  if (directName) return directName;
+
+  const firstName = employee.firstName || employee.user?.firstName || '';
+  const lastName = employee.lastName || employee.user?.lastName || '';
+  const composedName = `${lastName} ${firstName}`.trim();
+
+  if (composedName) return composedName;
+
+  if (employee.employeeNumber) return employee.employeeNumber;
+
+  return `#${employee.id}`;
+};
+
+const mapTimelineStateToActivityType = (state?: string): ActivityType => {
+  const normalized = String(state || '').toUpperCase();
+
+  if (
+    normalized === 'NON_PRODUCTIVE' ||
+    normalized === 'UNPRODUCTIVE' ||
+    normalized === 'NONPRODUCTIVE'
+  ) {
+    return 'unproductive';
+  }
+
+  if (normalized === 'PRODUCTIVE') {
+    return 'productive';
+  }
+
+  if (normalized === 'NEUTRAL') {
+    return 'neutral';
+  }
+
+  return 'uncategorized';
+};
+
+const buildTimelineSegments = (items: TimelineItem[]): TimeSegment[] => {
+  const chartStartHour = 8;
+  const chartEndHour = 20;
+
+  return items
+    .map((item, index) => {
+      const start = new Date(item.startTime);
+      const end = new Date(item.endTime);
+
+      if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+        return null;
+      }
+
+      const chartStart = new Date(start);
+      chartStart.setHours(chartStartHour, 0, 0, 0);
+
+      const chartEnd = new Date(start);
+      chartEnd.setHours(chartEndHour, 0, 0, 0);
+
+      const clampedStartMs = Math.max(start.getTime(), chartStart.getTime());
+      const clampedEndMs = Math.min(end.getTime(), chartEnd.getTime());
+
+      if (clampedEndMs <= clampedStartMs) {
+        return null;
+      }
+
+      const totalRangeMs = chartEnd.getTime() - chartStart.getTime();
+      const startPercent =
+        ((clampedStartMs - chartStart.getTime()) / totalRangeMs) * 100;
+      const widthPercent =
+        ((clampedEndMs - clampedStartMs) / totalRangeMs) * 100;
+
+      const tooltipStart = start.toLocaleTimeString('ru-RU', {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+      const tooltipEnd = end.toLocaleTimeString('ru-RU', {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+
+      return {
+        id: `${index}-${item.startTime}-${item.endTime}`,
+        type: mapTimelineStateToActivityType(item.state),
+        startPercent: Math.max(0, Math.min(100, startPercent)),
+        widthPercent: Math.max(0.4, Math.min(100, widthPercent)),
+        tooltipTime: `${tooltipStart}-${tooltipEnd}`,
+      } as TimeSegment;
+    })
+    .filter(Boolean) as TimeSegment[];
+};
+
+const buildDayActivityData = ({
+  timeline,
+  attendance,
+  employeeName,
+  departmentName,
+  dateLabel,
+}: {
+  timeline: TimelineResponse;
+  attendance: AttendanceResponse;
+  employeeName: string;
+  departmentName: string;
+  dateLabel: string;
+}): DayActivityData => {
+  const groupedSeconds: Record<ActivityType, number> = {
+    productive: 0,
+    neutral: 0,
+    unproductive: 0,
+    uncategorized: 0,
+  };
+
+  timeline.items.forEach((item) => {
+    const type = mapTimelineStateToActivityType(item.state);
+    groupedSeconds[type] += Math.max(0, item.durationSeconds || 0);
+  });
+
+  const totalTrackedSeconds = Object.values(groupedSeconds).reduce(
+    (sum, value) => sum + value,
+    0,
+  );
+
+  const donutOrder: ActivityType[] = [
+    'productive',
+    'neutral',
+    'unproductive',
+    'uncategorized',
+  ];
+
+  const donutSegments = donutOrder.map((type) => ({
+    type,
+    percent:
+      totalTrackedSeconds > 0
+        ? Number(((groupedSeconds[type] / totalTrackedSeconds) * 100).toFixed(1))
+        : 0,
+    duration: formatSecondsToHHMMSS(groupedSeconds[type]),
+  }));
+
+  return {
+    employeeName,
+    date: dateLabel,
+    department: departmentName || '—',
+    donutSegments,
+    timelineSegments: buildTimelineSegments(timeline.items || []),
+    stats: {
+      active: formatSecondsToHHMMSS(totalTrackedSeconds),
+      productive: formatSecondsToHHMMSS(groupedSeconds.productive),
+      unproductive: formatSecondsToHHMMSS(groupedSeconds.unproductive),
+      neutral: formatSecondsToHHMMSS(groupedSeconds.neutral),
+      uncategorized: formatSecondsToHHMMSS(groupedSeconds.uncategorized),
+      firstActivity: attendance.firstActivityAt
+        ? new Date(attendance.firstActivityAt).toLocaleTimeString('ru-RU', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+          })
+        : '-',
+      lastActivity: attendance.lastActivityAt
+        ? new Date(attendance.lastActivityAt).toLocaleTimeString('ru-RU', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+          })
+        : '-',
+      timeAtWork: formatMinutesToHHMMSS(attendance.actualMinutes),
     },
-    {
-        ...mockData2,
-        employeeName: 'Петров Петр',
-        department: 'Marketing',
-        date: 'Февраль',
-        stats: { ...mockData2.stats, timeAtWork: '155:29:00' }
-    }
-];
+  };
+};
 
 export const DayDetailsPage: React.FC = () => {
-    const { t } = useTranslation();
-    const location = useLocation();
-    const passedEmployee = location.state?.selectedEmployee;
+  const { t } = useTranslation();
+  const { companyId } = useParams<{ companyId?: string }>();
+  const location = useLocation();
 
-    const [period, setPeriod] = useState('');
+  const locationState = (location.state as LocationState | null) ?? null;
 
-    const getInitialEmployee = () => {
-        if (!passedEmployee) return 'All';
-        const found = BASE_EMPLOYEES.find(e => e.name === passedEmployee);
-        return found ? found.name : 'All';
-    };
-    const [selectedEmployee, setSelectedEmployee] = useState(getInitialEmployee());
-    const [currentDate, setCurrentDate] = useState(new Date(2026, 1, 21));
+  const parsedCompanyId = Number(companyId);
+  const hasValidCompanyId = Boolean(companyId) && Number.isFinite(parsedCompanyId);
 
-    const [itemsPerPage, setItemsPerPage] = useState(10);
-    const [currentPage, setCurrentPage] = useState(1);
+  const passedEmployeeId =
+    locationState?.selectedEmployeeId != null
+      ? String(locationState.selectedEmployeeId)
+      : '';
 
-    const renderCharts = () => {
-        let activeData: DayActivityData[] = [];
-        if (!period) {
-            activeData = [
-                mockData1,
-                mockData2,
-                { ...mockData1, employeeName: 'Иванов Иван', department: 'IT' },
-                { ...mockData2, employeeName: 'Смирнова Анна', department: 'HR' }
-            ];
-        }
-        if (period === 'Week') activeData = mockDataWeek;
-        if (period === 'Month') activeData = mockDataMonth;
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState(
+    passedEmployeeId || ALL_EMPLOYEES_VALUE,
+  );
 
-        if (selectedEmployee !== 'All') {
-            activeData = activeData.filter(d => d.employeeName === selectedEmployee);
-            if (activeData.length === 0) {
-                activeData = [
-                    { ...mockData1, employeeName: selectedEmployee, department: BASE_EMPLOYEES.find(e => e.name === selectedEmployee)?.department || 'IT' },
-                    { ...mockData2, employeeName: selectedEmployee, department: BASE_EMPLOYEES.find(e => e.name === selectedEmployee)?.department || 'IT' }
-                ];
-            }
-        }
+  const [employees, setEmployees] = useState<RawEmployee[]>([]);
+  const [departments, setDepartments] = useState<DepartmentItem[]>([]);
+  const [chartsData, setChartsData] = useState<DayActivityData[]>([]);
 
-        const fullData = [...activeData];
-        if (fullData.length > 0 && fullData.length < 15 && !period && selectedEmployee === 'All') {
-            for(let i=0; i<30; i++) {
-                fullData.push({...fullData[i % activeData.length], employeeName: `${fullData[i % activeData.length].employeeName} (Копия ${i + 1})`});
-            }
-        }
+  const [isMetaLoading, setIsMetaLoading] = useState(false);
+  const [isReportLoading, setIsReportLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-        const totalPages = Math.max(1, Math.ceil(fullData.length / itemsPerPage));
-        const safeCurrentPage = Math.min(currentPage, totalPages);
-        const currentItems = fullData.slice((safeCurrentPage - 1) * itemsPerPage, safeCurrentPage * itemsPerPage);
+  const employeeOptions: EmployeeOption[] = useMemo(() => {
+    return employees.map((employee) => ({
+      value: String(employee.id),
+      label: getEmployeeDisplayName(employee),
+      departmentId: employee.departmentId,
+    }));
+  }, [employees]);
 
-        return (
-            <>
-                <div className={styles.generatedContent}>
-                    {currentItems.map((data, idx) => (
-                        <DayDetailsChart key={idx} data={{ ...data, date: !period ? currentDate.toLocaleDateString('ru-RU') : data.date }} />
-                    ))}
-                    {currentItems.length === 0 && (
-                        <div style={{ textAlign: 'center', padding: '40px', color: '#8a91b4' }}>
-                            {t('reports.rating.noDataFilter')}
-                        </div>
-                    )}
-                </div>
+  const visibleEmployeeOptions: EmployeeOption[] = useMemo(() => {
+    if (employeeOptions.length > 0) return employeeOptions;
 
-                {fullData.length > 0 && (
-                    <Pagination
-                        variant="bar"
-                        currentPage={safeCurrentPage}
-                        totalPages={totalPages}
-                        onPageChange={setCurrentPage}
-                        pageSize={itemsPerPage}
-                        onPageSizeChange={(size) => { setItemsPerPage(size); setCurrentPage(1); }}
-                        pageSizeLabel={t('reports.rating.showEntries')}
-                        infoText={(_, total) => `${t('reports.rating.of', 'из')} ${total}`}
-                        className={styles.paginationBlock}
-                    />
-                )}
-            </>
-        );
-    };
+    if (selectedEmployeeId && selectedEmployeeId !== ALL_EMPLOYEES_VALUE) {
+      return [
+        {
+          value: selectedEmployeeId,
+          label: `#${selectedEmployeeId}`,
+        },
+      ];
+    }
 
-    return (
-        <div className={styles.container}>
-            <div className={styles.pageHeader}>
-                <div className={styles.headerText}>
-                    <h1>{t('dayDetails.title')}</h1>
-                    <p>{t('dayDetails.subtitle', 'Общий аналитический обзор по компании или сотруднику')}</p>
-                </div>
-                <button className={styles.exportBtn}>
-                    Экспорт XLS
-                    <AttachmentIcon className={styles.exportIcon} />
-                </button>
-            </div>
+    return [];
+  }, [employeeOptions, selectedEmployeeId]);
 
-            <div className={styles.filtersSection}>
-                <DayDetailsFilter
-                    period={period}
-                    onPeriodChange={setPeriod}
-                    currentDate={currentDate}
-                    onDateChange={(date) => { setCurrentDate(date); setCurrentPage(1); }}
-                    selectedEmployee={selectedEmployee}
-                    onEmployeeChange={setSelectedEmployee}
-                />
-            </div>
-
-            <main className={styles.main}>
-                {renderCharts()}
-            </main>
-        </div>
+  const departmentNameById = useMemo(() => {
+    return new Map(
+      departments.map((department) => [department.id, department.name]),
     );
+  }, [departments]);
+
+  useEffect(() => {
+    if (!hasValidCompanyId) return;
+
+    let cancelled = false;
+
+    const loadMeta = async () => {
+      try {
+        setIsMetaLoading(true);
+        setError(null);
+
+        const [employeesResponse, departmentsResponse] = await Promise.all([
+          fetchCompanyEmployees(parsedCompanyId),
+          fetchCompanyDepartments(parsedCompanyId),
+        ]);
+
+        if (cancelled) return;
+
+        setEmployees(Array.isArray(employeesResponse) ? employeesResponse : []);
+        setDepartments(Array.isArray(departmentsResponse) ? departmentsResponse : []);
+      } catch (e) {
+        if (cancelled) return;
+
+        const message =
+          e instanceof Error
+            ? e.message
+            : t('common.error', 'Ошибка загрузки данных');
+
+        setEmployees([]);
+        setDepartments([]);
+        setError(message);
+      } finally {
+        if (!cancelled) {
+          setIsMetaLoading(false);
+        }
+      }
+    };
+
+    loadMeta();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [hasValidCompanyId, parsedCompanyId, t]);
+
+  useEffect(() => {
+    if (passedEmployeeId) {
+      setSelectedEmployeeId(passedEmployeeId);
+      return;
+    }
+
+    if (selectedEmployeeId) return;
+
+    setSelectedEmployeeId(ALL_EMPLOYEES_VALUE);
+  }, [passedEmployeeId, selectedEmployeeId]);
+
+  useEffect(() => {
+    if (!selectedEmployeeId) {
+      setChartsData([]);
+      return;
+    }
+
+    let cancelled = false;
+
+    const loadSingleEmployee = async (employeeId: number) => {
+      const date = formatDateToIso(currentDate);
+
+      const [timelineResponse, attendanceResponse] = await Promise.all([
+        fetchTimelineReport({ employeeId, date }),
+        fetchAttendanceReport({ employeeId, date }),
+      ]);
+
+      const employee = employees.find((item) => item.id === employeeId);
+
+      const employeeName =
+        timelineResponse.employeeName ||
+        attendanceResponse.employeeName ||
+        (employee ? getEmployeeDisplayName(employee) : `#${employeeId}`);
+
+      const departmentName =
+        employee?.departmentId != null
+          ? departmentNameById.get(employee.departmentId) || '—'
+          : '—';
+
+      return buildDayActivityData({
+        timeline: timelineResponse,
+        attendance: attendanceResponse,
+        employeeName,
+        departmentName,
+        dateLabel: formatRuDate(currentDate),
+      });
+    };
+
+    const loadReports = async () => {
+      try {
+        setIsReportLoading(true);
+        setError(null);
+
+        if (selectedEmployeeId === ALL_EMPLOYEES_VALUE) {
+          if (!hasValidCompanyId) {
+            setChartsData([]);
+            setError('Для режима "Все сотрудники" нужен companyId в URL');
+            return;
+          }
+
+          if (employees.length === 0) {
+            setChartsData([]);
+            return;
+          }
+
+          const results = await Promise.all(
+            employees.map((employee) => loadSingleEmployee(employee.id)),
+          );
+
+          if (cancelled) return;
+
+          setChartsData(results);
+          return;
+        }
+
+        const employeeId = Number(selectedEmployeeId);
+        const result = await loadSingleEmployee(employeeId);
+
+        if (cancelled) return;
+
+        setChartsData([result]);
+      } catch (e) {
+        if (cancelled) return;
+
+        const message =
+          e instanceof Error
+            ? e.message
+            : t('common.error', 'Ошибка загрузки отчёта');
+
+        setChartsData([]);
+        setError(message);
+      } finally {
+        if (!cancelled) {
+          setIsReportLoading(false);
+        }
+      }
+    };
+
+    loadReports();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    currentDate,
+    departmentNameById,
+    employees,
+    hasValidCompanyId,
+    selectedEmployeeId,
+    t,
+  ]);
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.pageHeader}>
+        <div className={styles.headerText}>
+          <h1>{t('dayDetails.title')}</h1>
+          <p>
+            {t(
+              'dayDetails.subtitle',
+              'Общий аналитический обзор по компании или сотруднику',
+            )}
+          </p>
+        </div>
+
+        <button className={styles.exportBtn} type="button">
+          Экспорт XLS
+          <AttachmentIcon className={styles.exportIcon} />
+        </button>
+      </div>
+
+      <div className={styles.filtersSection}>
+        <DayDetailsFilter
+          currentDate={currentDate}
+          onDateChange={setCurrentDate}
+          selectedEmployeeId={selectedEmployeeId}
+          onEmployeeChange={setSelectedEmployeeId}
+          employeeOptions={visibleEmployeeOptions}
+        />
+      </div>
+
+      <main className={styles.main}>
+        {isMetaLoading || isReportLoading ? (
+          <div className={styles.emptyState}>Загрузка...</div>
+        ) : null}
+
+        {!isMetaLoading && !isReportLoading && error ? (
+          <div className={styles.emptyState}>{error}</div>
+        ) : null}
+
+        {!isMetaLoading &&
+        !isReportLoading &&
+        !error &&
+        chartsData.length === 0 ? (
+          <div className={styles.emptyState}>Нет данных за выбранный день</div>
+        ) : null}
+
+        {!isMetaLoading &&
+        !isReportLoading &&
+        !error &&
+        chartsData.length > 0 ? (
+          <div className={styles.generatedContent}>
+            {chartsData.map((item, index) => (
+              <DayDetailsChart
+                key={`${item.employeeName}-${item.date}-${index}`}
+                data={item}
+              />
+            ))}
+          </div>
+        ) : null}
+      </main>
+    </div>
+  );
 };

@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BaseInput } from '@/shared/ui/input/view/BaseInput';
-import { SelectDropdown } from '@/shared/ui/selectDropdown/view/selectDropdown';
+import { SelectDropdown } from '@/shared/ui/selectDropdown/view/SelectDropdown';
 import { IoSearchOutline } from 'react-icons/io5';
 import styles from './ScheduleSearchBar.module.scss';
 

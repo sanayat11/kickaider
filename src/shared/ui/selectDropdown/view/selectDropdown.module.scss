@@ -9,25 +9,25 @@
 
 .sm {
   .trigger {
-    min-height: 40px;
-    padding: 10px 14px;
+    min-height: 36px;
+    padding: 6px 16px;
   }
 
   .option {
-    min-height: 36px;
-    padding: 8px 12px;
+    min-height: 32px;
+    padding: 6px 16px;
   }
 }
 
 .md {
   .trigger {
-    min-height: 48px;
-    padding: 12px 14px;
+    min-height: 44px;
+    padding: 10px 20px;
   }
 
   .option {
     min-height: 38px;
-    padding: 10px 12px;
+    padding: 10px 20px;
   }
 }
 
@@ -197,16 +197,16 @@
   position: absolute;
   top: calc(100% + 10px);
   left: 0;
-  z-index: 100;
+  z-index: 9999;
   width: 100%;
   margin: 0;
-  padding: 8px;
+  padding: 6px;
   list-style: none;
-  border-radius: 14px;
+  border-radius: 12px;
   background: #ffffff;
-  box-shadow:
-    0 10px 30px rgba(31, 42, 93, 0.08),
-    0 2px 8px rgba(31, 42, 93, 0.05);
+  box-shadow: 
+    0 12px 36px rgba(31, 42, 93, 0.12),
+    0 4px 12px rgba(31, 42, 93, 0.06);
   border: 1px solid #eef1fb;
 }
 
@@ -236,13 +236,13 @@
   }
 
   &:hover:not(:disabled) {
-    background: #8a96f2;
-    color: #ffffff;
+    background: #f5f7ff;
+    color: inherit;
   }
 
   &:hover:not(:disabled) .icon,
   &:hover:not(:disabled) .optionLabel {
-    color: #ffffff;
+    color: #4e61f6;
   }
 
   &:focus-visible {
@@ -257,22 +257,22 @@
 }
 
 .optionHovered {
-  background: #8a96f2;
-  color: #ffffff;
+  background: #f5f7ff;
+  color: #4e61f6;
 
   .icon,
   .optionLabel {
-    color: #ffffff;
+    color: #4e61f6;
   }
 }
 
 .optionSelected {
-  background: #5260f1;
-  color: #ffffff;
+  background: #ebedff;
+  color: #4e61f6;
 
   .icon,
   .optionLabel {
-    color: #ffffff;
+    color: #4e61f6;
   }
 }
 

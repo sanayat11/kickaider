@@ -9,7 +9,7 @@ import { IoSearchOutline } from 'react-icons/io5';
 import { paths } from '@/shared/constants/constants';
 import { CreateCompanyModal } from '@/features/company-create/view/CreateCompanyModal';
 import { Chip } from '@/shared/ui/chipButton/view/ChipButton';
-import { SelectDropdown } from '@/shared/ui/selectDropdown/view/selectDropdown';
+import { SelectDropdown } from '@/shared/ui/selectDropdown/view/SelectDropdown';
 import { ConfirmStatusModal } from '@/features/company-status-update/view/ConfirmStatusModal';
 import {
   useCompanies,

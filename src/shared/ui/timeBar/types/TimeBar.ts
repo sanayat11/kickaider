@@ -7,8 +7,11 @@ export type TimeBarSegmentTone =
 
 export type TimeBarSegment = {
   id: string;
-  value: number;
+  value?: number;
   tone?: TimeBarSegmentTone;
+  title?: string;
+  startPercent?: number;
+  widthPercent?: number;
 };
 
 export type TimeBarProps = {

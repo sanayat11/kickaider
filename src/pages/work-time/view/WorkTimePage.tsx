@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MdFilterList } from 'react-icons/md';
 
@@ -6,57 +6,134 @@ import styles from './WorkTimePage.module.scss';
 import { WorkTimeHeader } from '@/widgets/workTimeHeader/view/WorkTimeHeader';
 import { WorkTimeFilters } from '@/widgets/WorkTimeFilterSection/view/WorkTimeFilterSection';
 import { WorkTimeStats } from '@/widgets/workTimeStatsSection/view/WorkTimeStatsSection';
-import { WorkTimeTable } from '@/widgets/workTimeTableSection/view/WorkTimeTableSection';
+import {
+  WorkTimeTable,
+  type WorkTimeTableRow,
+} from '@/widgets/workTimeTableSection/view/WorkTimeTableSection';
 import type { FilterBarItem } from '@/shared/ui/filters-bar/types/FilterBar';
+import { useAuthStore } from '@/shared/lib/model/AuthStore';
+import {
+  fetchCompanyEmployees,
+  fetchWorkTimeDashboard,
+  type RawEmployee,
+  type WorkTimeDashboardItem,
+  type WorkTimeSummary,
+} from '../api/WorkTimeApi';
+import { exportAttendanceReport } from '@/shared/api/exportApi';
 
-export interface TableRow {
-  id: number;
-  period: string;
-  department: string;
-  employee: string;
-  firstActivity: string;
-  lastActivity: string;
-  lateness: number;
-  latenessCount: number;
-}
-
-const EMPLOYEES = ['Елена Козлова', 'Дмитрий Волков'];
-
-const DEPARTMENTS = ['IT', 'Sales', 'Marketing', 'HR', 'Support'];
-
-const generateMockData = (): TableRow[] => {
-  return Array.from({ length: 30 }, (_, index) => ({
-    id: index + 1,
-    period: '03.03.2026',
-    employee: EMPLOYEES[Math.floor(Math.random() * EMPLOYEES.length)],
-    department: DEPARTMENTS[Math.floor(Math.random() * DEPARTMENTS.length)],
-    firstActivity: `00:00:00`,
-    lastActivity: `00:00:00`,
-    lateness: 0,
-    latenessCount: 0,
-  }));
+type TableRowExtended = WorkTimeTableRow & {
+  dayStatus: string;
 };
-
-const INITIAL_ROWS = generateMockData();
 
 const parseDateFromString = (value: string) => {
   const [day, month, year] = value.split('.').map(Number);
   return new Date(year, month - 1, day);
 };
 
+const formatDateToISO = (date: Date) => {
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, '0');
+  const day = `${date.getDate()}`.padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const formatDateToDisplay = (value: string) => {
+  if (!value) return '—';
+
+  const [year, month, day] = value.split('-');
+  if (!year || !month || !day) return value;
+
+  return `${day}.${month}.${year}`;
+};
+
+const formatMinutes = (value: number) => {
+  const safe = Math.max(0, Math.floor(value || 0));
+  const hours = Math.floor(safe / 60);
+  const minutes = safe % 60;
+
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+};
+
+const formatDateTimeToTime = (value: string | null) => {
+  if (!value) return '—';
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) return '—';
+
+  return date.toLocaleTimeString('ru-RU', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
+};
+
+const getEmployeeDisplayName = (employee: RawEmployee) => {
+  const directName =
+    employee.name ||
+    employee.fullName ||
+    employee.user?.name ||
+    employee.user?.fullName;
+
+  if (directName) return directName;
+
+  const firstName = employee.firstName || employee.user?.firstName || '';
+  const lastName = employee.lastName || employee.user?.lastName || '';
+  const composedName = `${lastName} ${firstName}`.trim();
+
+  if (composedName) return composedName;
+
+  if (employee.employeeNumber) return employee.employeeNumber;
+
+  return `#${employee.id}`;
+};
+
+const hasStatus = (status: string | undefined, fragment: string) =>
+  String(status || '').toUpperCase().includes(fragment);
+
+const mapDashboardItemToRow = (
+  item: WorkTimeDashboardItem,
+  index: number,
+): TableRowExtended => {
+  return {
+    id: index + 1,
+    period: formatDateToDisplay(item.date),
+    department: item.departmentName || '—',
+    employee: item.employeeName || item.employeeNumber || `#${item.employeeId}`,
+    firstActivity: formatDateTimeToTime(item.firstActivityAt),
+    lastActivity: formatDateTimeToTime(item.lastActivityAt),
+    lateness: item.lateMinutes,
+    latenessCount: item.lateCount,
+
+    earlyLeaveMinutes: item.earlyLeaveMinutes ?? 0,
+    earlyLeaveCount: (item.earlyLeaveMinutes ?? 0) > 0 ? 1 : 0,
+    absenceCount: hasStatus(item.dayStatus, 'ABSENCE') ? 1 : 0,
+    businessTripCount: hasStatus(item.dayStatus, 'BUSINESS_TRIP') ? 1 : 0,
+    vacationCount: hasStatus(item.dayStatus, 'VACATION') ? 1 : 0,
+    sickLeaveCount: hasStatus(item.dayStatus, 'SICK') ? 1 : 0,
+
+    dayStatus: item.dayStatus,
+  };
+};
+
 export const WorkTimePage: React.FC = () => {
   const { t } = useTranslation();
+  const companyId = useAuthStore((state) => state.user?.companyId);
 
   const [loading, setLoading] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date(2026, 1, 14));
-  const [employee, setEmployee] = useState<string>('');
-  const [contentType, setContentType] = useState<string>('');
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [employee, setEmployee] = useState<string>('all');
+  const [contentType, setContentType] = useState<string>('all');
   const [onlyWorkingHours, setOnlyWorkingHours] = useState<boolean>(false);
+  const [isExporting, setIsExporting] = useState<boolean>(false);
 
-  const [rows] = useState<TableRow[]>(INITIAL_ROWS);
+  const [rows, setRows] = useState<TableRowExtended[]>([]);
+  const [summary, setSummary] = useState<WorkTimeSummary | null>(null);
+  const [employees, setEmployees] = useState<RawEmployee[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   const [sortConfig, setSortConfig] = useState<{
-    key: keyof TableRow;
+    key: keyof WorkTimeTableRow;
     direction: 'asc' | 'desc';
   } | null>(null);
 
@@ -72,18 +149,100 @@ export const WorkTimePage: React.FC = () => {
       'lastActivity',
       'lateness',
       'latenessCount',
+      'earlyLeaveMinutes',
+      'earlyLeaveCount',
+      'absenceCount',
+      'businessTripCount',
+      'vacationCount',
+      'sickLeaveCount',
     ]),
   );
 
+  useEffect(() => {
+    if (!companyId) return;
+
+    let cancelled = false;
+
+    const loadEmployees = async () => {
+      try {
+        const response = await fetchCompanyEmployees(companyId);
+        if (cancelled) return;
+
+        setEmployees(Array.isArray(response) ? response : []);
+      } catch {
+        if (cancelled) return;
+        setEmployees([]);
+      }
+    };
+
+    loadEmployees();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [companyId]);
+
+  useEffect(() => {
+    if (!companyId) return;
+
+    let cancelled = false;
+
+    const loadDashboard = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const day = formatDateToISO(selectedDate);
+
+        const response = await fetchWorkTimeDashboard({
+          fromDate: day,
+          toDate: day,
+          employeeId:
+            employee && employee !== 'all' ? Number(employee) : undefined,
+          onlyWorkTime: onlyWorkingHours,
+        });
+
+        if (cancelled) return;
+
+        setSummary(response.summary ?? null);
+        setRows((response.items ?? []).map(mapDashboardItemToRow));
+      } catch (e) {
+        if (cancelled) return;
+
+        setSummary(null);
+        setRows([]);
+        setError(
+          e instanceof Error
+            ? e.message
+            : 'Не удалось загрузить сводку рабочего времени',
+        );
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadDashboard();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [companyId, selectedDate, employee, onlyWorkingHours]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedDate, employee, contentType, onlyWorkingHours]);
+
   const employeeOptions = useMemo(
     () => [
-      { value: 'all', label: t('dashboard.filters.types.all') },
-      ...EMPLOYEES.map((employeeName) => ({
-        value: employeeName,
-        label: employeeName,
+      { value: 'all', label: 'Все сотрудники' },
+      ...employees.map((employeeItem) => ({
+        value: String(employeeItem.id),
+        label: getEmployeeDisplayName(employeeItem),
       })),
     ],
-    [t],
+    [employees],
   );
 
   const contentTypeOptions = useMemo(
@@ -99,57 +258,60 @@ export const WorkTimePage: React.FC = () => {
     () => [
       {
         label: t('reports.workTime.cards.lateness'),
-        value: '40,689',
-        hint: t('reports.workTime.hints.vsLastWeek', { val: '+2' }),
+        value: summary ? formatMinutes(summary.lateMinutes) : '00:00',
       },
       {
         label: t('reports.workTime.cards.earlyLeaves'),
-        value: '40,689',
-        hint: t('reports.workTime.hints.withinNorm'),
+        value: summary ? formatMinutes(summary.earlyLeaveMinutes) : '00:00',
       },
       {
         label: t('reports.workTime.cards.absences'),
-        value: '40,689',
-        hint: t('reports.workTime.hints.unexcused'),
+        value: summary ? String(summary.absenceCount) : '0',
       },
       {
         label: t('reports.workTime.cards.timeAtWork'),
-        value: '40,689',
-        hint: t('reports.workTime.hints.avg', { val: '8:05' }),
+        value: summary ? formatMinutes(summary.workedMinutes) : '00:00',
       },
       {
         label: t('reports.workTime.cards.sickLeaves'),
-        value: '40,689',
-        hint: '',
+        value: summary ? String(summary.sickLeaveCount) : '0',
       },
       {
         label: t('reports.workTime.cards.trips'),
-        value: '40,689',
-        hint: '',
+        value: summary ? String(summary.businessTripCount) : '0',
       },
       {
         label: t('reports.workTime.cards.workDays'),
-        value: '40,689',
-        hint: t('reports.workTime.hints.fullMonth'),
+        value: summary ? String(summary.workingDayCount) : '0',
       },
       {
         label: t('reports.workTime.cards.avgDayDuration'),
-        value: '40,689',
-        hint: '',
+        value: summary ? formatMinutes(summary.averageDayMinutes) : '00:00',
       },
       {
         label: t('reports.workTime.cards.vacations'),
-        value: '40,689',
-        hint: '',
+        value: summary ? String(summary.vacationCount) : '0',
       },
     ],
-    [t],
+    [summary, t],
   );
 
-  const sortedRows = useMemo(() => {
-    if (!sortConfig) return rows;
+  const filteredRows = useMemo(() => {
+    if (contentType === 'lateness') {
+      return rows.filter((row) => row.lateness > 0 || row.latenessCount > 0);
+    }
 
-    return [...rows].sort((first, second) => {
+    if (contentType === 'absences') {
+      return rows.filter((row) => row.absenceCount > 0);
+    }
+
+    return rows;
+  }, [rows, contentType]);
+
+  const sortedRows = useMemo(() => {
+    if (!sortConfig) return filteredRows;
+
+    return [...filteredRows].sort((first, second) => {
       const firstValue = first[sortConfig.key];
       const secondValue = second[sortConfig.key];
 
@@ -163,71 +325,44 @@ export const WorkTimePage: React.FC = () => {
 
       return 0;
     });
-  }, [rows, sortConfig]);
+  }, [filteredRows, sortConfig]);
 
   const paginatedRows = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
     return sortedRows.slice(start, start + pageSize);
   }, [sortedRows, currentPage, pageSize]);
 
-  const totalPages = Math.ceil(rows.length / pageSize);
-
-  const handlePageResetWithLoader = useCallback(() => {
-    setLoading(true);
-    setCurrentPage(1);
-
-    window.setTimeout(() => {
-      setLoading(false);
-    }, 300);
-  }, []);
+  const totalPages = Math.max(1, Math.ceil(sortedRows.length / pageSize));
 
   const handlePrevDate = useCallback(() => {
     const nextDate = new Date(selectedDate);
     nextDate.setDate(nextDate.getDate() - 1);
     setSelectedDate(nextDate);
-    handlePageResetWithLoader();
-  }, [selectedDate, handlePageResetWithLoader]);
+  }, [selectedDate]);
 
   const handleNextDate = useCallback(() => {
     const nextDate = new Date(selectedDate);
     nextDate.setDate(nextDate.getDate() + 1);
     setSelectedDate(nextDate);
-    handlePageResetWithLoader();
-  }, [selectedDate, handlePageResetWithLoader]);
+  }, [selectedDate]);
 
-  const handleDateChange = useCallback(
-    (date: Date) => {
-      setSelectedDate(date);
-      handlePageResetWithLoader();
-    },
-    [handlePageResetWithLoader],
-  );
+  const handleDateChange = useCallback((date: Date) => {
+    setSelectedDate(date);
+  }, []);
 
-  const handleEmployeeChange = useCallback(
-    (value: string) => {
-      setEmployee(value);
-      handlePageResetWithLoader();
-    },
-    [handlePageResetWithLoader],
-  );
+  const handleEmployeeChange = useCallback((value: string) => {
+    setEmployee(value);
+  }, []);
 
-  const handleContentTypeChange = useCallback(
-    (value: string) => {
-      setContentType(value);
-      handlePageResetWithLoader();
-    },
-    [handlePageResetWithLoader],
-  );
+  const handleContentTypeChange = useCallback((value: string) => {
+    setContentType(value);
+  }, []);
 
-  const handleOnlyWorkingHoursChange = useCallback(
-    (checked: boolean) => {
-      setOnlyWorkingHours(checked);
-      handlePageResetWithLoader();
-    },
-    [handlePageResetWithLoader],
-  );
+  const handleOnlyWorkingHoursChange = useCallback((checked: boolean) => {
+    setOnlyWorkingHours(checked);
+  }, []);
 
-  const handleSort = (key: keyof TableRow) => {
+  const handleSort = (key: keyof WorkTimeTableRow) => {
     let direction: 'asc' | 'desc' = 'asc';
 
     if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -237,27 +372,19 @@ export const WorkTimePage: React.FC = () => {
     setSortConfig({ key, direction });
   };
 
-  const handleExport = () => {
-    const csvContent =
-      'data:text/csv;charset=utf-8,' +
-      ['Period,Department,Employee,FirstActivity,LastActivity,Lateness,LatenessCount'].join(',') +
-      '\n' +
-      rows
-        .map(
-          (row) =>
-            `${row.period},${row.department},${row.employee},${row.firstActivity},${row.lastActivity},${row.lateness},${row.latenessCount}`,
-        )
-        .join('\n');
-
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', 'work_time_report.csv');
-
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleExport = async () => {
+    try {
+      setIsExporting(true);
+      const day = formatDateToISO(selectedDate);
+      await exportAttendanceReport({
+        employeeId: employee && employee !== 'all' ? Number(employee) : undefined,
+        date: day,
+      }, `attendance_${day}.xlsx`);
+    } catch (e) {
+      console.error('Export failed:', e);
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const filterItems: FilterBarItem[] = useMemo(
@@ -281,7 +408,7 @@ export const WorkTimePage: React.FC = () => {
         id: 'employee',
         type: 'select',
         value: employee,
-        placeholder: t('dashboard.filters.types.all'),
+        placeholder: 'Все сотрудники',
         options: employeeOptions,
         onChange: handleEmployeeChange,
       },
@@ -323,11 +450,14 @@ export const WorkTimePage: React.FC = () => {
       <WorkTimeHeader
         title={t('reports.workTime.title')}
         subtitle={t('reports.workTime.subtitle')}
-        exportLabel={t('dashboard.common.exportXls')}
+        exportLabel={isExporting ? 'Экспорт...' : t('dashboard.common.exportXls')}
         onExport={handleExport}
+        isExporting={isExporting}
       />
 
       <WorkTimeFilters items={filterItems} />
+
+      {error ? <div className={styles.error}>{error}</div> : null}
 
       <WorkTimeStats loading={loading} items={kpiData} />
 

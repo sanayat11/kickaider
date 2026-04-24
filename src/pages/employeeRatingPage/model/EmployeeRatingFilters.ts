@@ -1,16 +1,10 @@
 import { useState } from 'react';
 import { format, addDays, subDays, parseISO, isValid } from 'date-fns';
 import type { FilterBarItem } from '@/shared/ui/filters-bar/types/FilterBar';
-
-export type Criterion = 'productive' | 'unproductive' | 'neutral' | 'idle';
-
-export interface EmployeeRatingFiltersState {
-  currentDate: string;
-  department: string;
-  onlyWorkHours: boolean;
-  searchQuery: string;
-  criterion: Criterion;
-}
+import type {
+  Criterion,
+  EmployeeRatingFiltersState,
+} from '../types/EmployeeRatingPage';
 
 export const useEmployeeRatingFilters = () => {
   const [filtersState, setFiltersState] = useState<EmployeeRatingFiltersState>({
@@ -43,6 +37,38 @@ export const useEmployeeRatingFilters = () => {
     }
   };
 
+  const handleCriterionChange = (val: string) => {
+    setFiltersState((prev) => ({
+      ...prev,
+      criterion: val as Criterion,
+    }));
+    setCurrentPage(1);
+  };
+
+  const handleDepartmentChange = (val: string) => {
+    setFiltersState((prev) => ({
+      ...prev,
+      department: val,
+    }));
+    setCurrentPage(1);
+  };
+
+  const handleOnlyWorkHoursChange = (val: boolean) => {
+    setFiltersState((prev) => ({
+      ...prev,
+      onlyWorkHours: val,
+    }));
+    setCurrentPage(1);
+  };
+
+  const handleSearchChange = (val: string) => {
+    setFiltersState((prev) => ({
+      ...prev,
+      searchQuery: val,
+    }));
+    setCurrentPage(1);
+  };
+
   const filterItems: FilterBarItem[] = [
     {
       id: 'date-nav',
@@ -59,13 +85,8 @@ export const useEmployeeRatingFilters = () => {
       options: [
         { label: 'Продуктивное', value: 'productive' },
         { label: 'Непродуктивное', value: 'unproductive' },
-        { label: 'Нейтральное', value: 'neutral' },
-        { label: 'Простой', value: 'idle' },
       ],
-      onChange: (val) => {
-        setFiltersState((prev) => ({ ...prev, criterion: val as Criterion }));
-        setCurrentPage(1);
-      },
+      onChange: handleCriterionChange,
     },
     {
       id: 'department',
@@ -74,36 +95,22 @@ export const useEmployeeRatingFilters = () => {
       placeholder: 'Отдел',
       options: [
         { label: 'Все отделы', value: 'all' },
-        { label: 'IT', value: 'IT' },
-        { label: 'HR', value: 'HR' },
-        { label: 'Marketing', value: 'Marketing' },
-        { label: 'Sales', value: 'Sales' },
-        { label: 'Finance', value: 'Finance' },
       ],
-      onChange: (val) => {
-        setFiltersState((prev) => ({ ...prev, department: val }));
-        setCurrentPage(1);
-      },
+      onChange: handleDepartmentChange,
     },
     {
       id: 'only-work-hours',
       type: 'checkbox',
       checked: filtersState.onlyWorkHours,
       text: 'Только в рабочее время',
-      onChange: (val) => {
-        setFiltersState((prev) => ({ ...prev, onlyWorkHours: val }));
-        setCurrentPage(1);
-      },
+      onChange: handleOnlyWorkHoursChange,
     },
     {
       id: 'search',
       type: 'search',
       value: filtersState.searchQuery,
-      placeholder: 'Поиск (имя, хост)',
-      onChange: (val) => {
-        setFiltersState((prev) => ({ ...prev, searchQuery: val }));
-        setCurrentPage(1);
-      },
+      placeholder: 'Поиск по имени',
+      onChange: handleSearchChange,
     },
   ];
 

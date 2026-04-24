@@ -12,6 +12,12 @@ export interface WorkTimeTableRow {
   lastActivity: string;
   lateness: number;
   latenessCount: number;
+  earlyLeaveMinutes: number;
+  earlyLeaveCount: number;
+  absenceCount: number;
+  businessTripCount: number;
+  vacationCount: number;
+  sickLeaveCount: number;
 }
 
 type WorkTimeTableProps = {
@@ -49,25 +55,81 @@ export const WorkTimeTable: React.FC<WorkTimeTableProps> = ({
             <thead>
               <tr>
                 {visibleColumns.has('period') && (
-                  <th onClick={() => onSort('period')}>Период <IoChevronDownOutline size={14} className={styles.sortIcon} /></th>
+                  <th onClick={() => onSort('period')}>
+                    Период <IoChevronDownOutline size={14} className={styles.sortIcon} />
+                  </th>
                 )}
+
                 {visibleColumns.has('department') && (
-                  <th onClick={() => onSort('department')}>Отдел <IoChevronDownOutline size={14} className={styles.sortIcon} /></th>
+                  <th onClick={() => onSort('department')}>
+                    Отдел <IoChevronDownOutline size={14} className={styles.sortIcon} />
+                  </th>
                 )}
+
                 {visibleColumns.has('employee') && (
-                  <th onClick={() => onSort('employee')}>Сотрудник <IoChevronDownOutline size={14} className={styles.sortIcon} /></th>
+                  <th onClick={() => onSort('employee')}>
+                    Сотрудник <IoChevronDownOutline size={14} className={styles.sortIcon} />
+                  </th>
                 )}
+
                 {visibleColumns.has('firstActivity') && (
-                  <th onClick={() => onSort('firstActivity')}>Первая активность <IoChevronDownOutline size={14} className={styles.sortIcon} /></th>
+                  <th onClick={() => onSort('firstActivity')}>
+                    Первая активность <IoChevronDownOutline size={14} className={styles.sortIcon} />
+                  </th>
                 )}
+
                 {visibleColumns.has('lastActivity') && (
-                  <th onClick={() => onSort('lastActivity')}>Последняя активность <IoChevronDownOutline size={14} className={styles.sortIcon} /></th>
+                  <th onClick={() => onSort('lastActivity')}>
+                    Последняя активность <IoChevronDownOutline size={14} className={styles.sortIcon} />
+                  </th>
                 )}
+
                 {visibleColumns.has('lateness') && (
-                  <th onClick={() => onSort('lateness')}>Опоздания <IoChevronDownOutline size={14} className={styles.sortIcon} /></th>
+                  <th onClick={() => onSort('lateness')}>
+                    Опоздания <IoChevronDownOutline size={14} className={styles.sortIcon} />
+                  </th>
                 )}
+
                 {visibleColumns.has('latenessCount') && (
-                  <th onClick={() => onSort('latenessCount')}>Кол-во опозданий <IoChevronDownOutline size={14} className={styles.sortIcon} /></th>
+                  <th onClick={() => onSort('latenessCount')}>
+                    Кол-во опозданий <IoChevronDownOutline size={14} className={styles.sortIcon} />
+                  </th>
+                )}
+
+                {visibleColumns.has('earlyLeaveMinutes') && (
+                  <th onClick={() => onSort('earlyLeaveMinutes')}>
+                    Ранние уходы <IoChevronDownOutline size={14} className={styles.sortIcon} />
+                  </th>
+                )}
+
+                {visibleColumns.has('earlyLeaveCount') && (
+                  <th onClick={() => onSort('earlyLeaveCount')}>
+                    Кол-во уходов <IoChevronDownOutline size={14} className={styles.sortIcon} />
+                  </th>
+                )}
+
+                {visibleColumns.has('absenceCount') && (
+                  <th onClick={() => onSort('absenceCount')}>
+                    Прогулы <IoChevronDownOutline size={14} className={styles.sortIcon} />
+                  </th>
+                )}
+
+                {visibleColumns.has('businessTripCount') && (
+                  <th onClick={() => onSort('businessTripCount')}>
+                    Командировки <IoChevronDownOutline size={14} className={styles.sortIcon} />
+                  </th>
+                )}
+
+                {visibleColumns.has('vacationCount') && (
+                  <th onClick={() => onSort('vacationCount')}>
+                    Отпуски <IoChevronDownOutline size={14} className={styles.sortIcon} />
+                  </th>
+                )}
+
+                {visibleColumns.has('sickLeaveCount') && (
+                  <th onClick={() => onSort('sickLeaveCount')}>
+                    Больничные <IoChevronDownOutline size={14} className={styles.sortIcon} />
+                  </th>
                 )}
               </tr>
             </thead>
@@ -82,6 +144,12 @@ export const WorkTimeTable: React.FC<WorkTimeTableProps> = ({
                   {visibleColumns.has('lastActivity') && <td>{row.lastActivity}</td>}
                   {visibleColumns.has('lateness') && <td>{row.lateness}</td>}
                   {visibleColumns.has('latenessCount') && <td>{row.latenessCount}</td>}
+                  {visibleColumns.has('earlyLeaveMinutes') && <td>{row.earlyLeaveMinutes}</td>}
+                  {visibleColumns.has('earlyLeaveCount') && <td>{row.earlyLeaveCount}</td>}
+                  {visibleColumns.has('absenceCount') && <td>{row.absenceCount}</td>}
+                  {visibleColumns.has('businessTripCount') && <td>{row.businessTripCount}</td>}
+                  {visibleColumns.has('vacationCount') && <td>{row.vacationCount}</td>}
+                  {visibleColumns.has('sickLeaveCount') && <td>{row.sickLeaveCount}</td>}
                 </tr>
               ))}
             </tbody>

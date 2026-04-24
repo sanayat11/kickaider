@@ -50,3 +50,10 @@ export const useCreateEmployeeWithUser = (companyId?: number) => {
     },
   });
 };
+
+export const useChangeEmployeePassword = () => {
+  return useMutation({
+    mutationFn: ({ id, newPassword }: { id: number; newPassword: string }) =>
+      employeesApi.changePassword(id, newPassword),
+  });
+};

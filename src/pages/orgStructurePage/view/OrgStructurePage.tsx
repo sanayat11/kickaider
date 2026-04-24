@@ -22,7 +22,7 @@ import {
   useDeleteDepartment,
 } from '../model/useDepartments';
 import { useCompanyEmployees } from '../model/useOrgStructure';
-import { useBlockEmployee, useCreateEmployeeWithUser, useUpdateEmployee } from '../model/useEmployees';
+import { useBlockEmployee, useChangeEmployeePassword, useCreateEmployeeWithUser, useUpdateEmployee } from '../model/useEmployees';
 import {
   useApproveDevice,
   useBlockDevice,
@@ -93,6 +93,7 @@ export const OrgStructurePage = () => {
   const createEmployeeWithUserMutation = useCreateEmployeeWithUser(
     hasValidCompanyId ? parsedCompanyId : undefined,
   );
+  const changeEmployeePasswordMutation = useChangeEmployeePassword();
   const approveDeviceMutation = useApproveDevice();
   const blockDeviceMutation = useBlockDevice();
   const unblockDeviceMutation = useUnblockDevice();
@@ -179,7 +180,6 @@ export const OrgStructurePage = () => {
     employeeId: string;
     departmentId: string;
     position: string;
-    employeeNumber: string;
   }) => {
     try {
       await updateEmployeeMutation.mutateAsync({
@@ -187,7 +187,7 @@ export const OrgStructurePage = () => {
         payload: {
           departmentId: Number(data.departmentId),
           position: data.position,
-          employeeNumber: data.employeeNumber,
+          employeeNumber: '',
         },
       });
 
@@ -207,6 +207,16 @@ export const OrgStructurePage = () => {
     } catch (error) {
       console.error('Failed to block employee', error);
       alert('Не удалось заблокировать сотрудника');
+    }
+  };
+
+  const handleChangeEmployeePassword = async (employeeId: string, newPassword: string) => {
+    try {
+      await changeEmployeePasswordMutation.mutateAsync({ id: Number(employeeId), newPassword });
+      alert('Пароль успешно изменён');
+    } catch (error) {
+      console.error('Failed to change password', error);
+      alert('Не удалось сменить пароль');
     }
   };
 
@@ -407,6 +417,7 @@ export const OrgStructurePage = () => {
         employee={selectedEmployee}
         departments={departments}
         onSave={handleSaveEmployee}
+        onChangePassword={handleChangeEmployeePassword}
       />
 
       <DeleteConfirmModal

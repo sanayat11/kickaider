@@ -14,8 +14,8 @@ interface EditEmployeeModalProps {
     employeeId: string;
     departmentId: string;
     position: string;
-    employeeNumber: string;
   }) => void;
+  onChangePassword: (employeeId: string, newPassword: string) => Promise<void>;
 }
 
 export const EditEmployeeModal: FC<EditEmployeeModalProps> = ({
@@ -24,6 +24,7 @@ export const EditEmployeeModal: FC<EditEmployeeModalProps> = ({
   employee,
   departments,
   onSave,
+  onChangePassword,
 }) => {
   const defaultDepartmentId = useMemo(() => {
     if (employee?.departmentId) return employee.departmentId;
@@ -31,16 +32,16 @@ export const EditEmployeeModal: FC<EditEmployeeModalProps> = ({
   }, [employee, departments]);
 
   const [position, setPosition] = useState(employee?.position ?? '');
-  const [employeeNumber, setEmployeeNumber] = useState(employee?.employeeNumber ?? '');
   const [departmentId, setDepartmentId] = useState(defaultDepartmentId);
+  const [newPassword, setNewPassword] = useState('');
 
   useEffect(() => {
     setPosition(employee?.position ?? '');
-    setEmployeeNumber(employee?.employeeNumber ?? '');
     setDepartmentId(employee?.departmentId ?? departments[0]?.id ?? '');
+    setNewPassword('');
   }, [employee, departments]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!employee?.id) return;
     if (!position.trim()) return;
     if (!departmentId) return;
@@ -49,8 +50,11 @@ export const EditEmployeeModal: FC<EditEmployeeModalProps> = ({
       employeeId: employee.id,
       departmentId,
       position: position.trim(),
-      employeeNumber: employeeNumber.trim(),
     });
+
+    if (newPassword.trim()) {
+      await onChangePassword(employee.id, newPassword.trim());
+    }
 
     onClose();
   };
@@ -67,26 +71,22 @@ export const EditEmployeeModal: FC<EditEmployeeModalProps> = ({
   );
 
   return (
-    <Modal open={open} onClose={onClose} title="Редактировать сотрудника" footer={footer}>
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="Редактировать сотрудника"
+      footer={footer}
+    >
       <div className={styles.form}>
-        <BaseInput
-          label="ФИО сотрудника"
-          value={employee?.name ?? ''}
-          disabled
-        />
+        {employee?.name && (
+          <p className={styles.employeeName}>{employee.name}</p>
+        )}
 
         <BaseInput
           label="Должность"
           value={position}
           onChange={(e) => setPosition(e.target.value)}
           placeholder="Например, Java Developer"
-        />
-
-        <BaseInput
-          label="Табельный номер"
-          value={employeeNumber}
-          onChange={(e) => setEmployeeNumber(e.target.value)}
-          placeholder="EMP-001"
         />
 
         <div className={styles.field}>
@@ -103,6 +103,16 @@ export const EditEmployeeModal: FC<EditEmployeeModalProps> = ({
             ))}
           </select>
         </div>
+
+        <hr className={styles.divider} />
+
+        <BaseInput
+          label="Новый пароль"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+          placeholder="Оставьте пустым, чтобы не менять"
+          type="password"
+        />
       </div>
     </Modal>
   );

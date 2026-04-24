@@ -36,4 +36,11 @@ export const employeesApi = {
       body: JSON.stringify(payload),
     });
   },
+
+  changePassword: async (id: number, newPassword: string) => {
+    return apiFetch<void>(`employees/${id}/change-password`, {
+      method: 'POST',
+      body: JSON.stringify({ newPassword }),
+    });
+  },
 };

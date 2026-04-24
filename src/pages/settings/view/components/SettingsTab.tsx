@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import type { FC } from 'react';
 import { Typography } from '@/shared/ui';
 import { Button } from '@/shared/ui/button/view/Button';
-import { SelectDropdown } from '@/shared/ui/selectDropdown/view/selectDropdown';
+import { SelectDropdown } from '@/shared/ui/selectDropdown/view/SelectDropdown';
+
 import {
   settingsApi,
   type GeneralSettingsPayload,

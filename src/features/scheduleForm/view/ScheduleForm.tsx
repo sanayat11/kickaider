@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { Button } from '@/shared/ui/button/view/Button';
 import { Typography } from '@/shared/ui/typoghraphy/view/Typography';
 import { Toggle } from '@/shared/ui/toggle/view/Toggle';
-import { SelectDropdown } from '@/shared/ui/selectDropdown/view/selectDropdown';
+import { SelectDropdown } from '@/shared/ui/selectDropdown/view/SelectDropdown';
 import styles from './ScheduleForm.module.scss';
 
 const DAYS = [

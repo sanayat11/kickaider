@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Modal } from '@/shared/ui/modal/view/Modal';
-import { SelectDropdown } from '@/shared/ui/selectDropdown/view/selectDropdown';
+import { SelectDropdown } from '@/shared/ui/selectDropdown/view/SelectDropdown';
 import { Button } from '@/shared/ui/button/view/Button';
 import { IoCopyOutline } from 'react-icons/io5';
 import styles from './Modals.module.scss';

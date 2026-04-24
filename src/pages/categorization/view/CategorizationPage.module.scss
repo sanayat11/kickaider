@@ -243,7 +243,7 @@
 
 .tableHeader {
   display: grid;
-  grid-template-columns: minmax(260px, 1.7fr) minmax(220px, 1.4fr) 150px 44px;
+  grid-template-columns: 1fr 220px 140px 44px;
   align-items: center;
   min-height: 52px;
   padding: 0 16px;
@@ -275,7 +275,7 @@
 .row {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(260px, 1.7fr) minmax(220px, 1.4fr) 150px 44px;
+  grid-template-columns: 1fr 220px 140px 44px;
   align-items: center;
   min-height: 50px;
   padding: 0 16px;
@@ -391,15 +391,15 @@
 }
 
 .categorySelect {
-  width: 140px !important;
-  max-width: 140px !important;
+  width: 110px !important;
+  max-width: 110px !important;
   height: 28px !important;
 
   // Trigger button styling
   button {
     min-height: 28px !important;
     height: 28px !important;
-    border-radius: 6px !important;
+    border-radius: 4px !important;
     padding: 0 !important;
     justify-content: center !important;
     background: transparent !important;
@@ -416,14 +416,15 @@
 }
 
 .categoryMenu {
-  padding: 4px !important;
+  padding: 6px !important;
   border-radius: 12px !important;
   background: #fff !important;
-  box-shadow: 0 10px 30px rgba(31, 42, 93, 0.08) !important;
+  box-shadow: 0 12px 36px rgba(31, 42, 93, 0.12) !important;
   border: 1px solid #edf1fb !important;
 
   li {
     border-bottom: 1px solid #f8faff;
+
     &:last-child {
       border-bottom: none;
     }
@@ -431,18 +432,17 @@
 }
 
 .categoryOption {
-  padding: 4px !important;
-  background: transparent !important;
-  min-height: 38px !important;
-  height: 38px !important;
+  padding: 4px 12px !important;
+  min-height: 36px !important;
+  height: auto !important;
 
   &:hover,
-  &[class*="optionHovered"],
+  &[class*="optionHovered"] {
+    background: #f8f9ff !important;
+  }
+
   &[class*="optionSelected"] {
-    background: transparent !important;
-    color: inherit !important;
-    transform: none !important;
-    box-shadow: none !important;
+    background: #f0f2ff !important;
   }
 
   &>span:last-child {
@@ -543,7 +543,7 @@
 
 .skeletonRow {
   display: grid;
-  grid-template-columns: minmax(260px, 1.7fr) minmax(220px, 1.4fr) 150px 44px;
+  grid-template-columns: 1fr 220px 140px 44px;
   align-items: center;
   min-height: 50px;
   padding: 0 16px;

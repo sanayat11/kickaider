@@ -1,57 +1,164 @@
 import { useState } from 'react';
-import type { FC } from 'react';
+import type { FC, MouseEvent as ReactMouseEvent } from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../ActivityPage.module.scss';
-import { Avatar } from '@/shared/ui/avatar/view/Avatar';
-import { TimeBar } from '@/shared/ui/timeBar/view/TimeBar';
 import { Typography } from '@/shared/ui/typoghraphy/view/Typography';
-import type { Employee, ActivityBlock } from '@/shared/api/mock/activity.mock';
-import type { TimeBarSegmentTone } from '@/shared/ui/timeBar/types/TimeBar';
 import { ActivityDetailsPopup } from './ActivityDetailsPopup';
+import { TimeBar } from '@/shared/ui/timeBar/view/TimeBar';
+import type {
+  TimeBarSegment,
+  TimeBarSegmentTone,
+} from '@/shared/ui/timeBar/types/TimeBar';
 
-const stateToToneMap: Record<string, TimeBarSegmentTone> = {
-  productive: 'success',
-  unproductive: 'danger',
-  idle: 'warning',
-  nodata: 'primary',
-  uncategorized: 'neutral',
-  neutral: 'neutral'
+export type ActivityBlockState =
+  | 'productive'
+  | 'neutral'
+  | 'unproductive'
+  | 'uncategorized'
+  | 'idle'
+  | 'nodata';
+
+export type ActivityBlock = {
+  start: string;
+  end: string;
+  state: ActivityBlockState;
+  appName?: string;
+  windowTitle?: string;
+};
+
+export type ActivityEmployeeRow = {
+  id: string;
+  employeeId: number;
+  fullName: string;
+  hostname: string;
+  department: string;
+  timeline: ActivityBlock[];
+  totalActiveTime: string;
+  totalIdleTime: string;
+  latestScreenshotUrl?: string;
+  searchText: string;
 };
 
 interface ActivityTableProps {
-  employees: Employee[];
+  employees: ActivityEmployeeRow[];
   date: string;
   loading: boolean;
   scale: string;
 }
 
-export const ActivityTable: FC<ActivityTableProps> = ({ employees, date, loading, scale }) => {
+const stateToToneMap: Record<ActivityBlockState, TimeBarSegmentTone> = {
+  productive: 'success',
+  unproductive: 'danger',
+  neutral: 'primary',
+  idle: 'warning',
+  nodata: 'primary',
+  uncategorized: 'neutral',
+};
+
+const parseTimeToMinutes = (time: string) => {
+  const [hours = '0', minutes = '0'] = time.split(':');
+  return Number(hours) * 60 + Number(minutes);
+};
+
+const getScaleConfig = (scale: string) => {
+  if (scale === 'workTime') {
+    return {
+      startMinute: 9 * 60,
+      endMinute: 18 * 60,
+      labels: [
+        '09:00',
+        '10:00',
+        '11:00',
+        '12:00',
+        '13:00',
+        '14:00',
+        '15:00',
+        '16:00',
+        '17:00',
+        '18:00',
+      ],
+    };
+  }
+
+  return {
+    startMinute: 0,
+    endMinute: 24 * 60,
+    labels: ['00:00', '06:00', '12:00', '18:00', '23:59'],
+  };
+};
+
+const clipBlockToScale = (block: ActivityBlock, scale: string) => {
+  const { startMinute, endMinute } = getScaleConfig(scale);
+
+  const rawStart = parseTimeToMinutes(block.start);
+  const rawEnd = parseTimeToMinutes(block.end);
+
+  const clippedStart = Math.max(rawStart, startMinute);
+  const clippedEnd = Math.min(rawEnd, endMinute);
+
+  if (clippedEnd <= clippedStart) {
+    return null;
+  }
+
+  return {
+    ...block,
+    clippedStart,
+    clippedEnd,
+    durationMinutes: clippedEnd - clippedStart,
+  };
+};
+
+const buildTimeBarSegments = (
+  blocks: ActivityBlock[],
+  scale: string,
+): TimeBarSegment[] => {
+  const clippedBlocks = blocks
+    .map((block) => clipBlockToScale(block, scale))
+    .filter(Boolean) as Array<
+    ActivityBlock & {
+      clippedStart: number;
+      clippedEnd: number;
+      durationMinutes: number;
+    }
+  >;
+
+  if (clippedBlocks.length === 0) {
+    return [
+      {
+        id: 'empty',
+        value: 100,
+        tone: 'neutral',
+        title: 'Нет данных',
+      },
+    ];
+  }
+
+  return clippedBlocks.map((block, index) => ({
+    id: `${block.start}-${block.end}-${index}`,
+    value: Math.max(block.durationMinutes, 1),
+    tone: stateToToneMap[block.state] ?? 'neutral',
+    title:
+      block.appName || block.windowTitle
+        ? `${block.start}–${block.end} ${block.appName || ''} ${block.windowTitle || ''}`.trim()
+        : `${block.start}–${block.end}`,
+  }));
+};
+
+export const ActivityTable: FC<ActivityTableProps> = ({
+  employees,
+  date,
+  loading,
+  scale,
+}) => {
   const [selectedEmpId, setSelectedEmpId] = useState<string | null>(null);
   const [popupCoords, setPopupCoords] = useState<{ top: number; left: number } | null>(null);
 
-  if (loading) {
-    return <div className={styles.loader}><Typography variant="body1">Загрузка...</Typography></div>;
-  }
+  const { labels } = getScaleConfig(scale);
 
-  const getTimeBlocks = (blocks: ActivityBlock[]) => {
-    return blocks.map((b, i) => {
-      const [sh, sm] = b.start.split(':').map(Number);
-      const [eh, em] = b.end.split(':').map(Number);
-      const duration = (eh * 60 + em) - (sh * 60 + sm);
-
-      return {
-        id: `${b.start}-${i}`,
-        value: duration,
-        tone: stateToToneMap[b.state] || 'neutral'
-      };
-    });
-  };
-
-  const allDayLabels = ['00:00', '06:00', '12:00', '18:00', '23:59'];
-  const workTimeLabels = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
-  const labelsToUse = scale === 'allDay' ? allDayLabels : workTimeLabels;
-
-  const handleSegmentClick = (empId: string, event?: React.MouseEvent) => {
+  const handleBarClick = (
+    empId: string,
+    event?: ReactMouseEvent<HTMLDivElement>,
+  ) => {
     if (selectedEmpId === empId) {
       setSelectedEmpId(null);
       setPopupCoords(null);
@@ -59,14 +166,31 @@ export const ActivityTable: FC<ActivityTableProps> = ({ employees, date, loading
     }
 
     if (event) {
-      const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+      const rect = event.currentTarget.getBoundingClientRect();
       setPopupCoords({
-        top: rect.top + window.scrollY,
-        left: rect.left + window.scrollX + rect.width / 2
+        top: rect.top + window.scrollY + 8,
+        left: rect.left + window.scrollX + rect.width / 2,
       });
     }
+
     setSelectedEmpId(empId);
   };
+
+  if (loading) {
+    return (
+      <div className={styles.loader}>
+        <Typography variant="body1">Загрузка...</Typography>
+      </div>
+    );
+  }
+
+  if (!employees.length) {
+    return (
+      <div className={styles.loader}>
+        <Typography variant="body1">Нет данных</Typography>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.tableContainer}>
@@ -79,36 +203,50 @@ export const ActivityTable: FC<ActivityTableProps> = ({ employees, date, loading
             <th className={styles.timelineHeaderCell}>
               <div className={styles.axisWrapper}>
                 <span>Общая активность</span>
-                <div className={styles.axis}>
-                  {labelsToUse.map(t => <span key={t}>{t}</span>)}
-                </div>
               </div>
             </th>
             <th>Общее время</th>
             <th>Скриншоты</th>
           </tr>
         </thead>
+
         <tbody>
-          {employees.slice(0, 10).map((emp) => (
-            <tr key={emp.id} style={{ position: 'relative' }}>
-              <td>
-                <Link to={`/activity/${emp.id}?date=${date}`} className={styles.empLink}>
-                  <Avatar initials={emp.fullName[0]} size='sm' status={emp.id === 'emp-1' ? 'online' : 'none'} />
-                  <div className={styles.empInfo}>
-                    <Typography variant="body2" className={styles.name}>{emp.fullName}</Typography>
-                    <Typography variant="caption" className={styles.desktop}>{emp.hostname}</Typography>
+          {employees.map((emp) => {
+            const segments = buildTimeBarSegments(emp.timeline, scale);
+
+            return (
+              <tr key={emp.id} style={{ position: 'relative' }}>
+                <td>
+                  <Link
+                    to={`/activity/${emp.employeeId}?date=${date}`}
+                    className={styles.empLink}
+                  >
+                    <div className={styles.empInfo}>
+                      <Typography variant="body2" className={styles.nameText}>
+                        {emp.fullName}
+                      </Typography>
+                      <Typography variant="caption" className={styles.hostText}>
+                        {emp.hostname}
+                      </Typography>
+                    </div>
+                  </Link>
+                </td>
+
+                <td className={styles.mutedText}>{emp.department}</td>
+                <td className={styles.mutedText}>{date.split('-').reverse().join('.')}</td>
+
+                <td className={styles.timelineCell}>
+                  <div
+                    className={styles.timelineInteractive}
+                    onClick={(event) => handleBarClick(emp.id, event)}
+                  >
+                    <TimeBar
+                      className={styles.activityTimelineBar}
+                      height="sm"
+                      labels={labels}
+                      segments={segments}
+                    />
                   </div>
-                </Link>
-              </td>
-              <td className={styles.mutedText}>{emp.department}</td>
-              <td className={styles.mutedText}>{date.split('-').reverse().join('.')}</td>
-              <td className={styles.timelineCell}>
-                <div style={{ position: 'relative' }}>
-                  <TimeBar
-                    height="sm"
-                    segments={getTimeBlocks(emp.timeline)}
-                    onSegmentClick={(_, e) => handleSegmentClick(emp.id, e)}
-                  />
 
                   {selectedEmpId === emp.id && popupCoords && (
                     <ActivityDetailsPopup
@@ -121,20 +259,25 @@ export const ActivityTable: FC<ActivityTableProps> = ({ employees, date, loading
                       coords={popupCoords}
                     />
                   )}
-                </div>
-              </td>
-              <td className={styles.mutedText}>08:15:00</td>
-              <td>
-                <div
-                  className={styles.screenshotThumb}
-                  style={{ backgroundImage: `url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIFExawxp46Gv-ZqiqQtFADbtBLjN9CRbQ5Q&s)` }}
-                />
-              </td>
-            </tr>
-          ))}
+                </td>
+
+                <td className={styles.mutedText}>{emp.totalActiveTime}</td>
+
+                <td>
+                  {emp.latestScreenshotUrl ? (
+                    <div
+                      className={styles.screenshotThumb}
+                      style={{ backgroundImage: `url(${emp.latestScreenshotUrl})` }}
+                    />
+                  ) : (
+                    <div className={styles.mutedText}>—</div>
+                  )}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
   );
 };
-

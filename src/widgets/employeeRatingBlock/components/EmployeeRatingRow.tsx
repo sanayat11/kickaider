@@ -1,4 +1,5 @@
 import { useEffect, useRef, type FC } from 'react';
+import classNames from 'classnames';
 
 import styles from '../styles/EmployeeRatingRow.module.scss';
 import { TimeBar } from '@/shared/ui/timeBar/view/TimeBar';
@@ -33,7 +34,7 @@ export const EmployeeRatingRow: FC<Props> = ({ row, openedRowId, onToggleRow }) 
   }, [isOpen, onToggleRow]);
 
   return (
-    <div className={styles.rowWrap}>
+    <div className={classNames(styles.rowWrap, { [styles.rowWrapOpened]: isOpen })}>
       <button
         ref={rowRef}
         type="button"

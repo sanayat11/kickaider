@@ -12,10 +12,13 @@ export const paths = {
   DASHBOARD: '/dashboard',
   DASHBOARD_SETTINGS: '/dashboard/settings',
   DASHBOARD_REPORTS: '/dashboard/reports',
-  DASHBOARD_DAY_DETAILS: '/dashboard/day-details',
+
+  DASHBOARD_DAY_DETAILS_BASE: '/dashboard/day-details',
+  DASHBOARD_DAY_DETAILS: '/dashboard/day-details/:companyId',
+  getDashboardDayDetailsPath: (companyId: number | string) =>
+    `/dashboard/day-details/${companyId}`,
   DASHBOARD_EMPLOYEE_RATING: '/dashboard/employee-rating',
   DASHBOARD_WORK_SCHEDULES: '/dashboard/settings/work-schedules',
-
   DASHBOARD_ORG_STRUCTURE_BASE: '/dashboard/settings/org-structure',
   DASHBOARD_ORG_STRUCTURE: '/dashboard/settings/org-structure/:companyId',
   getOrgStructurePath: (companyId: number | string) =>

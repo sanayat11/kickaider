@@ -3,7 +3,7 @@ import { IoGlobeOutline, IoLaptopOutline, IoTrashOutline } from 'react-icons/io5
 import classNames from 'classnames';
 import styles from '../view/CategorizationPage.module.scss';
 import type { CategorizationRow as RowType, Category } from '../model/types';
-import { SelectDropdown } from '@/shared/ui/selectDropdown/view/selectDropdown';
+import { SelectDropdown } from '@/shared/ui/selectDropdown/view/SelectDropdown';
 import { Chip } from '@/shared/ui/chipButton/view/ChipButton';
 
 interface CategorizationRowProps {

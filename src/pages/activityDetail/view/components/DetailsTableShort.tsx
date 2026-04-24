@@ -1,12 +1,6 @@
 import type { FC } from 'react';
 import styles from '../ActivityDetailsPage.module.scss';
-
-interface ShortViewRow {
-  period: string;
-  activityMinutes: string;
-  idleMinutes: string;
-  apps: string[];
-}
+import type { ShortViewRow } from '@/pages/activity/api/ActivityApi';
 
 interface DetailsTableShortProps {
   rows: ShortViewRow[];
@@ -25,10 +19,13 @@ export const DetailsTableShort: FC<DetailsTableShortProps> = ({ rows }) => {
       <tbody>
         {rows.map((row, i) => (
           <tr key={i}>
-            <td className={styles.timeText}>{row.period}</td>
+            <td className={styles.timeText}>{row.activityMinutes}</td>
             <td className={styles.mutedText}>{row.idleMinutes}</td>
             <td>
-              <div className={styles.appName}>{row.apps.join(', ')}</div>
+              <div className={styles.appName}>
+                <div className={styles.windowTitle}>{row.period}</div>
+                {row.apps.join(', ')}
+              </div>
             </td>
           </tr>
         ))}
